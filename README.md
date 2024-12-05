@@ -27,3 +27,5 @@ Out-of-source documentation includes project background, requirements, and desig
 The in-source documentation includes API documentation, development conventions and scripts, build and runtime needs and procedures, and unit test fixtures.
 
 The design of the BSL is based on the overall [BSL Requirements](BSL%20Software%20Requirements%20Document.pdf) for the initial release version.
+
+The initial design overview is presented as [Preliminary Design Review (PDR) slides](BSL%20PDR.pdf) with a more detailed description in the [Critical Design Review (CDR) slides](BSL%20CDR.pdf). All of this earlier design material is superseded by any of the in-source documentation, which represents the actual realized library API and how it may change over time in different versions.
