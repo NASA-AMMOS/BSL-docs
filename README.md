@@ -1,8 +1,8 @@
 <!--
-Copyright (c) 2023-2024 The Johns Hopkins University Applied Physics
+Copyright (c) 2023-2025 The Johns Hopkins University Applied Physics
 Laboratory LLC.
 
-This file is part of the BPSec Library (BSL).
+This file is part of the Bundle Protocol Security Library (BSL).
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,6 +26,23 @@ This repository hosts out-of-source documentation related to the AMMOS project t
 Out-of-source documentation includes project background, requirements, and design materials.
 The in-source documentation includes API documentation, development conventions and scripts, build and runtime needs and procedures, and unit test fixtures.
 
+## Design Documentation
+
 The design of the BSL is based on the overall [BSL Requirements](BSL%20Software%20Requirements%20Document.pdf) for the initial release version.
 
 The initial design overview is presented as [Preliminary Design Review (PDR) slides](BSL%20PDR.pdf) with a more detailed description in the [Critical Design Review (CDR) slides](BSL%20CDR.pdf). All of this earlier design material is superseded by any of the in-source documentation, which represents the actual realized library API and how it may change over time in different versions.
+
+## Manuals
+
+This repository contains User and Product Guides for the BSL.
+The User GUide is focused on introducing the API and high-level workflows of the BSL and points to specific parts of the software interface API for lower-level details.
+The Product Guide is focused on how to install the runtime and development packages to make use of the BSL and how to maintain and upgrade a deployment of the BSL.
+
+These are written with [AsciiDoc](https://asciidoc.org/) and intended for PDF and HTML publication formats.
+
+Once tools are installed and available, the following commands will build the guide documents.
+```
+cmake -S . -B build
+cmake --build build
+cmake --install build
+```
