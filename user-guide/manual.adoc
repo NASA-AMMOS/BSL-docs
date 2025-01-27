@@ -19,7 +19,7 @@ Institute of Technology, sponsored by the United States Government under
 the prime contract 80NM0018D0004 between the Caltech and NASA under
 subcontract 1700763.
 ////
-= Bundle Protocol Security Library (BSL) Product Guide
+= Bundle Protocol Security Library (BSL) User Guide
 :doctype: book
 :backend: docbook5
 :docinfo: shared
@@ -29,7 +29,7 @@ subcontract 1700763.
 [preface]
 == Introduction
 
-This Product Guide provides architectural and maintenance details about the Bundle Protocol Security Library (BSL), which is part of the NASA Advanced Multi-Mission Operations System (AMMOS) suite of tools.
+This User Guide provides an overview of the application programming interface (API) and high-level workflows of the Bundle Protocol Security Library (BSL), which is part of the NASA Advanced Multi-Mission Operations System (AMMOS) suite of tools.
 
 === Identification
 
@@ -53,8 +53,8 @@ This Product Guide provides architectural and maintenance details about the Bund
 
 === Scope
 
-This document describes technical details about the BSL installation, upgrade, monitoring, and maintenance.
-For details about the application programming interface (API) and workflows of the BSL see the <<bsl-user-guide>>.
+This document describes the API and workflows of the BSL.
+For technical details about the BSL architecture, installation, upgrade, monitoring, and maintenance see the <<bsl-product-guide>>.
 
 [glossary]
 === Terminology
@@ -101,16 +101,7 @@ TBD
 |MGSS Implementation and Maintenance Task Requirements[[mimtar,MIMTaR]]
 |DOC-001455 rev G
 
-|BSL Architecture Description Document[[bsl-add,BSL ADD]]
-|DOC-005089
-
-|BSL Software Requirements Document[[bsl-srd,BSL SRD]]
-|DOC-TBD
-
-|BSL Software Interface Specification[[bsl-sis,BSL SIS]]
-|DOC-TBD
-
-|BSL User Guide[[bsl-user-guide,BSL User Guide]]
+|BSL Product Guide[[bsl-product-guide,BSL Product Guide]]
 |DOC-TBD
 
 |===
@@ -121,9 +112,6 @@ TBD
 |Title
 |Reference
 
-|Using SELinux[[rhel9-selinux]]
-|https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/pdf/using_selinux/red_hat_enterprise_linux-9-using_selinux-en-us.pdf[rhel9-selinux]
-
 |BSL Source[[bsl-source]]
 |https://github.com/NASA-AMMOS/BSL[bsl-source]
 
@@ -133,88 +121,17 @@ TBD
 |===
 
 
-[#sec-arch]
-== BSL Architecture
+== Application Programming Interface
+
+The following section provides an overview of the BSL API and references to specific sections of the online API documentation.
+
+TBD
+
+== Workflows
 
 TBD
 
 
-[#sec-proc]
-== Procedures
-
-This chapter includes specific procedures related to managing an BSL deployment.
-
-
-[#sec-proc-build]
-=== Building
-
-The BSL source is composed of a top-level repository `BSL` <<bsl-source>> and a number of submodule repositories; all of them are required for building the BSL.
-
-. The top-level checkout can be done with:
-+
-----
-git clone --recursive --branch <TAGNAME> https://github.com/NASA-AMMOS/BSL.git
-----
-. Optional: switching to a different tag or branch can be done with the sequence:
-+
-----
-git checkout <TAGNAME>
-git submodule update --init --recursive
-----
-. More TBD
-
-
-[#sec-proc-install]
-=== Installation
-
-TBD
-
-
-[#sec-proc-upgrade]
-=== Upgrading
-
-Because the BSL is deployed in an RPM package form, the normal operating system tools and procedures for dealing with software library upgrading apply to the BSL.
-The BSL provides SOVERSION information in its libraries, so RPM management tools such as DNF which are cross-dependence-aware will ensure that the correct needed SOVERISON of the BSL is isntalled.
-
-Individual BSL releases may identify pre-upgrade or post-upgrade steps in their specific Release Description Document (RDD) which would agument this OS-standard procedure.
-
-
-=== Monitoring
-
-The BSL itself, as a software library, does not directly make use of any logging mechanism.
-
-TBD
-
-
-[#sec-proc-mon-selinux]
-==== SELinux Audit Events
-
-The procedures in this section are a summary of more detail provided in Chapter 5 of the RedHat <<rhel9-selinux>> document.
-
-By default, the `setroubleshootd` service is running, which intercepts SELinux audit events
-
-To observe the system audit log in a formatted way run:
-----
-sudo sealert -l '*'
-----
-
-Some SELinux denials are marked as "don't audit" which suppresses normal audit logging when they occur.
-They are often associated with network access requests which would flood an audit log if they happen often and repeatedly.
-To enable logging of `dontaudit` events run:
-----
-sudo semanage dontaudit off
-----
-
-
-[#sec-checkout]
-=== Checkout Procedures
-
-The BSL packaging procedure includes built unit tests within the `bsl-test` RPM package which allows executing unit tests on the BSL library after build time on any other host.
-
-TBD
-
-
-[#sec-support]
 == Product Support
 
 There are two levels of support for the BSL: troubleshooting by a system administrator, which is detailed in <<sec-troubleshooting>>, and upstream support via the BSL public GitHub project, accessible as described in <<sec-contact>>.
@@ -223,25 +140,7 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 [#sec-troubleshooting]
 === Troubleshooting
 
-==== Installation
-
-This section covers issues that can occur during installation (see <<sec-proc-install>>) of the BSL.
-
 TBD
-
-==== Operations
-
-This section covers issues that can occur after successful installation (see <<sec-proc-install>>) and checkout (see <<sec-checkout>>) of the BSL.
-
-==== SELinux Blocked Behavior
-
-TBD
-
-==== FIPS-140 Blocked Behavior
-
-TBD
-
-===== TBD
 
 
 [#sec-contact]

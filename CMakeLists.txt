@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.16)
 project(bsl-docs LANGUAGES )
 set(CMAKE_INSTALL_PREFIX "")
 
-#add_subdirectory(user-guide)
+add_subdirectory(user-guide)
 add_subdirectory(product-guide)
 
 install(
