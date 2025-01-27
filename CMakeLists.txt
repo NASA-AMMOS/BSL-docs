@@ -28,6 +28,7 @@ set(CMAKE_INSTALL_PREFIX "")
 add_subdirectory(product-guide)
 
 install(
-  FILES index.html
+  FILES deploy-index.html
+  RENAME index.html
   DESTINATION .
 )
