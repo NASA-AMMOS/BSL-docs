@@ -1,0 +1,158 @@
+////
+Copyright (c) 2023-2025 The Johns Hopkins University Applied Physics
+Laboratory LLC.
+
+This file is part of the Bundle Protocol Security Library (BSL).
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+This work was performed for the Jet Propulsion Laboratory, California
+Institute of Technology, sponsored by the United States Government under
+the prime contract 80NM0018D0004 between the Caltech and NASA under
+subcontract 1700763.
+////
+= Bundle Protocol Security Library (BSL) User Guide
+:doctype: book
+:backend: docbook5
+:docinfo: shared
+:toc:
+
+
+[preface]
+== Introduction
+
+This User Guide provides an overview of the application programming interface (API) and high-level workflows of the Bundle Protocol Security Library (BSL), which is part of the NASA Advanced Multi-Mission Operations System (AMMOS) suite of tools.
+
+=== Identification
+
+[%header,width=75%,cols=2*]
+|===
+|Property
+|Value
+
+|Configuration ID (CI)
+|681.4
+
+|Element
+|Mission Control System (MCS)
+
+|Program Set
+|Bundle Protocol Security Library (BSL)
+
+|Version
+|1.0
+|===
+
+=== Scope
+
+This document describes the API and workflows of the BSL.
+For technical details about the BSL architecture, installation, upgrade, monitoring, and maintenance see the <<bsl-product-guide>>.
+
+[glossary]
+=== Terminology
+
+[glossary]
+Bundle Protocol (BP)::
+The overlay network protocol used to transport BPSec blocks and target blocks between nodes.
+Bundle Protocol Security (BPSec)::
+The mandatory-to-implement security mechanism to protect blocks of a BP bundle.
+This is the principal scope of behavior implemented in the BSL.
+BP Agent (BPA)::
+The instantiation of a BP node with a unique administrative Endpoint ID.
+BP Endpoint::
+The source or destination of a BP bundle, identified by a BP Endpoint ID (EID).
+BP Endpoint ID (EID)::
+The identifier of a BP Endpoint; names the source and destination for a BP bundle.
+Host::
+A single node on the network and a single instance of an operating system.
+One host can have many interfaces and many IP addresses, but only one canonical host name.
+JavaScript Object Notation (JSON)::
+TBD
+
+
+=== References
+
+.Applicable JPL Rules Documents
+[%header,width=100%,cols="<.<3,>.<1"]
+|===
+|Title
+|Document Number
+
+|Software Development[[jpl-sd,SD]]
+|57653 rev 10
+
+|===
+
+
+.Applicable MGSS Documents
+[%header,width=100%,cols="<.<3,>.<1"]
+|===
+|Title
+|Document Number
+
+|MGSS Implementation and Maintenance Task Requirements[[mimtar,MIMTaR]]
+|DOC-001455 rev G
+
+|BSL Product Guide[[bsl-product-guide,BSL Product Guide]]
+|DOC-TBD
+
+|===
+
+.Applicable Other Documents
+[%header,width=100%,cols="<.<3,>.<1"]
+|===
+|Title
+|Reference
+
+|BSL Source[[bsl-source]]
+|https://github.com/NASA-AMMOS/BSL[bsl-source]
+
+|BSL Document Source[[bsl-docs]]
+|https://github.com/NASA-AMMOS/BSL-docs[bsl-docs]
+
+|===
+
+
+== Application Programming Interface
+
+The following section provides an overview of the BSL API and references to specific sections of the online API documentation.
+
+TBD
+
+== Workflows
+
+TBD
+
+
+== Product Support
+
+There are two levels of support for the BSL: troubleshooting by a system administrator, which is detailed in <<sec-troubleshooting>>, and upstream support via the BSL public GitHub project, accessible as described in <<sec-contact>>.
+Attempts to troubleshoot should be made before submitting issue tickets to the upstream project.
+
+[#sec-troubleshooting]
+=== Troubleshooting
+
+TBD
+
+
+[#sec-contact]
+=== Contacting or Contributing
+
+The BSL is hosted on a GitHub repository <<bsl-source>> with submodule references to several other repositories.
+There is a https://github.com/NASA-AMMOS/anms/blob/main/CONTRIBUTING.md[`CONTRIBUTING.md`] document in the BSL repository which describes detailed procedures for submitting tickets to identify defects and suggest enhancements.
+
+Separate from the source for the BSL proper, the BSL Product Guide and User Guide are hosted on a GitHub repository <<bsl-docs>>, with its own https://github.com/NASA-AMMOS/anms-docs/blob/main/CONTRIBUTING.md[`CONTRIBUTING.md`] document for submitting tickets about either the Product Guide or User Guide.
+
+While the GitHub repositories are the primary means by which users should submit detailed tickets, other inquiries can be made directly via email to the the support address mailto:dtnma-support@jhuapl.edu[,BSL Support].
+
+
+[index]
+== Index

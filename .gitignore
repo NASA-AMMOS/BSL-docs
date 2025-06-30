@@ -1,3 +1,10 @@
 # editor files
 *~
-*.bak
+.#*
+.project
+.cproject
+
+# generated files
+build
+*/docinfo.xml
+public
