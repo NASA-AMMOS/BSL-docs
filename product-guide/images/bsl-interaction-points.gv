@@ -1,0 +1,15 @@
+digraph bpa_interaction {
+    rankdir=LR;
+    node [shape=record, fontname=Helvetica, fontsize=12];
+
+    process [ label="Bundle Dispatch\nand Forwarding" ];
+    appin [ label="Application\nTransmission" ];
+    appout [ label="Application\nDelivery" ];
+    clin [ label="CLA\nReception" ];
+    clout [ label="CLA\nForwarding" ];
+
+    appin -> process [ label="BSL Call" ];
+    process -> appout [ label="BSL Call" ];
+    clin -> process [ label="BSL Call" ];
+    process -> clout [ label="BSL Call" ];
+}

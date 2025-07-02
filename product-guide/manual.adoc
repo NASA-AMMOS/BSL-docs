@@ -74,6 +74,8 @@ The identifier of a BP Endpoint; names the source and destination for a BP bundl
 Host::
 A single node on the network and a single instance of an operating system.
 One host can have many interfaces and many IP addresses, but only one canonical host name.
+Concise Binary Object Representation (CBOR)::
+TBD
 JavaScript Object Notation (JSON)::
 TBD
 
@@ -81,7 +83,7 @@ TBD
 === References
 
 .Applicable JPL Rules Documents
-[%header,width=100%,cols="<.<3,>.<1"]
+[%header,cols="<.<3,>.<1"]
 |===
 |Title
 |Document Number
@@ -93,7 +95,7 @@ TBD
 
 
 .Applicable MGSS Documents
-[%header,width=100%,cols="<.<3,>.<1"]
+[%header,cols="<.<3,>.<1"]
 |===
 |Title
 |Document Number
@@ -105,10 +107,10 @@ TBD
 |DOC-005089
 
 |BSL Software Requirements Document[[bsl-srd,BSL SRD]]
-|DOC-TBD
+|https://github.com/NASA-AMMOS/BSL-docs/blob/main/BSL%20Software%20Requirements%20Document.pdf[DOC-005735]
 
 |BSL Software Interface Specification[[bsl-sis,BSL SIS]]
-|DOC-TBD
+|https://github.com/NASA-AMMOS/BSL/blob/main/INTERFACE_SPEC.md[DOC-TBD]
 
 |BSL User Guide[[bsl-user-guide,BSL User Guide]]
 |DOC-TBD
@@ -116,7 +118,7 @@ TBD
 |===
 
 .Applicable Other Documents
-[%header,width=100%,cols="<.<3,>.<1"]
+[%header,cols="<.<3,>.<1"]
 |===
 |Title
 |Reference
@@ -127,8 +129,32 @@ TBD
 |BSL Source[[bsl-source]]
 |https://github.com/NASA-AMMOS/BSL[bsl-source]
 
-|BSL Document Source[[bsl-docs]]
+|BSL Documentation Source[[bsl-docs]]
 |https://github.com/NASA-AMMOS/BSL-docs[bsl-docs]
+
+|BSL API Documentation -- Main Branch[[bsl-main-api]]
+|https://nasa-ammos.github.io/BSL/html/[bsl-main-api]
+
+|Programming Languages -- C[[C99]]
+|ISO/IEC 9899:1999
+
+|IEEE Standard for Information Technology - Portable Operating System Interface (POSIX(R))[[POSIX]]
+|https://pubs.opengroup.org/onlinepubs/9699919799.2008edition/[IEEE Std 1003.1-2008]
+
+|Security Requirements for Cryptographic Modules[[fips-140,FIPS 140-3]]
+|https://csrc.nist.gov/pubs/fips/140-3/final[FIPS 140-3]
+
+|OpenSSL Library[[OpenSSL]]
+|https://openssl-library.org/
+
+|Bundle Protocol Version 7[[RFC9171]]
+|https://www.rfc-editor.org/info/rfc9171
+
+|Bundle Protocol Security (BPSec)[[RFC9172]]
+|https://www.rfc-editor.org/info/rfc9172
+
+|Default Security Contexts for Bundle Protocol Security (BPSec)[[RFC9173]]
+|https://www.rfc-editor.org/info/rfc9173
 
 |===
 
@@ -136,8 +162,59 @@ TBD
 [#sec-arch]
 == BSL Architecture
 
-TBD
+The BSL is purposefully designed to be a software library independent of any specific Bundle Protocol Agent (BPA) implementation and runtime environment.
+It is intended to be linked to and used by a BPA during runtime to process BPSec security blocks according to local security policy.
 
+The location of the BSL as a subsystem within a BP Node, operated by a BPA is shown in <<fig-bsl-system-context>>.
+The interactions between the BSL and BPA are twofold: calls into the BSL to provide its security services, and calls from BSL into the BPA to provide agent, bundle, and block data and metadata.
+
+Additionally, BSL security services are needed at four distinct points during bundle processing procedures within the BPA.
+These are depicted in <<fig-bsl-interaction-points>> and correspond to the following 
+
+* After bundle creation from an application source, augmenting the Transmission procedure of <<RFC9171>>.
+* Before bundle delivery to an application destination, augmenting the Delivery procedure of <<RFC9171>>.
+* After bundle reception via a CLA, augmenting the Reception procedure of <<RFC9171>>.
+* Before bundle forwarding via a CLA, augmenting the Forwarding procedure of <<RFC9171>>.
+
+
+[#fig-bsl-system-context]
+.BSL System Context
+image::images/bsl-system-context.png[]
+
+[#fig-bsl-interaction-points]
+.Interaction Points from the BPA into BSL
+graphviz::images/bsl-interaction-points.gv[format=svg]
+
+
+[#sec-arch-components]
+=== BSL Components
+
+The BSL source is separated into several different components, each of which is explained in detail in the inline API Documentation <<bsl-main-api>>.
+A summary of the components is below.
+
+BSL Frontend::
+A C99 library used by a BPA integration and used by each Policy Provider and Security Context to access BSL and BPA behavior and data.
+This is the base of the BSL and is intended to be common for all deployments.
+Dynamic Backend::
+An implementation of the frontend suitable for general-purpose, non-constrained deployments which uses heap-allocated, dynamically-sized data structures and runtime registration of policy providers and security contexts.
+This component can be replaced by a deployment-specific alternative if needed.
+Example Policy Provider::
+
+Default Security Contexts::
+Implementations of the two Default Security Contexts (Context ID 1 and 2) from <<RFC9173>> using cryptographic functions provided by the OpenSSL library.
+Mock BPA::
+An executable used to provide a test fixture and example BPA integration.
+This Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point.
+
+=== Build and Runtime Environments
+
+The basic requirements in the <<bsl-srd>> are that the build environment use a C compiler, with its standard headers and libraries <<C99>>, and include POSIX headers and libraries <<POSIX>>.
+
+The example ION-heritage policy provider distributed with the BSL uses the TBD library for JSON parsing.
+
+The example security contexts distributed with the BSL uses the <<OpenSSL>> library for all cryptographic functions.
+
+The Mock BPA distributed with the BSL uses POSIX UDP/IP sockets for BPv7 PDU transport, both as a test CLA and a test application interface.
 
 [#sec-proc]
 == Procedures
