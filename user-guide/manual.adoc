@@ -71,6 +71,8 @@ BP Endpoint::
 The source or destination of a BP bundle, identified by a BP Endpoint ID (EID).
 BP Endpoint ID (EID)::
 The identifier of a BP Endpoint; names the source and destination for a BP bundle.
+Concise Binary Object Representation (CBOR)::
+The data format used to encode Bundle Protocol Bundles.
 Host::
 A single node on the network and a single instance of an operating system.
 One host can have many interfaces and many IP addresses, but only one canonical host name.
@@ -125,12 +127,75 @@ TBD
 
 The following section provides an overview of the BSL API and references to specific sections of the online API documentation.
 
-TBD
+=== Introduction
+
+The BSL as a whole is separated into two primary layers of implementation: an API-centric abstract Frontend library and a host-binding concrete Backend library.
+
+The Frontend library provides the service API for the BSL to be called by its associated BPA as needed and for stable public APIs used by Policy Provider implementations and Security Context implementations. The Backend library implements forward-declared structs and functions from the Frontend using specific concrete data containers, algorithms, etc.
+
+Most interactions with the BSL/frontend API occur within the context of a single bundle. There are four points along bundle traversal where BSL interaction from the BPA is necessary:
+
+1. After bundle creation from an application source, indicated by BSL_POLICYLOCATION_APPIN.
+2. Before bundle delivery to an application destination, indicated by BSL_POLICYLOCATION_APPOUT.
+3. After bundle reception via a CLA, indicated by BSL_POLICYLOCATION_CLIN.
+4. Before bundle forwarding via a CLA, indicated by BSL_POLICYLOCATION_CLOUT.
+
+image::static/user-guide-bpa-interaction-points.jpeg[]
+
+=== Policy Providers (PP)
+PPs should be registered with the library context. PPs must implement the function headers of the frontend `PolicyProvider.h` header file. The BSL includes an rule-based example PP that may be utilized.
+
+PPs must inspect each bundle to product a set of security operations (SecOps), and finalize over a bundle after each SecOp has been executed by the security context.
+
+=== Security Contexts (SC)
+SCs should be registered with the library context. SCs must implement the function headers of the frontend `SecurityContext.h` header file. The BSL includes two Default SC implementations (specified in RFC9173), `BIB-HMAC-SHA2` (Bundle Integrity) and `BCB-AES-GCM` (Bundle Confidentiality) that may be utilized.
+
+SCs operate in the context of a single SecOp over a bundle3. SCs must validate SecOps for consistency, and process SecOps on bundles to produce security outcomes.
 
 == Workflows
 
+=== Simple Workflow Description
+A simple BPA that utilizes the example policy provider, default security contexts, and dynamic backend could operate with the following workflow:
+
+==== Set & Initialize Host Descriptiors
+The BSL backend relies on BPA-implementation-specific information from the BPA, such as EID registering/encoding information. The function-pointer fields of a `BSL_HostDescriptors_t` struct should be set with BPA-defined functions and initialize with  with `BSL_HostDescriptors_Set()`.
+
+==== Initialize the Library Context
+Each runtime instance of the BSL is isolated for thread safety within a host-specific struct referenced by a `BSL_LibCtx_t` pointer. Each instance should be initialized using `BSL_LibCtx_Init()`.
+
+==== Initialize EIDs
+BPAs can register one or more nodes, each of which has a unique endpoint ID (EID). Each EID must be registered with the host with `BSL_HostEID_Init()`.
+
+==== Register Example Policy Provider(s) (PPs) with the Library Context
+Register the example PP with the Library Context.
+
+==== Register Default Security Contexts (SCs) with the Library Context
+Register `BIB-HMAC-SHA2` and `BCB-AES-GCM` Default SCs with the Library Context.
+
+=== Initialize Bundle Context for each ingress Bundle
+For each bundle to be processed through the BPA, create a bundle context to be utilized throughout bundle's interaction with the BSL using the host-specific struct `BSL_BundleCtx_t`.
+
+==== Inspect Bundles with PP(s)
+Utilize the example PP's inspect function to create Action Set(s) that contain Security Operations (SecOps).
+
+==== Validate SecOps with SCs
+For each action (containing SecOps), utilize the validate function of the relevant Default SC to ensure each SecOp is valid.
+
+==== Execute SecOps with SCs
+For each action (containing SecOps), utilize the execute function of the relevant Default SC to perform each SecOp over the bundle. The SC will produce Security Outcomes to be returned to the BPA.
+
+==== Finalize Bundles with PP(s)
 TBD
 
+==== Free Bundle Context after Bundle egress
+TBD
+
+==== Free LibCtx if BSL no longer required
+Each `BSL_LibCtx_t` instance should be de-initialized using `BSL_LibCtx_Deinit()`.
+
+=== Visual Representation of Per-Bundle Workflow
+
+image::static/user-guide-bundle-workflow.png[]
 
 == Product Support
 
