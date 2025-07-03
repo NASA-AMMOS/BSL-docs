@@ -119,8 +119,17 @@ TBD
 |BSL Source[[bsl-source]]
 |https://github.com/NASA-AMMOS/BSL[bsl-source]
 
-|BSL Document Source[[bsl-docs]]
+|BSL Documentation Source[[bsl-docs]]
 |https://github.com/NASA-AMMOS/BSL-docs[bsl-docs]
+
+|Bundle Protocol Version 7[[RFC9171]]
+|https://www.rfc-editor.org/info/rfc9171
+
+|Bundle Protocol Security (BPSec)[[RFC9172]]
+|https://www.rfc-editor.org/info/rfc9172
+
+|Default Security Contexts for Bundle Protocol Security (BPSec)[[RFC9173]]
+|https://www.rfc-editor.org/info/rfc9173
 
 |===
 
@@ -142,12 +151,9 @@ Most interactions with the BSL/frontend API occur within the context of a single
 3. After bundle reception via a CLA (CLIN).
 4. Before bundle forwarding via a CLA (CLOUT).
 
-(TODO embedded graphviz)
-++++
-<p align="center">
-  <img width="450" height="300" src="static/user-guide-bpa-interaction-points.jpeg">
-</p>
-++++
+[#fig-bsl-interaction-points]
+.Interaction Points from the BPA into BSL
+graphviz::static/bsl-interaction-points.gv[format=svg]
 
 === Policy Providers (PP)
 PPs should be registered with the library context. PPs must implement the function headers of the frontend `PolicyProvider.h` header file. The BSL includes a simple rule-based example PP that may be utilized.
@@ -209,11 +215,6 @@ The bundle has now completed the required BSL interactions, and the bundle conte
 ==== Visual Representation of Per-Bundle Workflow
 
 (TODO embedded graphviz)
-++++
-<p align="center">
-  <img width="450" height="450" src="static/user-guide-bundle-workflow.png">
-</p>
-++++
 
 === De-initialization of BSL
 
