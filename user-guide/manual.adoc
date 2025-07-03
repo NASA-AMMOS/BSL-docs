@@ -214,7 +214,9 @@ The bundle has now completed the required BSL interactions, and the bundle conte
 
 ==== Visual Representation of Per-Bundle Workflow
 
-(TODO embedded graphviz)
+(TODO tweak plantuml)
+
+plantuml:static/user-guide-bundle-workflow.puml[]
 
 === De-initialization of BSL
 

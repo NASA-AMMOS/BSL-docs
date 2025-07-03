@@ -1,0 +1,57 @@
+@startuml
+title BSL Bundle Workflow
+
+participant "BPA" as BPA
+participant "BSL" as BSL
+participant "Policy Provider" as Policy
+participant "Security Context" as Security
+participant "Crypto Library" as Crypto
+
+||20||
+
+BPA -> BSL : inspect
+group loop each provider
+    BSL -> Policy : check
+    group as needed
+        Policy -> BPA : get data
+        BPA --> Policy
+    end
+    Policy --> BSL
+end
+BSL --> BPA
+
+||40||
+
+group loop each activity
+    BPA -> BSL : execute
+    BSL -> Security : run secop
+    group as needed
+        Security -> BPA : get data
+        BPA --> Security
+    end
+    group as needed
+        Security -> Crypto : crypto functions
+        Crypto --> Security
+    end
+    group as needed
+        Security -> BPA : alter bundle
+    end
+    Security --> BSL
+end
+BSL --> BPA
+
+||40||
+
+BPA -> BSL : finalize
+group loop used providers
+    BSL -> Policy : finalize
+    group as needed
+        Policy -> BPA : alter bundle
+    end
+    Policy --> BSL
+end
+BSL --> BPA
+
+||20||
+
+@enduml
