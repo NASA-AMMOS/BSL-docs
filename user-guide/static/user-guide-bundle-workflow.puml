@@ -11,47 +11,66 @@ participant "Crypto Library" as Crypto
 
 BPA -> BSL : inspect
 group loop each provider
+    ||5||
     BSL -> Policy : check
     group as needed
+        ||5||
         Policy -> BPA : get data
         BPA --> Policy
+        ||5||
     end
     Policy --> BSL
+    ||5||
 end
 BSL --> BPA
 
-||40||
+||35||
 
 group loop each activity
+    ||5||
     BPA -> BSL : execute
     BSL -> Security : run secop
     group as needed
+        ||5||
         Security -> BPA : get data
         BPA --> Security
+        ||5||
     end
+
     group as needed
+        ||5||
         Security -> Crypto : crypto functions
         Crypto --> Security
+        ||5||
     end
     group as needed
+        ||5||
         Security -> BPA : alter bundle
+        ||5||
     end
+    ||5||
     Security --> BSL
+    ||5||
 end
 BSL --> BPA
 
-||40||
+||35||
 
 BPA -> BSL : finalize
 group loop used providers
+    ||5||
     BSL -> Policy : finalize
     group as needed
+        ||5||
         Policy -> BPA : alter bundle
+        ||5||
     end
+    ||5||
     Policy --> BSL
+    ||5||
 end
 BSL --> BPA
 
-||20||
+||10||
 
 @enduml
