@@ -192,13 +192,13 @@ Initialize the backend crypto interface with `BSL_CryptoInit()`. Then, register 
 
 === Single-Bundle Workflow
 
-Steps 6-11 should be performed per-bundle being processed.
+Steps 6-11 should be performed for each bundle being processed.
 
 ==== Initialize Bundle Context for each Bundle
-For each bundle being processed by BPA at one of the four points of interaction (APPIN, APPOUT, CLIN, CLOUT), initialize a bundle context. The bundle context will keep track of a bundle's state throughout the its interaction with the BSL. The context must utilize the host-specific struct `BSL_BundleCtx_t`.
+For each bundle being processed by BPA at one of the four points of interaction (APPIN, APPOUT, CLIN, CLOUT), initialize a bundle context. The bundle context will keep track of a bundle's state throughout its interaction with the BSL. The context must utilize the host-specific struct `BSL_BundleCtx_t`.
 
 ==== Inspect Bundles with Policy Providers
-Utilize the example Policy Provider's inspection function to create an Action Set that contains Security Operations (Security Operations) to perform on the current bundle context.
+Utilize the example Policy Provider's inspection function to produce an Action Set that contains Security Operations (Security Operations) to perform on the current bundle context.
 
 ==== Validate Security Operations with Security Contexts
 For each Security Operation contained within the Action Set, utilize the validate function from the relevant Default Security Context to ensure validity and feasibility of the operation.
@@ -206,8 +206,8 @@ For each Security Operation contained within the Action Set, utilize the validat
 ==== Execute Security Operations with Security Contexts
 For each Security Operation contained within the Action Set, utilize the execute function from the relevant Default Security Context to perform the operations on the bundle context. The Security Context will produce Security Outcomes which will be returned to the BPA.
 
-==== Finalize Bundles with PP(s)
-Utilize the example PP's finalize function to verify successful security operations, handle unsuccessful operations, and verify bundle consistency.
+==== Finalize Bundles with Policy Providers
+Utilize the example Policy Provider's finalize function to verify successful security operations, handle unsuccessful operations, and verify bundle consistency.
 
 ==== Free Bundle Context
 The bundle has now completed the required BSL interactions, and the bundle context resources can be released. The bundle can now be forwarded within the BPA.
