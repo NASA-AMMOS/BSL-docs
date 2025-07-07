@@ -9,67 +9,79 @@ participant "Crypto Library" as Crypto
 
 ||20||
 
+activate BPA #dcebff
 BPA -> BSL : inspect
-group loop each provider
-    ||5||
+activate BSL #dcebff
+group loop each \n provider
     BSL -> Policy : check
-    group as needed
-        ||5||
-        Policy -> BPA : get data
-        BPA --> Policy
-        ||5||
-    end
-    Policy --> BSL
+
+    activate Policy #dcebff
+    Policy -> BPA : [as needed] \n get data
+
+    activate BPA #dcebff
+    BPA --> Policy
+    deactivate BPA
+
     ||5||
+
+    Policy --> BSL : action set
+    ||5||
+    deactivate Policy
 end
-BSL --> BPA
+BSL --> BPA : action set
+deactivate BSL
 
 ||35||
 
-group loop each activity
-    ||5||
+group loop each action
     BPA -> BSL : execute
-    BSL -> Security : run secop
-    group as needed
-        ||5||
-        Security -> BPA : get data
-        BPA --> Security
-        ||5||
-    end
+    activate BSL #dcebff
 
-    group as needed
-        ||5||
-        Security -> Crypto : crypto functions
-        Crypto --> Security
-        ||5||
-    end
-    group as needed
-        ||5||
-        Security -> BPA : alter bundle
-        ||5||
-    end
-    ||5||
+    BSL -> Security : validate secop
+    activate Security #dcebff
     Security --> BSL
+    ||10||
+    BSL -> Security : run secop
+    
+    Security -> BPA : [as needed] \n get data
+    activate BPA #dcebff
+    BPA --> Security
+    deactivate BPA
+
+    Security -> Crypto : [as needed] \n crypto functions
+    activate Crypto #dcebff
+    Crypto --> Security
+    deactivate Crypto
+
+    Security -> BPA : [as needed] \n alter bundle
+    activate BPA #dcebff
+    deactivate BPA
+
+    Security --> BSL : security outcome
     ||5||
+    deactivate Security
 end
-BSL --> BPA
+BSL --> BPA : security outcome
+deactivate BSL
 
 ||35||
 
 BPA -> BSL : finalize
+activate BSL #dcebff
 group loop used providers
-    ||5||
     BSL -> Policy : finalize
-    group as needed
-        ||5||
-        Policy -> BPA : alter bundle
-        ||5||
-    end
-    ||5||
+    activate Policy #dcebff
+
+    Policy -> BPA : [as needed] \n alter bundle
+    activate BPA #dcebff
+    deactivate BPA
+
     Policy --> BSL
     ||5||
+    deactivate Policy
 end
 BSL --> BPA
+deactivate BSL
 
 ||10||
 
