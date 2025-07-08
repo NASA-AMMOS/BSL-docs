@@ -123,13 +123,13 @@ TBD
 |https://github.com/NASA-AMMOS/BSL-docs[bsl-docs]
 
 |Bundle Protocol Version 7[[RFC9171]]
-|https://www.rfc-editor.org/info/rfc9171
+|https://www.rfc-editor.org/info/rfc9171[IETF RFC 9171]
 
 |Bundle Protocol Security (BPSec)[[RFC9172]]
-|https://www.rfc-editor.org/info/rfc9172
+|https://www.rfc-editor.org/info/rfc9172[IETF RFC 9172]
 
 |Default Security Contexts for Bundle Protocol Security (BPSec)[[RFC9173]]
-|https://www.rfc-editor.org/info/rfc9173
+|https://www.rfc-editor.org/info/rfc9173[IETF RFC 9173]
 
 |===
 
@@ -138,7 +138,7 @@ TBD
 
 The following section provides an overview of the BSL API and references to specific sections of the online API documentation.
 
-=== Introduction
+=== Architecture
 
 The BSL as a whole is separated into two primary layers of implementation: an API-centric abstract Frontend library and a host-binding concrete Backend library.
 
@@ -175,41 +175,42 @@ A simple BPA that utilizes the example policy provider, default security context
 
 Steps 1-5 contain BSL initialization instructions to be performed once (per-thread).
 
-==== Set & Initialize Host Descriptors
+. Set & Initialize Host Descriptors
 The BSL backend relies on host-specific information from the BPA, such as EID registering and encoding information. The function-pointer fields of a `BSL_HostDescriptors_t` struct should be set with host-implemented functions and initialized with with `BSL_HostDescriptors_Set()` in order for successful BSL operation. See the Mock BPA for a simple example of implementing host descriptors.
 
-==== Initialize the Library Context
+. Initialize the Library Context
 Each runtime instance of the BSL is isolated for thread safety within a host-specific struct referenced by a `BSL_LibCtx_t` pointer. Each instance should be initialized using `BSL_LibCtx_Init()`.
 
-==== Initialize EIDs
+. Initialize EIDs
 BPAs can register one or more nodes, each of which has a unique endpoint ID (EID). Each EID must be registered with the host using `BSL_HostEID_Init()`.
 
-==== Register Example Policy Provider with the Library Context
+. Register Example Policy Provider with the Library Context
 Register the example Policy Provider with the Library Context.
 
-==== Initialize Cryptosuite & Register Default Security Contexts with the Library Context
+. Initialize Cryptosuite & Register Default Security Contexts with the Library Context
 Initialize the backend crypto interface with `BSL_CryptoInit()`. Then, register the `BIB-HMAC-SHA2` and `BCB-AES-GCM` Default Security Contexts with the Library Context.
 
 === Single-Bundle Workflow
 
 Steps 6-11 should be performed for each bundle being processed.
 
-==== Initialize Bundle Context for each Bundle
+[start=6]
+. Initialize Bundle Context for each Bundle
 For each bundle being processed by BPA at one of the four points of interaction (APPIN, APPOUT, CLIN, CLOUT), initialize a bundle context. The bundle context will keep track of a bundle's state throughout its interaction with the BSL. The context must utilize the host-specific struct `BSL_BundleCtx_t`.
 
-==== Inspect Bundles with Policy Providers
+. Inspect Bundles with Policy Providers
 Utilize the example Policy Provider's inspection function to produce an Action Set that contains Security Operations (Security Operations) to perform on the current bundle context.
 
-==== Validate Security Operations with Security Contexts
+. Validate Security Operations with Security Contexts
 For each Security Operation contained within the Action Set, utilize the validate function from the relevant Default Security Context to ensure validity and feasibility of the operation.
 
-==== Execute Security Operations with Security Contexts
+. Execute Security Operations with Security Contexts
 For each Security Operation contained within the Action Set, utilize the execute function from the relevant Default Security Context to perform the operations on the bundle context. The Security Context will produce Security Outcomes which will be returned to the BPA.
 
-==== Finalize Bundles with Policy Providers
+. Finalize Bundles with Policy Providers
 Utilize the example Policy Provider's finalize function to verify successful security operations, handle unsuccessful operations, and verify bundle consistency.
 
-==== Free Bundle Context
+. Free Bundle Context
 The bundle has now completed the required BSL interactions, and the bundle context resources can be released. The bundle can now be forwarded within the BPA.
 
 ==== Visual Representation of Per-Bundle Workflow
@@ -218,7 +219,8 @@ plantuml:static/user-guide-bundle-workflow.puml[]
 
 === De-initialization of BSL
 
-==== Free Library Context if BSL no longer needed
+[start=12]
+. Free Library Context if BSL no longer needed
 Each `BSL_LibCtx_t` instance should be de-initialized with `BSL_LibCtx_Deinit()`.
 
 == Product Support
