@@ -123,17 +123,14 @@ TBD
 |Title
 |Reference
 
-|Using SELinux[[rhel9-selinux]]
-|https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/pdf/using_selinux/red_hat_enterprise_linux-9-using_selinux-en-us.pdf[rhel9-selinux]
-
 |BSL Source[[bsl-source]]
-|https://github.com/NASA-AMMOS/BSL[bsl-source]
+|https://github.com/NASA-AMMOS/BSL[GitHub project BSL]
 
 |BSL Documentation Source[[bsl-docs]]
-|https://github.com/NASA-AMMOS/BSL-docs[bsl-docs]
+|https://github.com/NASA-AMMOS/BSL-docs[GitHub project BSL-docs]
 
 |BSL API Documentation -- Main Branch[[bsl-main-api]]
-|https://nasa-ammos.github.io/BSL/html/[bsl-main-api]
+|https://nasa-ammos.github.io/BSL/html/[GitHub Pages for BSL]
 
 |Programming Languages -- C[[C99]]
 |ISO/IEC 9899:1999
@@ -142,19 +139,37 @@ TBD
 |https://pubs.opengroup.org/onlinepubs/9699919799.2008edition/[IEEE Std 1003.1-2008]
 
 |Security Requirements for Cryptographic Modules[[fips-140,FIPS 140-3]]
-|https://csrc.nist.gov/pubs/fips/140-3/final[FIPS 140-3]
+|https://csrc.nist.gov/pubs/fips/140-3/final[NIST FIPS 140-3]
+
+|Using SELinux[[rhel9-selinux]]
+|https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/pdf/using_selinux/red_hat_enterprise_linux-9-using_selinux-en-us.pdf[RHEL9 SELinux Documentation]
+
+|Packaging and distributing software[[rhel9-packaging]]
+|https://docs.redhat.com/en-us/documentation/red_hat_enterprise_linux/9/pdf/packaging_and_distributing_software/Red_Hat_Enterprise_Linux-9-Packaging_and_distributing_software-en-US.pdf[RHEL9 Packaging Documentation]
+
+|Fedora Packaging Guidelines[[fedora-packaging]]
+|https://docs.fedoraproject.org/en-US/packaging-guidelines/[Fedora Packaging Documentation]
 
 |OpenSSL Library[[OpenSSL]]
 |https://openssl-library.org/
 
+|Unity Test Library[[unity-test]]
+|https://github.com/ThrowTheSwitch/Unity[GitHub project Unity]
+
+|NASA Interplanetary Overlay Networking (ION) software[[NASA-ION]]
+|https://github.com/nasa-jpl/ION-DTN/[GitHub project for ION-DTN]
+
+|Wireshark Project[[wireshark]]
+|https://www.wireshark.org/
+
 |Bundle Protocol Version 7[[RFC9171]]
-|https://www.rfc-editor.org/info/rfc9171
+|https://www.rfc-editor.org/info/rfc9171[IETF RFC 9171]
 
 |Bundle Protocol Security (BPSec)[[RFC9172]]
-|https://www.rfc-editor.org/info/rfc9172
+|https://www.rfc-editor.org/info/rfc9172[IETF RFC 9172]
 
 |Default Security Contexts for Bundle Protocol Security (BPSec)[[RFC9173]]
-|https://www.rfc-editor.org/info/rfc9173
+|https://www.rfc-editor.org/info/rfc9173[IETF RFC 9173]
 
 |===
 
@@ -199,12 +214,13 @@ Dynamic Backend::
 An implementation of the frontend suitable for general-purpose, non-constrained deployments which uses heap-allocated, dynamically-sized data structures and runtime registration of policy providers and security contexts.
 This component can be replaced by a deployment-specific alternative if needed.
 Example Policy Provider::
-
+An implementation of a configurable policy provider based on the syntax and semantics of the BPSec configuration from the NASA ION software suite <<NASA-ION>>.
 Default Security Contexts::
-Implementations of the two Default Security Contexts (Context ID 1 and 2) from <<RFC9173>> using cryptographic functions provided by the OpenSSL library.
+Implementations of the two Default Security Contexts (Context ID 1 and 2) from <<RFC9173>> using cryptographic functions provided by the OpenSSL library <<OpenSSL>>.
 Mock BPA::
 An executable used to provide a test fixture and example BPA integration.
 This Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point.
+
 
 === Build and Runtime Environments
 
@@ -215,15 +231,97 @@ The example ION-heritage policy provider distributed with the BSL uses the TBD l
 The example security contexts distributed with the BSL uses the <<OpenSSL>> library for all cryptographic functions.
 
 The Mock BPA distributed with the BSL uses POSIX UDP/IP sockets for BPv7 PDU transport, both as a test CLA and a test application interface.
+This allows traffic into and out of the Mock BPA to be captured by tools such as `pcap` and inspected with tools such as Wireshark and `tshark` <<wireshark>>.
+
+Unit tests for each of the BSL components use the <<unity-test>> library for defining test fixtures and assertion logic.
+
+
+=== Software Packaging
+
+The official releases of the BSL are packaged and distributed as RPM packages intended to be usable within a YUM/DNF repository <<rhel9-packaging>>.
+Packages are version marked based on the latest git tag in the working copy's commit history and revision marked based on the specific latest git commit hash of the working copy along with the distribution tag (see the "Versioning" and "Dist Tag" sections of <<fedora-packaging>>).
+
+For example, a pre-release build of the BSL is marked with RPM version-revision of `0.0.0-0.g71ab437.el9` indicating it does not follow a release version tag (so gets marked with version `0.0.0`), it is zero commits from that (non-)tag, it is from commit hash `71ab437`, and it was built on RHEL-9 (or equivalent).
+
+BSL packages can also built from the source tree, either under RHEL-9 directly or using a (Docker or Podman) container to provide an RHEL-9 environment.
+Details on these procedures are provided in <<sec-proc-build-pkg>>.
+
+The set of packages for each BSL release (or local package build) contains the following:
+
+`bsl`::
+The runtime files needed for the library itself.
+This contains versioned shared objects.
+Major files are installed under `/usr/lib64/`.
+`bsl-devel`::
+Development files needed to build and link against the BSL.
+This contains C headers and shared object version links.
+Major files are installed under `/usr/include/` and `/usr/lib64/`.
+`bsl-apidoc`::
+Doxygen-generated API documentation derived from in-source markup.
+Major files are installed under `/usr/share/doc/bsl/`, which contains an `html` directory.
+`bsl-debuginfo`::
+Runtime debug information associated with the `bsl` package.
+This relies on `bsl-debugsource` for tracing to individual source lines for interactive debugging.
+`bsl-debugsource`::
+Copies of the original source files used along with the `*-debuginfo` packages to support interactive debugging.
+`bsl-test`::
+
+Major files are installed under `/usr/bin/`, containing the `bsl-mock-bpa` executable, `/usr/lib64/` for its libraries, and `/usr/libexec/bsl/` which contains each unit test executable for the BSL.
+`bsl-test-devel`::
+Development files needed to build and link against the Mock BPA of the BSL.
+This contains C headers and shared object version links, including the Unity test library.
+Major files are installed under `/usr/include/` and `/usr/lib64/`.
+`bsl-test-debuginfo`::
+Runtime debug information associated with the `bsl-test` package.
+This relies on `bsl-debugsource` for tracing to individual source lines for interactive debugging.
+
+
+[#sec-arch-filesystem]
+=== File System
+
+The BSL itself does not require any specific input or configuration files for its normal operation.
+It relies on the host BPA to perform any configuration file management, loading, parsing, _etc._.
+
+As a Linux shared library, it does relate to the host file system in the following paths:
+
+`/usr/lib64/`::
+The OS-standard path for all shared library files.
+The BSL installs its core and example libraries here.
+`/usr/include/`::
+The OS-standard path for all library header files.
+The BSL installs its own headers under the `bsl` sub-directory, and its inbuilt (non-OS) dependencies under `QCBOR` and `m-lib` sub-directories.
+`/usr/bin/`::
+The OS-standard path for all non-privileged executable files.
+The BSL installs its Mock BPA as the executable `bsl-mock-bpa` here.
+`/usr/libexec/`::
+The OS-standard path for context-dependent executable files.
+The BSL installs its unit tests under the `bsl` sub-directory.
+
+[#sec-arch-networking]
+=== Networking
+
+The BSL itself does not require any specific OS networking configuration or API interfaces.
+It relies on the host BPA to perform any network configuration or runtime use.
+
+The Mock BPA distributed with the BSL uses UDP/IP sockets, configured by command-line options, to communicate bundles into and out of the BPA process.
+
+
+[#sec-arch-crypto]
+=== Cryptographic Functions
+
+The BSL itself does not require any specific OS or middleware cryptographic functions.
+
+The example implementation of the default security contexts distributed with the BSL uses the <<OpenSSL>> library for performing all cryptographic functions.
+
 
 [#sec-proc]
 == Procedures
 
-This chapter includes specific procedures related to managing an BSL deployment.
+This chapter includes specific procedures related to managing an BSL deployment from source and for development of BSL changes.
 
 
-[#sec-proc-build]
-=== Building
+[#sec-proc-build-pkg]
+=== Building Packages
 
 The BSL source is composed of a top-level repository `BSL` <<bsl-source>> and a number of submodule repositories; all of them are required for building the BSL.
 
@@ -251,9 +349,12 @@ TBD
 === Upgrading
 
 Because the BSL is deployed in an RPM package form, the normal operating system tools and procedures for dealing with software library upgrading apply to the BSL.
-The BSL provides SOVERSION information in its libraries, so RPM management tools such as DNF which are cross-dependence-aware will ensure that the correct needed SOVERISON of the BSL is isntalled.
+The BSL provides SOVERSION information in its libraries, so RPM management tools such as DNF which are cross-dependence-aware will ensure that the correct needed SOVERSION of the BSL is installed.
 
-Individual BSL releases may identify pre-upgrade or post-upgrade steps in their specific Release Description Document (RDD) which would agument this OS-standard procedure.
+Individual BSL releases may identify pre-upgrade or post-upgrade steps in their specific Release Description Document (RDD) which would augment this OS-standard procedure.
+
+[#sec-proc-build-devel]
+=== Development Building
 
 
 === Monitoring

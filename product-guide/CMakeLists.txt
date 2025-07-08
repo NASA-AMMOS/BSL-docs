@@ -30,6 +30,11 @@ set(ADOC_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/manual.adoc")
 
 
 find_program(ASCIIDOC asciidoctor REQUIRED)
+find_program(ASPELL aspell)
+if(NOT ASPELL)
+    message(FATAL_ERROR "Program aspell not found")
+endif()
+
 set(OUT_DOCINFO "docinfo.xml")
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/${OUT_DOCINFO}.in"
@@ -82,6 +87,34 @@ install(
 )
 
 
+# spellcheck on HTML output
+set(DICTIONARY_TXT "${CMAKE_CURRENT_SOURCE_DIR}/dictionary.txt")
+set(SPELLCHECK_XSL "${CMAKE_CURRENT_SOURCE_DIR}/spellcheck.xsl")
+set(MISSPELLING_TXT "misspelling.txt")
+add_custom_command(
+    OUTPUT "dictionary.cwl"
+    DEPENDS "${DICTIONARY_TXT}"
+    COMMAND cat "${DICTIONARY_TXT}" |
+        ${ASPELL} --lang=en create master "./dictionary.cwl"
+)
+add_custom_command(
+    OUTPUT "${MISSPELLING_TXT}"
+    DEPENDS "${OUT_HTML}" "${SPELLCHECK_XSL}" "dictionary.cwl"
+    COMMAND ${XMLSTARLET} tr "${SPELLCHECK_XSL}" "${OUT_HTML}" |
+        ${ASPELL} --mode=html --lang=EN_US --extra-dicts=./dictionary.cwl list |
+        sort | uniq > "${MISSPELLING_TXT}"
+)
+add_custom_target(
+    ${PROJECT_NAME}-misspelling ALL
+    DEPENDS "${MISSPELLING_TXT}"
+    COMMAND cat "${MISSPELLING_TXT}"
+    # success means file is present and empty
+    COMMAND test -f "${MISSPELLING_TXT}" -a ! -s "${MISSPELLING_TXT}"
+    COMMENT "Checking ${MISSPELLING_TXT}"
+)
+
+
+# PDF document output
 find_program(DBLATEX dblatex REQUIRED)
 set(PDF_XSLT "${CMAKE_CURRENT_SOURCE_DIR}/pdf-opts.xsl")
 set(OUT_PDF "manual.pdf")
