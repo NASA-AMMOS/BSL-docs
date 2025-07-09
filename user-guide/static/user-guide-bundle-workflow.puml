@@ -1,0 +1,88 @@
+@startuml
+title BSL Bundle Workflow
+
+participant "BPA" as BPA
+participant "BSL" as BSL
+participant "Policy Provider" as Policy
+participant "Security Context" as Security
+participant "Crypto Library" as Crypto
+
+||20||
+
+activate BPA #dcebff
+BPA -> BSL : inspect
+activate BSL #dcebff
+group loop each \n provider
+    BSL -> Policy : check
+
+    activate Policy #dcebff
+    Policy -> BPA : [as needed] \n get data
+
+    activate BPA #dcebff
+    BPA --> Policy
+    deactivate BPA
+
+    ||5||
+
+    Policy --> BSL : action set
+    ||5||
+    deactivate Policy
+end
+BSL --> BPA : action set
+deactivate BSL
+
+||35||
+
+group loop each action
+    BPA -> BSL : execute
+    activate BSL #dcebff
+
+    BSL -> Security : validate secop
+    activate Security #dcebff
+    Security --> BSL
+    ||10||
+    BSL -> Security : run secop
+    
+    Security -> BPA : [as needed] \n get data
+    activate BPA #dcebff
+    BPA --> Security
+    deactivate BPA
+
+    Security -> Crypto : [as needed] \n crypto functions
+    activate Crypto #dcebff
+    Crypto --> Security
+    deactivate Crypto
+
+    Security -> BPA : [as needed] \n alter bundle
+    activate BPA #dcebff
+    deactivate BPA
+
+    Security --> BSL : security outcome
+    ||5||
+    deactivate Security
+end
+BSL --> BPA : security outcome
+deactivate BSL
+
+||35||
+
+BPA -> BSL : finalize
+activate BSL #dcebff
+group loop used providers
+    BSL -> Policy : finalize
+    activate Policy #dcebff
+
+    Policy -> BPA : [as needed] \n alter bundle
+    activate BPA #dcebff
+    deactivate BPA
+
+    Policy --> BSL
+    ||5||
+    deactivate Policy
+end
+BSL --> BPA
+deactivate BSL
+
+||10||
+
+@enduml
