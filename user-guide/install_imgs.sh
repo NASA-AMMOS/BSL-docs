@@ -21,7 +21,7 @@ do
     SRCFN="${SRCDIR}/${FN}"
     if [ ! -f "${SRCFN}" ]
     then
-	continue
+        continue
     fi
     
     DSTFN="${OUTDIR}/${FN}"
