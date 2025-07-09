@@ -1,9 +1,15 @@
 AMMOS
+APL
+BPA
+BPSec
 bsl
 BSL
 Caltech
+EID
 instantiation
+JHU
 JPL
+JSON
 LLC
 MCS
 MGSS
