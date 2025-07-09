@@ -130,5 +130,5 @@ add_custom_target(
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/${OUT_PDF}"
   DESTINATION ${PROJECT_NAME}
-#  RENAME "ANMS Product Guide v${PROJECT_VERSION}.pdf"
+#  RENAME "BSL Product Guide v${PROJECT_VERSION}.pdf"
 )
