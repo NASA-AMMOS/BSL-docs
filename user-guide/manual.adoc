@@ -161,7 +161,7 @@ Policy Providers should be registered with the library context. Policy Providers
 Policy Providers must inspect each bundle to produce an Action Set, containing Security Operations. Policy Providers also must finalize over a bundle after each Security Operation has been executed by the security context.
 
 === Security Contexts
-Security Contexts should be registered with the library context. Security Contexts must implement the function headers of the frontend `SecurityContext.h` header file. The BSL includes two Default Security Context implementations (specified in RFC9173), `BIB-HMAC-SHA2` (Bundle Integrity) and `BCB-AES-GCM` (Bundle Confidentiality) that may be utilized. The BSL's backend cryptographic interface utilizes OpenSSL to perform HMAC-signing, encryption, and decryption operations.
+Security Contexts should be registered with the library context. Security Contexts must implement the function headers of the frontend `SecurityContext.h` header file. The BSL includes two Default Security Context implementations (specified in RFC9173), `BIB-HMAC-SHA2` (Bundle Integrity) and `BCB-AES-GCM` (Bundle Confidentiality) that may be utilized. The BSL backend cryptographic interface utilizes OpenSSL to perform HMAC-signing, encryption, and decryption operations.
 
 Security Contexts operate in the context of a single Security Operation over a bundle. Security Contexts must validate Security Operations for consistency, and process Security Operations on bundles to produce security outcomes.
 
@@ -187,8 +187,8 @@ BPAs can register one or more nodes, each of which has a unique endpoint ID (EID
 . Register Example Policy Provider with the Library Context
 Register the example Policy Provider with the Library Context.
 
-. Initialize Cryptosuite & Register Default Security Contexts with the Library Context
-Initialize the backend crypto interface with `BSL_CryptoInit()`. Then, register the `BIB-HMAC-SHA2` and `BCB-AES-GCM` Default Security Contexts with the Library Context.
+. Initialize Cryptographic State & Register Default Security Contexts with the Library Context
+Initialize the backend cryptographic interface with `BSL_CryptoInit()`. Then, register the `BIB-HMAC-SHA2` and `BCB-AES-GCM` Default Security Contexts with the Library Context.
 
 === Single-Bundle Workflow
 
