@@ -44,7 +44,7 @@ jobs:
       - name: Set up OS
         run: |
           sudo apt-get update && sudo apt-get install -y cmake make coreutils ruby asciidoctor graphviz inkscape dblatex docbook-xsl-ns xsltproc xmlstarlet
-          sudo gem install asciidoctor-diagram
+          sudo gem install asciidoctor-diagram asciidoctor-diagram-plantuml
       - name: Build
         env:
           DESTDIR: public
