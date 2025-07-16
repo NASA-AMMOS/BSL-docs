@@ -218,7 +218,7 @@ plantuml::static/user-guide-bundle-workflow.puml[]
 
 === De-initialization of BSL
 
-. *Free Library Context if BSL no longer needed*:
+*Free Library Context if BSL no longer needed*: +
 Each `BSL_LibCtx_t` instance should be de-initialized with `BSL_LibCtx_Deinit()`.
 
 == Product Support
