@@ -5,6 +5,7 @@ ASB
 ASBs
 asciidoctor
 Backend
+BCB
 bibtex
 BPA
 BPSec
@@ -38,6 +39,7 @@ LLC
 MCS
 MGSS
 middleware
+MIMTaR
 NIST
 OpenSSL
 PDU
@@ -60,5 +62,6 @@ superset
 TBD
 texlive
 UDP
+UDPCL
 un
 Wireshark
