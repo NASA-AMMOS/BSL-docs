@@ -71,13 +71,26 @@ BP Endpoint::
 The source or destination of a BP bundle, identified by a BP Endpoint ID (EID).
 BP Endpoint ID (EID)::
 The identifier of a BP Endpoint; names the source and destination for a BP bundle.
-Host::
-A single node on the network and a single instance of an operating system.
-One host can have many interfaces and many IP addresses, but only one canonical host name.
+Bundle (per BPv7)::
+The protocol data unit of Bundle Protocol, which uses a CBOR-encoding of its data.
+Block (per BPv7)::
+Each sub-element of a bundle.
+All bundles contain a mandatory primary block, any number of extension blocks, and a mandatory payload block.
+Each extension block has an explicit block type identifier.
+Block-Type-Specific Data (BTSD)::
+The arbitrary-length binary data containing the contents of a block which is block-type-specific.
+Block Integrity Block (BIB)::
+A well-known block type used for integrity operations in BPSec.
+Block Confidentiality Block (BCB)::
+A well-known block type used for integrity operations in BPSec.
+Abstract Security Block (ASB)::
+A the block-type-specific data for one of the security block types: BIB or BCB, which contains an encoded CBOR sequence.
 Concise Binary Object Representation (CBOR)::
-TBD
+A binary encoding defined in <<RFC8949>> which follows a superset of the JSON data model (see below) and enables both small encoded size as well as efficient encoding and decoding.
+The BSL itself uses CBOR to encode the contents of BPSec ASBs.
 JavaScript Object Notation (JSON)::
-TBD
+A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
+The BSL does not use JSON directly, but the example Policy Provider uses JSON for policy configuration and key material configuration.
 
 
 === References
@@ -88,7 +101,7 @@ TBD
 |Title
 |Document Number
 
-|Software Development[[jpl-sd,SD]]
+|Software Development[[jpl-sd,JPL SD]]
 |57653 rev 10
 
 |===
@@ -100,17 +113,17 @@ TBD
 |Title
 |Document Number
 
-|MGSS Implementation and Maintenance Task Requirements[[mimtar,MIMTaR]]
+|MGSS Implementation and Maintenance Task Requirements (MIMTaR)[[mimtar,MIMTaR]]
 |DOC-001455 rev G
 
-|BSL Architecture Description Document[[bsl-add,BSL ADD]]
+|BSL Architecture Description Document (ADD)[[bsl-add,BSL ADD]]
 |DOC-005089
 
-|BSL Software Requirements Document[[bsl-srd,BSL SRD]]
+|BSL Software Requirements Document (SRD)[[bsl-srd,BSL SRD]]
 |https://github.com/NASA-AMMOS/BSL-docs/blob/main/BSL%20Software%20Requirements%20Document.pdf[DOC-005735]
 
-|BSL Software Interface Specification[[bsl-sis,BSL SIS]]
-|https://github.com/NASA-AMMOS/BSL/blob/main/INTERFACE_SPEC.md[DOC-TBD]
+|BSL Software Interface Specification (SIS)[[bsl-sis,BSL SIS]]
+|https://nasa-ammos.github.io/BSL/html/bsl-sis.html[DOC-TBD]
 
 |BSL User Guide[[bsl-user-guide,BSL User Guide]]
 |DOC-TBD
@@ -153,6 +166,9 @@ TBD
 |OpenSSL Library[[OpenSSL]]
 |https://openssl-library.org/
 
+|Jansson Library[[Jansson]]
+|https://github.com/akheron/jansson[GitHub project for Jansson]
+
 |Unity Test Library[[unity-test]]
 |https://github.com/ThrowTheSwitch/Unity[GitHub project Unity]
 
@@ -161,6 +177,12 @@ TBD
 
 |Wireshark Project[[wireshark]]
 |https://www.wireshark.org/
+
+|The JavaScript Object Notation (JSON) Data Interchange Format[[RFC8259]]
+|https://www.rfc-editor.org/info/rfc8259[IETF RFC 8259]
+
+|Concise Binary Object Representation (CBOR)[[RFC8949]]
+|https://www.rfc-editor.org/info/rfc8949[IETF RFC 8949]
 
 |Bundle Protocol Version 7[[RFC9171]]
 |https://www.rfc-editor.org/info/rfc9171[IETF RFC 9171]
@@ -226,7 +248,7 @@ This Mock BPA does not provide any of the normal processing required of a real B
 
 The basic requirements in the <<bsl-srd>> are that the build environment use a C compiler, with its standard headers and libraries <<C99>>, and include POSIX headers and libraries <<POSIX>>.
 
-The example ION-heritage policy provider distributed with the BSL uses the TBD library for JSON parsing.
+The example ION-heritage policy provider distributed with the BSL uses the <<Jansson>> library for JSON parsing.
 
 The example security contexts distributed with the BSL uses the <<OpenSSL>> library for all cryptographic functions.
 
@@ -303,7 +325,7 @@ The BSL installs its unit tests under the `bsl` sub-directory.
 The BSL itself does not require any specific OS networking configuration or API interfaces.
 It relies on the host BPA to perform any network configuration or runtime use.
 
-The Mock BPA distributed with the BSL uses UDP/IP sockets, configured by command-line options, to communicate bundles into and out of the BPA process.
+The Mock BPA distributed with the BSL uses UDP/IP sockets, configured by command-line options, to communicate bundles into and out of the Mock BPA process (see <<sec-proc-monitoring>>).
 
 
 [#sec-arch-crypto]
@@ -325,6 +347,9 @@ This chapter includes specific procedures related to managing an BSL deployment 
 
 The BSL source is composed of a top-level repository `BSL` <<bsl-source>> and a number of submodule repositories; all of them are required for building the BSL.
 
+The following procedure is targeted for the RHEL-9 environment.
+Other conditions and procedures are discussed in more detail in the source repository `README.md` document.
+
 . The top-level checkout can be done with:
 +
 ----
@@ -336,14 +361,58 @@ git clone --recursive --branch <TAGNAME> https://github.com/NASA-AMMOS/BSL.git
 git checkout <TAGNAME>
 git submodule update --init --recursive
 ----
-. More TBD
-
+. If necessary, dependency OS packages can be installed with:
++
+----
+sudo dnf install -y epel-release
+sudo crb enable
+sudo dnf install -y \
+rsync cmake git ninja-build gcc ruby \
+    openssl-devel jansson-devel \
+    doxygen graphviz plantuml texlive-bibtex \
+    asciidoctor \
+    rpm-build rpmlint
+----
++
+  The packages `doxygen graphviz plantuml texlive-bibtex asciidoctor` are optional, and used only for the `bsl-docs` subpackage.
+. The BSL CMake project is configured with:
++
+----
+./build.sh rpm-prep
+----
+. The BSL packages are then built with:
++
+----
+./build.sh rpm-build
+----
+. The resulting packages can be seen by the listing:
++
+----
+find build/default/pkg/rpmbuild -name '*.rpm'
+----
+. Optionally: A check and test install of the packages can be performed using:
++
+----
+./build.sh rpm-check
+----
 
 [#sec-proc-install]
 === Installation
 
-TBD
+Once packages are built locally, they can all be installed by running:
+----
+pushd build/default/pkg/rpmbuild/RPMS/x86_64
+dnf install -y bsl-*.rpm
+popd
+----
+Or by some more discriminate choice of packages, such as only the two necessary to integrate the BSL library: `bsl bsl-devel`
 
+Or if pre-built packages are available on an enabled YUM/DNF repository, they can be installed (more simply by name) using:
+----
+dnf install -y bsl bsl-devel
+----
+
+Once installed, the BSL library can be linked with and built against as any other OS-installed C library.
 
 [#sec-proc-upgrade]
 === Upgrading
@@ -353,15 +422,21 @@ The BSL provides SOVERSION information in its libraries, so RPM management tools
 
 Individual BSL releases may identify pre-upgrade or post-upgrade steps in their specific Release Description Document (RDD) which would augment this OS-standard procedure.
 
+
 [#sec-proc-build-devel]
 === Development Building
 
+When modifying the BSL itself (or one of its example Policy Provider or Security Context implementations or the Mock BPA) a more varied set of procedures is necessary, because RPM packages are not used as intermediate forms because of the time and resources it takes to build them and the separation they then have from the original BSL sources.
 
+
+[#sec-proc-monitoring]
 === Monitoring
 
-The BSL itself, as a software library, does not directly make use of any logging mechanism.
+The BSL itself, as a software library, does not directly make use of any OS-level logging or monitoring facilities.
 
-TBD
+As discussed more in the BPA integration portion of the <<bsl-user-guide>>, one form of monitoring output from the BSL is its log events and another form is polling for BSL telemetry counters.
+
+Because the Mock BPA uses "normal" BPv7/UDPCL it can be monitored using off-the-shelf Wireshark since version 4.0 <<wireshark>> with the protocols "BPv7" and "UDPCL" enabled, and the appropriate UDP ports used by the Mock BPA set to "Decode As..." the UDPCL.
 
 
 [#sec-proc-mon-selinux]
@@ -389,7 +464,9 @@ sudo semanage dontaudit off
 
 The BSL packaging procedure includes built unit tests within the `bsl-test` RPM package which allows executing unit tests on the BSL library after build time on any other host.
 
-TBD
+The `bsl-mock-bpa` executable distributed as part of that package also enables verification of the installed BSL libraries using an example policy provider and example security contexts and real BPv7 PDUs exchanged via UDP sockets (equivalent to the un-framed transfer of the UDPCL).
+
+All other checkout of the BSL requires a specific BPA integration in order to exercise its _service interface_ from a running BPA instance.
 
 
 [#sec-support]
@@ -405,7 +482,7 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 
 This section covers issues that can occur during installation (see <<sec-proc-install>>) of the BSL.
 
-TBD
+Because the RPM packages are installed to the OS, their use requires privileged user account or the use of `sudo`.
 
 ==== Operations
 
@@ -413,13 +490,14 @@ This section covers issues that can occur after successful installation (see <<s
 
 ==== SELinux Blocked Behavior
 
-TBD
+If there is any behavior of the BSL not working correctly and there is suspicion that it is being blocked because of local SELinux policy, the procedures of <<sec-proc-mon-selinux>> should be used to troubleshoot.
 
 ==== FIPS-140 Blocked Behavior
 
-TBD
+The example security contexts maintained as part of the BSL make use of a FIPS-approved version of OpenSSL with algorithms and security parameters also compliant with FIPS-140.
+So these default security contexts should not run afoul of any blocks caused by enabling "FIPS mode" on the host OS.
 
-===== TBD
+Any additional security contexts registered with a specific BSL instance may not be FIPS-140 compliant and should be carefully considered before use in an expected FIPS-enabled environment.
 
 
 [#sec-contact]

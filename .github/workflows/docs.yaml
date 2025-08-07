@@ -43,7 +43,10 @@ jobs:
           submodules: recursive
       - name: Set up OS
         run: |
-          sudo apt-get update && sudo apt-get install -y cmake make coreutils ruby asciidoctor graphviz inkscape dblatex docbook-xsl-ns xsltproc xmlstarlet
+          sudo rm /var/lib/man-db/auto-update
+          sudo apt-get update
+          sudo apt-get install -y \
+              cmake make coreutils ruby asciidoctor graphviz inkscape dblatex docbook-xsl-ns xsltproc xmlstarlet aspell
           sudo gem install asciidoctor-diagram asciidoctor-diagram-plantuml
       - name: Build
         env:
