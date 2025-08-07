@@ -378,7 +378,7 @@ rsync cmake git ninja-build gcc ruby \
 . The BSL CMake project is configured with:
 +
 ----
-./build.sh prep -DBUILD_PACKAGE=ON
+./build.sh rpm-prep
 ----
 . The BSL packages are then built with:
 +
@@ -389,6 +389,11 @@ rsync cmake git ninja-build gcc ruby \
 +
 ----
 find build/default/pkg/rpmbuild -name '*.rpm'
+----
+. Optionally: A check and test install of the packages can be performed using:
++
+----
+./build.sh rpm-check
 ----
 
 [#sec-proc-install]
