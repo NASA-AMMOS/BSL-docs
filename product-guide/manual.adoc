@@ -142,7 +142,7 @@ The BSL does not use JSON directly, but the example Policy Provider uses JSON fo
 |BSL Documentation Source[[bsl-docs]]
 |https://github.com/NASA-AMMOS/BSL-docs[GitHub project BSL-docs]
 
-|BSL API Documentation -- Main Branch[[bsl-main-api]]
+|BSL API Documentation -- Main Branch[[bsl-main-api,BSL API Docs]]
 |https://nasa-ammos.github.io/BSL/html/[GitHub Pages for BSL]
 
 |Programming Languages -- C[[C99]]

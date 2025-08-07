@@ -1,4 +1,3 @@
-
 AMMOS
 APIs
 APL
@@ -27,8 +26,10 @@ EIDs
 frontend
 Frontend
 HMAC
+IEC
 IETF
 instantiation
+Jansson
 JHU
 JPL
 JSON
@@ -37,6 +38,7 @@ MCS
 MGSS
 OpenSSL
 PDU
+POSIX
 struct
 structs
 submodule
