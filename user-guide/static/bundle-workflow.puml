@@ -1,0 +1,95 @@
+@startuml
+participant "BPA" as BPA
+participant "BSL" as BSL
+participant "Policy Provider" as Policy
+participant "Security Context" as SC
+participant "Crypto Library" as Crypto
+
+activate BPA #dcebff
+BPA -> BSL : inspect
+activate BSL #dcebff
+group loop each\nprovider
+    BSL -> Policy : check
+
+    activate Policy #dcebff
+    Policy -> BPA : [as needed]\nget data
+
+    activate BPA #dcebff
+    BPA --> Policy
+    deactivate BPA
+
+    ||5||
+
+    Policy --> BSL : action set
+    ||5||
+    deactivate Policy
+end
+BSL --> BPA : action set
+deactivate BSL
+
+||20||
+
+group loop each action
+    BPA -> BSL : execute
+    activate BSL #dcebff
+
+    group loop each secop
+    
+        BSL -> SC : validate secop
+        activate SC #dcebff
+        ||10||
+        SC --> BSL
+        deactivate SC
+
+        BSL -> SC : run secop
+        activate SC #dcebff
+
+        SC -> BPA : [as needed]\nget data
+        activate BPA #dcebff
+        BPA --> SC
+        deactivate BPA
+    
+        SC -> Crypto : [as needed]\ncrypto functions
+        activate Crypto #dcebff
+        ||10||
+        Crypto --> SC
+        deactivate Crypto
+    
+        SC -> BPA : [as needed]\nalter bundle
+        activate BPA #dcebff
+        deactivate BPA
+    
+        SC --> BSL : security outcome
+        ||5||
+        deactivate SC
+    end
+end
+BSL --> BPA : action outcomes
+deactivate BSL
+
+||20||
+
+group loop each action
+    BPA -> BSL : finalize
+    activate BSL #dcebff
+
+    BSL -> BSL : lookup PP
+
+    BSL -> Policy : finalize
+    activate Policy #dcebff
+
+    Policy -> BPA : [as needed]\nalter bundle
+    activate BPA #dcebff
+    deactivate BPA
+
+    Policy --> BSL
+    deactivate Policy
+
+    BSL --> BPA
+    deactivate BSL
+    ||5||
+end
+
+||10||
+
+@enduml

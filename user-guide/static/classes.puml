@@ -1,0 +1,33 @@
+@startuml(id=bsl)
+class "BSL Context" as BSL {
+  + process(ctx: Bundle Context)
+}
+@enduml
+
+@startuml(id=pp)
+abstract class "Policy Provider" as PP {
+  + inspect(ctx: Bundle Context {const}) : Security Action [0..*]
+  + finalize(ctx: Bundle Context, act: Security Action)
+}
+@enduml
+
+@startuml(id=sc)
+abstract class "Security Context" as SC {
+  + validate(ctx: Bundle Context {const}, op: Security Operation {const}) : bool
+  + execute(ctx: Bundle Context, op: Security Operation)
+}
+@enduml
+
+@startuml(id=secop)
+class "Security Operation" as SecOp {
+  + role : BPSec Role
+  + target : uint64
+  + context ID : int16
+  + options : Option[0..*]
+  + conclusion : bool [0..1]
+}
+
+class "Security Action" as Action {
+  + source : Policy Provider reference
+}
+@enduml

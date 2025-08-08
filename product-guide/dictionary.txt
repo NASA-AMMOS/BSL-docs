@@ -1,9 +1,11 @@
+Acceptor
 AMMOS
 api
 APL
 ASB
 ASBs
 asciidoctor
+backend
 Backend
 BCB
 bibtex
@@ -17,6 +19,7 @@ Caltech
 CBOR
 CLA
 CMake
+Crypto
 cryptographic
 Cryptographic
 DNF
@@ -28,6 +31,7 @@ FIPS
 frontend
 Frontend
 graphviz
+IANA
 IEC
 IETF
 instantiation
@@ -35,6 +39,7 @@ Jansson
 JHU
 JPL
 JSON
+JWK
 LLC
 MCS
 MGSS
@@ -48,6 +53,7 @@ plantuml
 Podman
 POSIX
 pre
+QCBOR
 RDD
 RedHat
 rhel
@@ -56,6 +62,7 @@ selinux
 SELinux
 SOVERSION
 SRD
+struct
 submodule
 subpackage
 superset
@@ -64,4 +71,5 @@ texlive
 UDP
 UDPCL
 un
+Verifier
 Wireshark

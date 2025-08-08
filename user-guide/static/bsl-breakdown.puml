@@ -1,0 +1,13 @@
+@startuml
+hide circle
+hide members
+skinparam ClassAttributeIconSize 0
+
+!include classes.puml!bsl
+!include classes.puml!pp
+!include classes.puml!sc
+
+BSL *--> "0..*" PP : PP registry
+BSL *--> "0..*" SC : SC registry
+
+@enduml

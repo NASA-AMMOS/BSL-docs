@@ -14,7 +14,7 @@ book      toc,title,figure,table,example,equation
   </xsl:param>
 
   <xsl:param name="xref.with.number.and.title">0</xsl:param>
-  <!-- <xsl:param name="html.stylesheet">manual.css</xsl:param>  -->
+  <xsl:param name="html.stylesheet">manual.css</xsl:param>
 
   <xsl:param name="qanda.defaultlabel">none</xsl:param>
   <xsl:param name="bibliography.numbered">1</xsl:param>

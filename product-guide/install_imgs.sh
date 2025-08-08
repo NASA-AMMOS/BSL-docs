@@ -8,9 +8,9 @@ then
     FILENAMES=""
     for HTMLFILE in ${OUTDIR}/*.html
     do
-	echo "Scanning ${HTMLFILE}"
-	THESENAMES=$(xmlstarlet sel -N xhtml=http://www.w3.org/1999/xhtml -t -v '//xhtml:img/@src' -n "${HTMLFILE}")
-	FILENAMES="${FILENAMES} ${THESENAMES}"
+        echo "Scanning ${HTMLFILE}"
+        THESENAMES=$(xmlstarlet sel -N xhtml=http://www.w3.org/1999/xhtml -t -v '//xhtml:img/@src' -n "${HTMLFILE}")
+        FILENAMES="${FILENAMES} ${THESENAMES}"
     done
 else
     FILENAMES=$(xmlstarlet sel -N db=http://docbook.org/ns/docbook -t -v '//db:imagedata/@fileref' -n "${DBOOKFILE}")

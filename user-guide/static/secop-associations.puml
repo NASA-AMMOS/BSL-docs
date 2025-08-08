@@ -1,0 +1,17 @@
+@startuml
+hide circle
+skinparam ClassAttributeIconSize 0
+
+!include classes.puml!pp
+!include classes.puml!sc
+!include classes.puml!secop
+
+Action *--> "1..*" SecOp : {sequence}
+Action ..> PP : source
+
+PP --> Action : creates
+SC --> SecOp : uses
+
+SecOp ..> SC : references
+
+@enduml

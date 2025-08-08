@@ -1,0 +1,23 @@
+@startuml
+hide circle
+skinparam ClassAttributeIconSize 0
+
+class "BP Agent" as BPA {
+  + bundles : Bundle [0..*]
+}
+
+class "BSL Context" as BSL {
+  + process(ctx: Bundle Context)
+}
+
+class "Bundle Context" as Bundle {
+  + location : Processing Location
+  - handle : Bundle reference
+  + getters()
+}
+
+BPA *--> "0..*" Bundle : own
+BPA *--> "0..*" BSL : own
+BSL --> Bundle : interact
+
+@enduml
