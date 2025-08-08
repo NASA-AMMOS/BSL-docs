@@ -27,13 +27,7 @@ project(${DIRNAME} VERSION 0 LANGUAGES )
 
 # File paths
 set(ADOC_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/manual.adoc")
-set(ADOC_EXTRAS 
-    "static/bsl-interaction-points.gv"
-    "static/bpa-associations.puml"
-    "static/bsl-breakdown.puml"
-    "static/bundle-workflow.puml"
-    "static/secop-associations.puml"
-)
+file(GLOB ADOC_EXTRAS "static/*.gv" "static/*.puml")
 
 
 find_program(ASCIIDOC asciidoctor REQUIRED)

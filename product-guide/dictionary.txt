@@ -4,6 +4,7 @@ APL
 ASB
 ASBs
 asciidoctor
+backend
 Backend
 BCB
 bibtex
@@ -28,6 +29,7 @@ FIPS
 frontend
 Frontend
 graphviz
+IANA
 IEC
 IETF
 instantiation
@@ -56,6 +58,7 @@ selinux
 SELinux
 SOVERSION
 SRD
+struct
 submodule
 subpackage
 superset
@@ -64,4 +67,5 @@ texlive
 UDP
 UDPCL
 un
+Verifier
 Wireshark

@@ -53,9 +53,8 @@ This Product Guide provides architectural and maintenance details about the Bund
 
 === Scope
 
-This document describes and explains the API and workflows of the BSL.
-For technical details about the BSL architecture, installation, upgrade, monitoring, and maintenance see the <<bsl-product-guide>>.
-Details about specific API structures and cross-relationships is provided in the online <<bsl-main-api>>.
+This document describes technical details about the BSL installation, upgrade, monitoring, and maintenance.
+For details about the logical structure, workflows, and application programming interface (API) of the BSL see the <<bsl-user-guide>>.
 
 === Terminology
 
@@ -549,7 +548,3 @@ There is a https://github.com/NASA-AMMOS/anms/blob/main/CONTRIBUTING.md[`CONTRIB
 Separate from the source for the BSL proper, the BSL Product Guide and User Guide are hosted on a GitHub repository <<bsl-docs>>, with its own https://github.com/NASA-AMMOS/anms-docs/blob/main/CONTRIBUTING.md[`CONTRIBUTING.md`] document for submitting tickets about either the Product Guide or User Guide.
 
 While the GitHub repositories are the primary means by which users should submit detailed tickets, other inquiries can be made directly via email to the the support address mailto:dtnma-support@jhuapl.edu[,BSL Support].
-
-
-[index]
-== Index

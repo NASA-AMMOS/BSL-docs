@@ -61,6 +61,12 @@ Details about specific API structures and cross-relationships is provided in the
 
 The following are Generic terms:
 
+Application Programming Interface (API)::
+The programming language-level interface defined by a library.
+For the C-language this is defined by header files in a specific directory structure.
+Application Binary Interface (ABI)::
+A combination of instruction set architecture (ISA) and operating-system-specific binary forms for libraries and executables.
+A built library has a specific ABI that can be different on different platforms even if its API does not change.
 Concise Binary Object Representation (CBOR)::
 A binary encoding defined in <<RFC8949>> which follows a superset of the JSON data model (see below) and enables both small encoded size as well as efficient encoding and decoding.
 The BSL itself uses CBOR to encode the contents of BPSec ASBs.
@@ -249,6 +255,13 @@ The information model for how the BSL operates is built upon the BPSec terminolo
 
 === Logical Breakdown
 
+All of the discussion in this subsection is at the level of logical entities and information models.
+It does not map one-for-one with the actual APIs of the BSL, but is useful for explaining terminology and framing explanations at a higher level than the C-language details discussed in the <<bsl-main-api>>.
+
+NOTE: This document uses UML diagrams to depict the logical structure and associations within the BSL.
+Because the implementation is based int eh C language, there is no such concept as an abstract class, inheritance, or virtual function override.
+The BSL uses the concept of a "descriptor" struct to implement this behavior, which is simply a C struct containing a set of callback function pointers and some user data pointer used as a "self" context to each of the callbacks.
+
 The BSL proper is embodied as a "BSL Context" state, for which a single process can have any number of instances.
 One BPA option is to have a single BSL Context for all of its security processing, which will save on memory use but will act as a bottleneck if the BPA performs its own bundle processing concurrently at each of the interaction points.
 Another BPA option is to use a separate BSL Context for each interaction point and operate them independently and possibly concurrently.
@@ -265,7 +278,7 @@ The Policy Providers are used to control _what_ the BSL needs to do for a specif
 The Security Contexts are used to validate and actually execute each security operation, as discussed in more detail in <<sec-api-sc>>.
 
 [#fig-bsl-breakdown]
-.Security Operation Associations 
+.BSL Structure Breakdown 
 plantuml::static/bsl-breakdown.puml[]
 
 In addition to the externally-visible information about security operations and their _target_, _parameters_, and _results_ the BSL adds the notion of a security Action which is an ordered sequence of specific operations.
@@ -296,14 +309,19 @@ The BSL includes a simple rule-based example PP that may be utilized.
 Security Contexts need to be registered with a library context via the dynamic backend before they can be used.
 Security Contexts must implement the function headers of the frontend `SecurityContext.h` header file.
 
-The BSL includes two Default Security Context implementations (specified in RFC9173), `BIB-HMAC-SHA2` (Bundle Integrity) and `BCB-AES-GCM` (Bundle Confidentiality) that may be utilized. The BSL backend cryptographic interface utilizes OpenSSL to perform HMAC-signing, encryption, and decryption operations.
+The BSL includes two Default Security Context implementations, both specified in <<RFC9173>>:
+
+ * `BIB-HMAC-SHA2` (context ID 1) for Block Integrity
+ * `BCB-AES-GCM` (context ID 2) for Block Confidentiality
+
+The BSL backend cryptographic interface utilizes OpenSSL to perform HMAC-signing, encryption, and decryption operations.
 
 Security Contexts operate in the context of a single Security Operation over a bundle. Security Contexts must validate Security Operations for consistency, and process Security Operations on bundles to produce security outcomes.
 
 [#sec-api-mockbpa]
 === Mock BPA
 
-An executable used to provide a test fixture and example BPA integration. However, the Mock BPA does not provide any of the normal processing required of a real BPA by [RFC9171], it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point. Users may reference the Mock BPA for an example of library and bundle workflow.
+An executable used to provide a test fixture and example BPA integration. However, the Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point. Users may reference the Mock BPA for an example of library and bundle workflow.
 
 == Workflows
 A simple BPA that utilizes the example policy provider, default security contexts, and dynamic backend could operate with the following workflow:
@@ -389,7 +407,3 @@ There is a https://github.com/NASA-AMMOS/anms/blob/main/CONTRIBUTING.md[`CONTRIB
 Separate from the source for the BSL proper, the BSL Product Guide and User Guide are hosted on a GitHub repository <<bsl-docs>>, with its own https://github.com/NASA-AMMOS/anms-docs/blob/main/CONTRIBUTING.md[`CONTRIBUTING.md`] document for submitting tickets about either the Product Guide or User Guide.
 
 While the GitHub repositories are the primary means by which users should submit detailed tickets, other inquiries can be made directly via email to the the support address mailto:dtnma-support@jhuapl.edu[,BSL Support].
-
-
-[index]
-== Index

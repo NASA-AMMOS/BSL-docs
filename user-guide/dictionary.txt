@@ -1,5 +1,5 @@
-IANA
-Verifier
+ABI
+Acceptor
 AMMOS
 APIs
 APL
@@ -30,12 +30,15 @@ De
 DTN
 EID
 EIDs
+executables
 frontend
 Frontend
 HMAC
+IANA
 IEC
 IETF
 instantiation
+ISA
 Jansson
 JHU
 JPL
@@ -53,4 +56,6 @@ structs
 submodule
 superset
 TBD
+UML
+Verifier
 Wireshark

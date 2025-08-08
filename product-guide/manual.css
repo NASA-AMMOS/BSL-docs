@@ -76,3 +76,8 @@ div.table table {
   margin-left: auto;
   margin-right: auto;
 }
+
+div.note {
+  margin-left: 4em;
+  margin-right: 6em;
+}

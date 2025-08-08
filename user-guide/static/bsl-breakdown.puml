@@ -1,20 +1,11 @@
 @startuml
 hide circle
+hide members
 skinparam ClassAttributeIconSize 0
 
-class "BSL Context" as BSL {
-  + process(ctx: Bundle Context)
-}
-
-class "Policy Provider" as PP {
-  + inspect(ctx: Bundle Context {const}) : Security Action
-  + finalize(ctx: Bundle Context)
-}
-
-class "Security Context" as SC {
-  + validate(ctx: Bundle Context {const}, op: Security Operation {const}) : bool
-  + execute(ctx: Bundle Context, op: Security Operation) :
-}
+!include classes.puml!bsl
+!include classes.puml!pp
+!include classes.puml!sc
 
 BSL *--> "0..*" PP : PP registry
 BSL *--> "0..*" SC : SC registry

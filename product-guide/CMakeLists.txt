@@ -27,9 +27,7 @@ project(${DIRNAME} VERSION 0 LANGUAGES )
 
 # File paths
 set(ADOC_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/manual.adoc")
-set(ADOC_EXTRAS
-    "images/bsl-interaction-points.gv"
-)
+file(GLOB ADOC_EXTRAS "images/*.gv" "images/*.puml")
 
 
 find_program(ASCIIDOC asciidoctor REQUIRED)
