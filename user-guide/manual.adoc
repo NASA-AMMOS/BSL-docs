@@ -72,7 +72,10 @@ A binary encoding defined in <<RFC8949>> which follows a superset of the JSON da
 The BSL itself uses CBOR to encode the contents of BPSec ASBs.
 JavaScript Object Notation (JSON)::
 A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
-The BSL does not use JSON directly, but the example Policy Provider uses JSON for policy configuration and key material configuration.
+The BSL does not use JSON directly, but the example ION-based Policy Provider uses JSON for policy configuration.
+JSON Web Key (JWK)::
+A JSON Web Key is a JSON data structure that represents a cryptographic key.
+The BSL does not use JWK directly, but the Mock BPA uses JWK for its key store configuration.
 
 [#list-terms-bpsec]
 The following are BP- and BPSec-related terms:
@@ -84,6 +87,7 @@ The mandatory-to-implement security mechanism to protect blocks of a BP bundle.
 This is the principal scope of behavior implemented in the BSL.
 BP Agent (BPA)::
 The instantiation of a BP node with a unique administrative Endpoint ID.
+A single BPA may have any number of additional endpoints registered to various applications on its node.
 BP Endpoint::
 The source or destination of a BP bundle, identified by a BP Endpoint ID (EID).
 BP Endpoint ID (EID)::
@@ -194,8 +198,14 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |IEEE Standard for Information Technology - Portable Operating System Interface (POSIX(R))[[POSIX]]
 |https://pubs.opengroup.org/onlinepubs/9699919799.2008edition/[IEEE Std 1003.1-2008]
 
+|M*LIB: Generic type-safe Container Library for C language[[MLIB]]
+|https://github.com/P-p-H-d/mlib[GitHub project for M*LIB]
+
+|QCBOR Library[[QCBOR]]
+|https://github.com/laurencelundblade/QCBOR[GitHub project for QCBOR]
+
 |OpenSSL Library[[OpenSSL]]
-|https://openssl-library.org/
+|https://openssl-library.org/[OpenSSL Project]
 
 |Jansson Library[[Jansson]]
 |https://github.com/akheron/jansson[GitHub project for Jansson]

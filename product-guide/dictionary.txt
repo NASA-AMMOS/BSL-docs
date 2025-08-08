@@ -19,6 +19,7 @@ Caltech
 CBOR
 CLA
 CMake
+Crypto
 cryptographic
 Cryptographic
 DNF
@@ -38,6 +39,7 @@ Jansson
 JHU
 JPL
 JSON
+JWK
 LLC
 MCS
 MGSS
@@ -51,6 +53,7 @@ plantuml
 Podman
 POSIX
 pre
+QCBOR
 RDD
 RedHat
 rhel
