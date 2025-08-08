@@ -5,16 +5,14 @@ participant "Policy Provider" as Policy
 participant "Security Context" as SC
 participant "Crypto Library" as Crypto
 
-||20||
-
 activate BPA #dcebff
 BPA -> BSL : inspect
 activate BSL #dcebff
-group loop each \n provider
+group loop each\nprovider
     BSL -> Policy : check
 
     activate Policy #dcebff
-    Policy -> BPA : [as needed] \n get data
+    Policy -> BPA : [as needed]\nget data
 
     activate BPA #dcebff
     BPA --> Policy
@@ -29,57 +27,68 @@ end
 BSL --> BPA : action set
 deactivate BSL
 
-||35||
+||20||
 
 group loop each action
     BPA -> BSL : execute
     activate BSL #dcebff
 
-    BSL -> SC : validate secop
-    activate SC #dcebff
-    SC --> BSL
-    ||10||
-    BSL -> SC : run secop
+    group loop each secop
     
-    SC -> BPA : [as needed] \n get data
-    activate BPA #dcebff
-    BPA --> SC
-    deactivate BPA
+        BSL -> SC : validate secop
+        activate SC #dcebff
+        ||10||
+        SC --> BSL
+        deactivate SC
 
-    SC -> Crypto : [as needed] \n crypto functions
-    activate Crypto #dcebff
-    Crypto --> SC
-    deactivate Crypto
+        BSL -> SC : run secop
+        activate SC #dcebff
 
-    SC -> BPA : [as needed] \n alter bundle
-    activate BPA #dcebff
-    deactivate BPA
-
-    SC --> BSL : security outcome
-    ||5||
-    deactivate SC
+        SC -> BPA : [as needed]\nget data
+        activate BPA #dcebff
+        BPA --> SC
+        deactivate BPA
+    
+        SC -> Crypto : [as needed]\ncrypto functions
+        activate Crypto #dcebff
+        ||10||
+        Crypto --> SC
+        deactivate Crypto
+    
+        SC -> BPA : [as needed]\nalter bundle
+        activate BPA #dcebff
+        deactivate BPA
+    
+        SC --> BSL : security outcome
+        ||5||
+        deactivate SC
+    end
 end
-BSL --> BPA : security outcome
+BSL --> BPA : action outcomes
 deactivate BSL
 
-||35||
+||20||
 
-BPA -> BSL : finalize
-activate BSL #dcebff
-group loop used providers
+group loop each action
+    BPA -> BSL : finalize
+    activate BSL #dcebff
+
+    BSL -> BSL : lookup PP
+
     BSL -> Policy : finalize
     activate Policy #dcebff
 
-    Policy -> BPA : [as needed] \n alter bundle
+    Policy -> BPA : [as needed]\nalter bundle
     activate BPA #dcebff
     deactivate BPA
 
     Policy --> BSL
-    ||5||
     deactivate Policy
+
+    BSL --> BPA
+    deactivate BSL
+    ||5||
 end
-BSL --> BPA
-deactivate BSL
 
 ||10||
 
