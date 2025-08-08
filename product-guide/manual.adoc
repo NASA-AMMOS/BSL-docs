@@ -53,13 +53,24 @@ This Product Guide provides architectural and maintenance details about the Bund
 
 === Scope
 
-This document describes technical details about the BSL installation, upgrade, monitoring, and maintenance.
-For details about the application programming interface (API) and workflows of the BSL see the <<bsl-user-guide>>.
+This document describes and explains the API and workflows of the BSL.
+For technical details about the BSL architecture, installation, upgrade, monitoring, and maintenance see the <<bsl-product-guide>>.
+Details about specific API structures and cross-relationships is provided in the online <<bsl-main-api>>.
 
-[glossary]
 === Terminology
 
-[glossary]
+The following are Generic terms:
+
+Concise Binary Object Representation (CBOR)::
+A binary encoding defined in <<RFC8949>> which follows a superset of the JSON data model (see below) and enables both small encoded size as well as efficient encoding and decoding.
+The BSL itself uses CBOR to encode the contents of BPSec ASBs.
+JavaScript Object Notation (JSON)::
+A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
+The BSL does not use JSON directly, but the example Policy Provider uses JSON for policy configuration and key material configuration.
+
+[#list-terms-bpsec]
+The following are BP- and BPSec-related terms:
+
 Bundle Protocol (BP)::
 The overlay network protocol used to transport BPSec blocks and target blocks between nodes.
 Bundle Protocol Security (BPSec)::
@@ -85,12 +96,41 @@ Block Confidentiality Block (BCB)::
 A well-known block type used for integrity operations in BPSec.
 Abstract Security Block (ASB)::
 A the block-type-specific data for one of the security block types: BIB or BCB, which contains an encoded CBOR sequence.
-Concise Binary Object Representation (CBOR)::
-A binary encoding defined in <<RFC8949>> which follows a superset of the JSON data model (see below) and enables both small encoded size as well as efficient encoding and decoding.
-The BSL itself uses CBOR to encode the contents of BPSec ASBs.
-JavaScript Object Notation (JSON)::
-A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
-The BSL does not use JSON directly, but the example Policy Provider uses JSON for policy configuration and key material configuration.
+Security Operation (per BPSec)::
+A single security operation is a combination of choosing a type of security (integrity or confidentiality), a single role, a single target (block), a single security context, and a set of options that are context-specific.
+Role (per BPSec)::
+This determines the action of a security operation, as one of:
+Source::: This role causes a security operation to be added to a security block.
+Verifier::: This role verifies, but does not modify, a security operation within a security block.
+Acceptor::: This role verifies and then removes a security operation within a security block.
+Security Context (per BPSec)::
+Each security operation has a single associated BPSec context, identified by its Context ID.
+Context IDs can either be well-known, and registered with IANA, or taken from a reserved block for private or experimental use.
+Target (per BPSec)::
+Each security operation has a single target block identified by its unique-to-the-bundle block number.
+Parameter (per BPSec)::
+Each security block (the entire ASB) has a set of parameters which apply to all operations in the block.
+Result (per BPSec)::
+Each target of a security block has a set of results which apply to a single operation associated with one target.
+
+[#list-terms-bsl]
+The following are BSL-specific terms:
+
+BSL Context::
+An container of state and memory allocation for each instance of the BSL.
+Each BSL context is not thread safe, it must be used within a single thread exclusively.
+Bundle Context::
+A container of state and memory allocation for each bundle being processed by a BSL Context.
+Policy Provider (PP)::
+An abstract interface (and a C callback descriptor struct) for providing security policy to a BSL Context.
+The BSL dynamic backend contains a run-time-variable PP registry.
+Security Context (SC)::
+An abstract interface (and a C callback descriptor struct) for providing BPSec security context processing to a BSL Context.
+The BSL dynamic backend contains a run-time-variable SC registry.
+Security Action::
+An ordered sequence of security operations and their internal configuration.
+Security Option::
+An option is an internal-to-BSL item which communicates intent for a single Security Operation between PP and SC.
 
 
 === References
