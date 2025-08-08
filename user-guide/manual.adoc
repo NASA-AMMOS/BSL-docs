@@ -53,8 +53,9 @@ This User Guide provides an overview of the application programming interface (A
 
 === Scope
 
-This document describes the API and workflows of the BSL.
+This document describes and explains the API and workflows of the BSL.
 For technical details about the BSL architecture, installation, upgrade, monitoring, and maintenance see the <<bsl-product-guide>>.
+Details about specific API structures and cross-relationships is provided in the online <<bsl-main-api>>.
 
 [glossary]
 === Terminology
@@ -71,39 +72,65 @@ BP Endpoint::
 The source or destination of a BP bundle, identified by a BP Endpoint ID (EID).
 BP Endpoint ID (EID)::
 The identifier of a BP Endpoint; names the source and destination for a BP bundle.
+Bundle (per BPv7)::
+The protocol data unit of Bundle Protocol, which uses a CBOR-encoding of its data.
+Block (per BPv7)::
+Each sub-element of a bundle.
+All bundles contain a mandatory primary block, any number of extension blocks, and a mandatory payload block.
+Each extension block has an explicit block type identifier.
+Block-Type-Specific Data (BTSD)::
+The arbitrary-length binary data containing the contents of a block which is block-type-specific.
+Block Integrity Block (BIB)::
+A well-known block type used for integrity operations in BPSec.
+Block Confidentiality Block (BCB)::
+A well-known block type used for integrity operations in BPSec.
+Abstract Security Block (ASB)::
+A the block-type-specific data for one of the security block types: BIB or BCB, which contains an encoded CBOR sequence.
 Concise Binary Object Representation (CBOR)::
-The data format used to encode BP Bundles.
-Convergence-layer Adapter (CLA)::
-CLAs send and receive BP bundles on behalf of the BPA.
-Host::
-A single node on the network and a single instance of an operating system.
-One host can have many interfaces and many IP addresses, but only one canonical host name.
+A binary encoding defined in <<RFC8949>> which follows a superset of the JSON data model (see below) and enables both small encoded size as well as efficient encoding and decoding.
+The BSL itself uses CBOR to encode the contents of BPSec ASBs.
 JavaScript Object Notation (JSON)::
-TBD
+A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
+The BSL does not use JSON directly, but the example Policy Provider uses JSON for policy configuration and key material configuration.
+BSL Context::
+An container of state and memory allocation for each instance of the BSL.
+Each BSL context is not thread safe, it must be used within a single thread exclusively.
+Policy Provider (PP)::
+An abstract interface (and a C callback descriptor struct) for providing security policy to a BSL Context.
+The BSL dynamic backend contains a run-time-variable PP registry.
+Security Context (SC)::
+An abstract interface (and a C callback descriptor struct) for providing BPSec security context processing to a BSL Context.
+The BSL dynamic backend contains a run-time-variable SC registry.
 
 
 === References
 
 .Applicable JPL Rules Documents
-[%header,width=100%,cols="<.<3,>.<1"]
+[%header,cols="<.<3,>.<1"]
 |===
 |Title
 |Document Number
 
-|Software Development[[jpl-sd,SD]]
+|Software Development[[jpl-sd,JPL SD]]
 |57653 rev 10
 
 |===
 
 
 .Applicable MGSS Documents
-[%header,width=100%,cols="<.<3,>.<1"]
+[%header,cols="<.<3,>.<1"]
 |===
 |Title
 |Document Number
 
-|MGSS Implementation and Maintenance Task Requirements[[mimtar,MIMTaR]]
+|MGSS Implementation and Maintenance Task Requirements (MIMTaR)[[mimtar,MIMTaR]]
 |DOC-001455 rev G
+
+|BSL Software Requirements Document (SRD)[[bsl-srd,BSL SRD]]
+|https://github.com/NASA-AMMOS/BSL-docs/blob/main/BSL%20Software%20Requirements%20Document.pdf[DOC-005735]
+
+|BSL Software Interface Specification (SIS)[[bsl-sis,BSL SIS]]
+|https://nasa-ammos.github.io/BSL/html/bsl-sis.html[DOC-TBD]
 
 |BSL Product Guide[[bsl-product-guide,BSL Product Guide]]
 |DOC-TBD
@@ -111,16 +138,46 @@ TBD
 |===
 
 .Applicable Other Documents
-[%header,width=100%,cols="<.<3,>.<1"]
+[%header,cols="<.<3,>.<1"]
 |===
 |Title
 |Reference
 
 |BSL Source[[bsl-source]]
-|https://github.com/NASA-AMMOS/BSL[bsl-source]
+|https://github.com/NASA-AMMOS/BSL[GitHub project BSL]
 
 |BSL Documentation Source[[bsl-docs]]
-|https://github.com/NASA-AMMOS/BSL-docs[bsl-docs]
+|https://github.com/NASA-AMMOS/BSL-docs[GitHub project BSL-docs]
+
+|BSL API Documentation -- Main Branch[[bsl-main-api,BSL API Docs]]
+|https://nasa-ammos.github.io/BSL/html/[GitHub Pages for BSL]
+
+|Programming Languages -- C[[C99]]
+|ISO/IEC 9899:1999
+
+|IEEE Standard for Information Technology - Portable Operating System Interface (POSIX(R))[[POSIX]]
+|https://pubs.opengroup.org/onlinepubs/9699919799.2008edition/[IEEE Std 1003.1-2008]
+
+|OpenSSL Library[[OpenSSL]]
+|https://openssl-library.org/
+
+|Jansson Library[[Jansson]]
+|https://github.com/akheron/jansson[GitHub project for Jansson]
+
+|Unity Test Library[[unity-test]]
+|https://github.com/ThrowTheSwitch/Unity[GitHub project Unity]
+
+|NASA Interplanetary Overlay Networking (ION) software[[NASA-ION]]
+|https://github.com/nasa-jpl/ION-DTN/[GitHub project for ION-DTN]
+
+|Wireshark Project[[wireshark]]
+|https://www.wireshark.org/
+
+|The JavaScript Object Notation (JSON) Data Interchange Format[[RFC8259]]
+|https://www.rfc-editor.org/info/rfc8259[IETF RFC 8259]
+
+|Concise Binary Object Representation (CBOR)[[RFC8949]]
+|https://www.rfc-editor.org/info/rfc8949[IETF RFC 8949]
 
 |Bundle Protocol Version 7[[RFC9171]]
 |https://www.rfc-editor.org/info/rfc9171[IETF RFC 9171]
@@ -134,7 +191,8 @@ TBD
 |===
 
 
-== Application Programming Interface
+[#sec-api]
+== Application Programming Interface Overview
 
 The following section provides an overview of the BSL API and references to specific sections of the online API documentation.
 
@@ -146,22 +204,31 @@ The Frontend library provides the service API for the BSL to be called by its as
 
 Most interactions with the BSL/frontend API occur within the context of a single bundle. There are four points along bundle traversal where BSL interaction from the BPA is necessary:
 
-1. After bundle creation from an application source (APPIN).
-2. Before bundle delivery to an application destination (APPOUT).
-3. After bundle reception via a CLA (CLIN).
-4. Before bundle forwarding via a CLA (CLOUT).
+1. After bundle **transmission** from an application source (APPIN).
+2. Before bundle **delivery** to an application destination (APPOUT).
+3. After bundle **reception** via a CLA (CLIN).
+4. Before bundle **forwarding** via a CLA (CLOUT).
 
 [#fig-bsl-interaction-points]
 .Interaction Points from the BPA into BSL
 graphviz::static/bsl-interaction-points.gv[format=svg]
 
 === Policy Providers
-Policy Providers should be registered with the library context. Policy Providers must implement the function headers of the frontend `PolicyProvider.h` header file. The BSL includes a simple rule-based example PP that may be utilized.
 
-Policy Providers must inspect each bundle to produce an Action Set, containing Security Operations. Policy Providers also must finalize over a bundle after each Security Operation has been executed by the security context.
+Policy Providers need to be registered with a library context via the dynamic backend before they can be used.
+Policy Providers must implement the function headers of the frontend `PolicyProvider.h` header file.
+
+Policy Providers must inspect each bundle to produce an Action Set, containing Security Operations.
+Policy Providers also must finalize over a bundle after each Security Operation has been executed by the security context.
+
+The BSL includes a simple rule-based example PP that may be utilized.
 
 === Security Contexts
-Security Contexts should be registered with the library context. Security Contexts must implement the function headers of the frontend `SecurityContext.h` header file. The BSL includes two Default Security Context implementations (specified in RFC9173), `BIB-HMAC-SHA2` (Bundle Integrity) and `BCB-AES-GCM` (Bundle Confidentiality) that may be utilized. The BSL backend cryptographic interface utilizes OpenSSL to perform HMAC-signing, encryption, and decryption operations.
+
+Security Contexts need to be registered with a library context via the dynamic backend before they can be used.
+Security Contexts must implement the function headers of the frontend `SecurityContext.h` header file.
+
+The BSL includes two Default Security Context implementations (specified in RFC9173), `BIB-HMAC-SHA2` (Bundle Integrity) and `BCB-AES-GCM` (Bundle Confidentiality) that may be utilized. The BSL backend cryptographic interface utilizes OpenSSL to perform HMAC-signing, encryption, and decryption operations.
 
 Security Contexts operate in the context of a single Security Operation over a bundle. Security Contexts must validate Security Operations for consistency, and process Security Operations on bundles to produce security outcomes.
 
@@ -171,12 +238,19 @@ An executable used to provide a test fixture and example BPA integration. Howeve
 == Workflows
 A simple BPA that utilizes the example policy provider, default security contexts, and dynamic backend could operate with the following workflow:
 
-=== Initialization of BSL
+[#sec-workflow-bpa]
+=== Initialization of BPA Callbacks
 
-The following steps contain BSL initialization instructions to be performed once (per-thread).
+The following steps are not thread safe and must be performed before any BSL context instances are initialized (in <<sec-workflow-bslctx>>).
 
 . *Set & Initialize Host Descriptors*:
 The BSL backend relies on host-specific information from the BPA, such as EID registering and encoding information. The function-pointer fields of a `BSL_HostDescriptors_t` struct should be set with host-implemented functions and initialized with `BSL_HostDescriptors_Set()` for successful BSL operation. See the Mock BPA for a simple example of implementing host descriptors.
+
+[#sec-workflow-bslctx]
+=== Initialization of a BSL Context
+
+The following steps contain BSL initialization instructions to be performed once (per-thread).
+The correct operation relies on the host BPA configuration from <<sec-workflow-bpa>> to be in-place.
 
 . *Initialize the Library Context*:
 Each runtime instance of the BSL is isolated for thread safety within a host-specific struct referenced by a `BSL_LibCtx_t` pointer. Each instance should be initialized using `BSL_LibCtx_Init()`.
@@ -192,7 +266,8 @@ Initialize the backend cryptographic interface with `BSL_CryptoInit()`. Then, re
 
 === Single-Bundle Workflow
 
-The following steps should be performed for each bundle being processed.
+The following steps should be performed for each bundle being processed, their entity relationships are depicted in <<fig-bsl-bundle-workflow>>.
+All of these actions operate within a BSL library context, initialized in <<sec-workflow-bslctx>>.
 
 . *Initialize Bundle Context for each Bundle*:
 For each bundle being processed by BPA at one of the four points of interaction (APPIN, APPOUT, CLIN, CLOUT), initialize a bundle context. The bundle context will keep track of a bundle's state throughout its interaction with the BSL. The context must utilize the host-specific struct `BSL_BundleCtx_t`.
@@ -211,15 +286,19 @@ Utilize the example Policy Provider's finalize function to verify successful sec
 
 . *Free Bundle Context*:
 The bundle has now completed the required BSL interactions, and the bundle context resources can be released. The bundle can now be forwarded within the BPA.
-//-
+
 [#fig-bsl-bundle-workflow]
 .Visual Representation of Per-Bundle Workflow
 plantuml::static/user-guide-bundle-workflow.puml[]
 
-=== De-initialization of BSL
+=== De-initialization of a BSL Context
 
-Each `BSL_LibCtx_t` instance should be de-initialized with `BSL_LibCtx_Deinit()`.
+Before joining or termination of an associated work thread, each `BSL_LibCtx_t` instance should be de-initialized with `BSL_LibCtx_Deinit()` to free its resources.
 
+Each BSL Context is independent of all others, so there is no need to coordinate activities of one with any other.
+
+
+[#sec-support]
 == Product Support
 
 There are two levels of support for the BSL: troubleshooting by a system administrator, which is detailed in <<sec-troubleshooting>>, and upstream support via the BSL public GitHub project, accessible as described in <<sec-contact>>.
