@@ -131,7 +131,8 @@ Security Context (SC)::
 An abstract interface (and a C callback descriptor struct) for providing BPSec security context processing to a BSL Context.
 The BSL dynamic backend contains a run-time-variable SC registry.
 Security Action::
-An ordered sequence of security operations and their internal configuration.
+Each action contains an ordered sequence of security operations and their internal configuration.
+PPs produce sets of actions when inspecting a bundle and operate on the same set of actions when finalizing a bundle.
 Security Option::
 An option is an internal-to-BSL item which communicates intent for a single Security Operation between PP and SC.
 
