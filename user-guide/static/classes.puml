@@ -7,7 +7,7 @@ class "BSL Context" as BSL {
 @startuml(id=pp)
 abstract class "Policy Provider" as PP {
   + inspect(ctx: Bundle Context {const}) : Security Action [0..*]
-  + finalize(ctx: Bundle Context, act: Security Action)
+  + finalize(ctx: Bundle Context, acts: Security Action [0..*])
 }
 @enduml
 
