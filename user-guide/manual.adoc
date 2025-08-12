@@ -288,6 +288,8 @@ Each BSL Context instance is associated with one or more Policy Provider instanc
 The Policy Providers are used to control _what_ the BSL needs to do for a specific bundle, as discussed in more detail in <<sec-api-pp>>.
 The Security Contexts are used to validate and actually execute each security operation, as discussed in more detail in <<sec-api-sc>>.
 
+NOTE: The BSL v1.0.0 supports only a single registered Policy Provider for each BSL Context.
+
 [#fig-bsl-breakdown]
 .BSL Structure Breakdown 
 plantuml::static/bsl-breakdown.puml[]
