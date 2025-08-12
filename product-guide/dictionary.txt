@@ -1,3 +1,4 @@
+ABI
 Acceptor
 AMMOS
 api
@@ -27,6 +28,7 @@ doxygen
 Doxygen
 DTN
 EID
+executables
 FIPS
 frontend
 Frontend
@@ -35,6 +37,7 @@ IANA
 IEC
 IETF
 instantiation
+ISA
 Jansson
 JHU
 JPL
@@ -52,6 +55,7 @@ PDUs
 plantuml
 Podman
 POSIX
+PPs
 pre
 QCBOR
 RDD
