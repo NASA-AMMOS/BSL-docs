@@ -130,10 +130,10 @@ The BSL dynamic backend contains a run-time-variable SC registry.
 |https://github.com/NASA-AMMOS/BSL-docs/blob/main/BSL%20Software%20Requirements%20Document.pdf[DOC-005735]
 
 |BSL Software Interface Specification (SIS)[[bsl-sis,BSL SIS]]
-|https://nasa-ammos.github.io/BSL/html/bsl-sis.html[DOC-TBD]
+|https://nasa-ammos.github.io/BSL/html/bsl-sis.html[DOC-005835]
 
 |BSL Product Guide[[bsl-product-guide,BSL Product Guide]]
-|DOC-TBD
+|https://nasa-ammos.github.io/BSL-docs/product-guide/manual.pdf[DOC-005921]
 
 |===
 
