@@ -392,6 +392,12 @@ The bundle has now completed the required BSL interactions, and the bundle conte
 .Visual Representation of Per-Bundle Workflow
 plantuml::static/bundle-workflow.puml[]
 
+The BSL Frontend API consists of two primary functions for per-bundle operation: 
+
+1. `BSL_API_QuerySecurity` covers steps 2 and 3 above. The function first utilizes the policy providers to query on a bundle. Next, each security operation in the resulting Action Set is validated using the security context associated with that security operation.
+
+2. `BSL_API_ApplySecurity` covers steps 4 and 5 above. The function first executes each security operation with its associated security context. Next, the policy providers will finalize over the results.
+
 === De-initialization of a BSL Context
 
 Before joining or termination of an associated work thread, each `BSL_LibCtx_t` instance should be de-initialized with `BSL_LibCtx_Deinit()` to free its resources.
