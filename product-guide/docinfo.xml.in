@@ -1,6 +1,6 @@
 <subtitle>
-  DOC-TBA,
-  Prepared by The Johns Hopkins Applied Physics Laboratory
+  DOC-005921,
+  Prepared by The Johns Hopkins University Applied Physics Laboratory
 </subtitle>
 <author>
   <orgname>
@@ -36,7 +36,7 @@ subcontract 1700763.
 <revhistory>
   <revision>
     <revnumber>Initial</revnumber>
-    <date>TBD</date>
+    <date>21 August 2025</date>
     <revdescription>
       Initial issue of document for BSL v1.0.0
     </revdescription>

@@ -174,7 +174,7 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |https://nasa-ammos.github.io/BSL/html/bsl-sis.html[DOC-005835]
 
 |BSL Product Guide[[bsl-product-guide,BSL Product Guide]]
-|DOC-TBD
+|https://nasa-ammos.github.io/BSL-docs/product-guide/manual.pdf[DOC-005921]
 
 |===
 
