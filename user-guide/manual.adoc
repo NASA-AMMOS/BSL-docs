@@ -539,7 +539,7 @@ BSL_SECURITYRESPONSESET_STRLEN - 256::
 Maxmimum size of string representing error message for response set. In future BSL versions, response sets will be removed, and this value will be removed.
 
 BSL_CRYPTO_AESGCM_AUTH_TAG_LEN - 16::
-The length of an Authentication Tag for BCBs as specified by RFC 9173 <<RFC9173>>.
+The length of an Authentication Tag for BCBs as specified by <<RFC9173>>.
 
 BSLX_MAX_KEYLEN - 2048::
 Maxmimum size of a key as handled in the default security context. In future BSL versions, no key data will be copied to the security context, and this value will be removed.
@@ -548,7 +548,7 @@ BSLX_MAX_AES_PAD - 64::
 Maximum size of padding added to AES operation by crypto finalize operation. When operating in GCM mode, AES will not produce extra padding, and this value is likely inconsequential.
 
 RFC9173_BCB_DEFAULT_IV_LEN - 12::
-The default initialization vector length as specified by RFC 9173 <<RFC9173>>.
+The default initialization vector length as specified by <<RFC9173>>.
 
 BSL_PP_POLICYRULE_PARAM_MAX_COUNT - 10::
 The maxmimum number of parameters a policy rule may have. In future BSL versions, the number of predicates will not be limited, and this value will be removed.
@@ -565,7 +565,9 @@ The maximum number of policies a MockBPA registry may hold. In future BSL versio
 DATA_QUEUE_SIZE - 100::
 Size of the MockBPA queues for each thread.
 
-
+[#sec-bare-assert]
+==== Bare Assert Calls
+One bare assert call exists in the dynamic backend in the Abstract Security Block CBOR decoder. The assert will trigger to prevent an infinite loop, but has the unintended side effect of limiting security blocks to having fewer than 20 targets. In future BSL versions, this limitation will be fixed.
 
 [#sec-contact]
 === Contacting or Contributing
