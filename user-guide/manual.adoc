@@ -523,7 +523,7 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 The following provides troubleshooting guidance for the BSL.
 
 [#sec-preprocs]
-==== Pre-processing Define Directives
+==== Preprocessing Define Directives
 
 [qanda]
 `BSL_DEFAULT_STRLEN` - 128::
@@ -539,7 +539,7 @@ Maximum number of results a response set may hold. In future BSL versions, respo
 Maximum size of string representing error message for response set. In future BSL versions, response sets will be removed, and this value will be removed.
 
 `BSL_CRYPTO_AESGCM_AUTH_TAG_LEN` - 16::
-The length of an Authentication Tag for BCBs as specified by <<RFC9173>>.
+The length of an Authentication Tag for AES-GCM encryption and decryption as specified by <<RFC9173>>.
 
 `BSLX_MAX_KEYLEN` - 2048::
 Maximum size of a key as handled in the default security context. In future BSL versions, no key data will be copied to the security context, and this value will be removed.
