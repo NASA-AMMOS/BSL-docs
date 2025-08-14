@@ -520,7 +520,51 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 [#sec-troubleshooting]
 === Troubleshooting
 
-TBD
+The following provides troubleshooting guidance for the BSL.
+
+[#sec-preprocs]
+==== Preprocessing Directives
+
+[qanda]
+BSL_DEFAULT_STRLEN - 128::
+Length is used by Policy Provider names and Policy Rule Descriptions. Thus, those two fields must not exceed 128 characters.
+
+BSL_LOG_QUEUE_SIZE - 100::
+Number of logging events to buffer before output.
+
+BSL_SECURITYRESPONSESET_ARRAYLEN - 10::
+Maxmimum number of results a response set may hold. In future BSL versions, response sets will be removed, and this value will be removed.
+
+BSL_SECURITYRESPONSESET_STRLEN - 256::
+Maxmimum size of string representing error message for response set. In future BSL versions, response sets will be removed, and this value will be removed.
+
+BSL_CRYPTO_AESGCM_AUTH_TAG_LEN - 16::
+The length of an Authentication Tag for BCBs as specified by RFC 9173 <<RFC9173>>.
+
+BSLX_MAX_KEYLEN - 2048::
+Maxmimum size of a key as handled in the default security context. In future BSL versions, no key data will be copied to the security context, and this value will be removed.
+
+BSLX_MAX_AES_PAD - 64::
+Maximum size of padding added to AES operation by crypto finalize operation. When operating in GCM mode, AES will not produce extra padding, and this value is likely inconsequential.
+
+RFC9173_BCB_DEFAULT_IV_LEN - 12::
+The default initialization vector length as specified by RFC 9173 <<RFC9173>>.
+
+BSL_PP_POLICYRULE_PARAM_MAX_COUNT - 10::
+The maxmimum number of parameters a policy rule may have. In future BSL versions, the number of predicates will not be limited, and this value will be removed.
+
+BSLP_POLICYPREDICATE_ARRAY_CAPACITY - 100::
+Maximum number of predicates a policy provider may hold. In future BSL versions, the number of parameters will not be limited, and this value will be removed.
+
+MockBPA_BUNDLE_MAXBLOCKS - 10::
+Maxmimum number of blocks a MockBPA-defined bundle may hold. In future BSL versions, the number of blocks will not be limited, and this value will be removed.
+
+MOCK_BPA_MAX_POLICIES - 100::
+The maximum number of policies a MockBPA registry may hold. In future BSL versions, the number of policies will not be limited, and this value will be removed.
+
+DATA_QUEUE_SIZE - 100::
+Size of the MockBPA queues for each thread.
+
 
 
 [#sec-contact]
