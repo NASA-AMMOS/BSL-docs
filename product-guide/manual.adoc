@@ -231,6 +231,12 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |NASA Interplanetary Overlay Networking (ION) software[[NASA-ION]]
 |https://github.com/nasa-jpl/ION-DTN/[GitHub project for ION-DTN]
 
+|CMake Reference Documentation[[CMake]]
+|https://cmake.org/cmake/help/v3.26/index.html[CMake Project]
+
+|The Ninja build system[[Ninja]]
+|https://ninja-build.org/manual.html[Ninja manual]
+
 |Wireshark Project[[wireshark]]
 |https://www.wireshark.org/
 
@@ -272,7 +278,7 @@ These are depicted in <<fig-bsl-interaction-points>> and correspond to the follo
 
 [#fig-bsl-system-context]
 .BSL System Context
-image::images/bsl-system-context.png[]
+image::images/bsl-system-context.png[scaledwidth=100%]
 
 [#fig-bsl-interaction-points]
 .Interaction Points from the BPA into BSL
@@ -327,6 +333,8 @@ The Mock BPA also uses <<QCBOR>> for encoding and decoding of whole bundle PDUs,
 
 Unit tests for each of the BSL components use the <<unity-test>> library for defining test fixtures and assertion logic.
 
+The entire BSL repository tree is managed using the <<CMake>> tool and by default is configured to use the <<Ninja>> build tool.
+The official releases of the BSL use default CMake options, but developers can use other options as described in <<sec-proc-build-devel-cmake>>.
 
 === Software Packaging
 
@@ -497,6 +505,30 @@ Individual BSL releases may identify pre-upgrade or post-upgrade steps in their 
 === Development Building
 
 When modifying the BSL itself (or one of its example Policy Provider or Security Context implementations or the Mock BPA) a more varied set of procedures is necessary, because RPM packages are not used as intermediate forms because of the time and resources it takes to build them and the separation they then have from the original BSL sources.
+
+[#sec-proc-build-devel-cmake]
+==== CMake Project Options
+
+The BSL CMake Project has several options to control what and how the components of the project are build, tested, and installed.
+
+Some https://cmake.org/cmake/help/v3.26/manual/cmake-variables.7.html[built-in CMake options] which are useful for development are:
+
+`CMAKE_PREFIX_PATH`:: Path specification to use for searching for external libraries and CMake packages
+`CMAKE_INSTALL_PREFIX`:: Path specification to use for installing the BSL libraries, executables, documentation, and other files
+`CMAKE_BUILD_TYPE`:: Choose between standard types "Debug", "Release", "RelWithDebInfo"
+`BUILD_SHARED_LIBS`:: Build using shared libraries (default ON)
+
+The BSL-specific options (defined at the top of the root `CMakeLists.txt`) are:
+
+`BUILD_LIB`:: Build the library itself (default ON)
+`BUILD_DOCS_API`:: Enable API documentation building (default OFF)
+`BUILD_DOCS_MAN`:: Enable manpage building (default OFF)
+`BUILD_MOCK_BPA`:: Enable building the Mock BPA library and executable (default ON)
+`BUILD_UNITTEST`:: Enable building unit tests (default ON)
+`TEST_MEMCHECK`:: Enable test runtime memory checking (default ON)
+`BUILD_COVERAGE`:: Enable runtime coverage logging and reporting (default OFF)
+`BUILD_FUZZING`:: Enable building fuzzing executables (default OFF)
+`BUILD_PACKAGE`:: Enable building package outputs (default OFF)
 
 
 [#sec-proc-monitoring]
