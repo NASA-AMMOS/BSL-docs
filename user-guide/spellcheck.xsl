@@ -3,7 +3,7 @@
   <!-- Leave out some artworks -->
   <xsl:template match="xhtml:a[@class='xref']"/>
   <xsl:template match="xhtml:code"/>
-  <xsl:template match="xhtml:pre[@class='screen']"/>
+  <xsl:template match="xhtml:pre"/>
   <!-- standard copy template -->
   <xsl:template match="@*|node()">
     <xsl:copy>

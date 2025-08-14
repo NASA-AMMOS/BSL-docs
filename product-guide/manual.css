@@ -1,0 +1,83 @@
+html {
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+  font-size: 100%;
+}
+
+body {
+  margin-top: 1em;
+  margin-bottom: 2em;
+  margin-left: 7em;
+  margin-right: 10em;
+}
+
+body {
+  color: rgba(0, 0, 0, 0.8);
+  font-family: "Open Sans", "DejaVu Sans", sans-serif;
+  line-height: 1;
+  position: relative;
+  cursor: auto;
+  tab-size: 4;
+  word-wrap: anywhere;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+ul,
+ol,
+dl {
+  line-height: 1.2;
+  margin-bottom: 1.25em;
+  list-style-position: outside;
+  font-family: inherit;
+}
+
+ul,
+ol {
+  margin-left: 1.5em;
+}
+
+ul li ul,
+ul li ol {
+  margin-left: 1.25em;
+}
+
+dl dt {
+  margin-bottom: 0.3125em;
+  font-weight: bold;
+}
+
+dl dd {
+  margin-bottom: 1.25em;
+}
+
+div.figure {
+  text-align: center;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+div.figure-title {
+  margin-bottom: 1em;
+}
+
+div.table {
+  text-align: center;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+div.table-title {
+  margin-bottom: 1em;
+}
+div.table table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div.note {
+  margin-left: 4em;
+  margin-right: 6em;
+}
