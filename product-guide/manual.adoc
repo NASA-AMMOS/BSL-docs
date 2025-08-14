@@ -298,10 +298,17 @@ Implementations of the two Default Security Contexts (Context ID 1 and 2) from <
 Crypto Library::
 An API for security contexts to isolate themselves from cryptographic processing and key handling.
 The default configuration uses <<OpenSSL>> to implement this library, which allows the BSL to operate in <<fips-140>> environments.
+Test Utilities::
+A set of additional utility functions helpful for unit and fuzz testing but not needed by the operational BSL components.
 Mock BPA::
 An executable used to provide a test fixture and example BPA integration.
 This Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point.
 
+These components are represented as targets (libraries and executables) in the diagram of <<fig-bsl-targets>>, which was auto-generated from the BSL CMake project.
+
+[#fig-bsl-targets]
+.CMake-Generated Target Graph
+graphviz::images/dep_chart.dot[format=svg,scaledwidth=100%]
 
 === Build and Runtime Environments
 

@@ -315,6 +315,7 @@ The portion of the frontend API used by the BPA to initiate security processing 
 Callback API::
 Function calls from the BSL backend into its environment, either to its host BPA or to one of its registered PP or SC instances.
 The signature of these callback functions is declared by the BSL, but their definitions are made outside the BSL.
+The specific callback function (pointers) registered to the BSL are determined by the host BPA at the time of BSL context initialization (see <<sec-workflow-bpa>>).
 
 The initiating calls are directed from the BPA into the BSL, and then into PPs (to inform what security operations need to be done) and SCs (to actually execute the security operations).
 This is depicted in <<fig-calls-service>>, where the BPA initiates the sequence using the frontend API and the BSL calls into each PP and necessary SC based on callbacks injected into the BPA at their times of registration.
