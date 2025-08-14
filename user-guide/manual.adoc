@@ -522,8 +522,8 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 
 The following provides troubleshooting guidance for the BSL.
 
-[#sec-preprocs]
-==== Preprocessing Define Directives
+[#sec-preprocessor-directivess]
+==== Preprocessor Define Directives
 
 [qanda]
 `BSL_DEFAULT_STRLEN` - 128::

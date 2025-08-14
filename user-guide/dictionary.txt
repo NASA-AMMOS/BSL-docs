@@ -54,7 +54,7 @@ OpenSSL
 PDU
 POSIX
 PPs
-Preprocessing
+Preprocessor
 QCBOR
 SRD
 struct
