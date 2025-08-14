@@ -238,30 +238,135 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |===
 
 
-[#sec-api]
-== Application Programming Interface Overview
+[#sec-arch]
+== Architecture
 
-The following section provides an overview of the BSL API and references to specific sections of the online API documentation.
+The BSL is a set of software libraries and plugin modules which together perform the functions required by RFC 9172 <<RFC9172>> and RFC 9173 <<RFC9173>> in a way which can be instantiated from and used by a BP Agent operating according to RFC 9171 <<RFC9171>>.
 
-[#sec-api-arch]
-=== Architecture
+The BSL is made to interact with its environment through C99 <<C99> Application Programming Interface (API) function calls into the BSL library and out of it.
 
-The BSL as a whole is separated into two primary layers of implementation: an API-centric abstract Frontend library and a host-binding concrete Backend library.
+=== Factory Default Configuration
 
-The Frontend library provides the service API for the BSL to be called by its associated BPA as needed and for stable public APIs used by Policy Provider implementations and Security Context implementations. The Backend library implements forward-declared structs and functions from the Frontend using specific concrete data containers, algorithms, etc.
+The "factory default" BSL is configured to operate with a "dynamic backend" which uses dynamic heap allocation and variable-sized data containers (arrays, lists, maps, _etc._).
+An alternative backend could be developed for specific BPA needs, but that is outside the scope of the BSL project.
 
-Most interactions with the BSL/frontend API occur within the context of a single bundle. There are four points along bundle traversal where BSL interaction from the BPA is necessary:
+The factory default BSL also builds example Policy Providers and example Security Contexts in order to be able to fully exercise the BSL behaviors.
+Alternative Policy Providers are expected to be developed for each deployment.
+Alternative Security Context implementations are expected to be developed for future contexts, and to adapt to deployment-specific needs such as for key management or specialized cryptographic interfaces.
+
+=== Library Associations
+
+The BSL project is based on a single source tree but is subdivided into separate libraries, each with their own cross-dependencies (for compiling and linking).
+The dependencies between areas are shown in <<fig-deps-logical>>, where the single "BSL" block is meant to represent both the frontend and backend libraries for simplicity.
+
+[#fig-deps-logical]
+.Logical Structure and Dependencies
+[graphviz]
+----
+digraph figure {
+    rankdir=TB;
+    node [shape=record, fontname=Helvetica, fontsize=12];
+
+    bpa [ label="BP Agent" ];
+    bsl [ label="BSL\n(frontend+backend)" ];
+    pp [ label="Example\nPolicy Provider" ];
+    sc [ label="Example\nSecurity Context" ];
+    crypto [ label="Crypto Provider" ];
+
+    bpa -> bsl [ label="BSL Service API" ];
+    bsl -> pp [ label="PP Register"; dir=back; ]
+    bsl -> sc [ label="SC Register"; dir=back; ]
+    sc -> crypto;
+}
+----
+
+The BSL is internally separated into two layers of implementation: an API-centric abstract Frontend library and a host-binding concrete Backend library.
+
+The Frontend library provides the service API for the BSL to be called by its associated BPA as needed and for stable public APIs used by Policy Provider implementations and Security Context implementations.
+The Backend library implements forward-declared structs and functions from the Frontend using specific concrete data containers, algorithms, _etc._
+
+=== BPA Interaction Points
+
+Most interactions with the BSL/frontend API occur within the context of a single bundle.
+There are four points along bundle traversal where BSL interaction from the BPA is necessary:
 
 1. After bundle **transmission** from an application source (APPIN).
 2. Before bundle **delivery** to an application destination (APPOUT).
 3. After bundle **reception** via a CLA (CLIN).
 4. Before bundle **forwarding** via a CLA (CLOUT).
 
+This is depicted in <<fig-bsl-interaction-points>>, where each of the edges in that diagram indicates a call from the BPA into the BSL to process security on that single bundle at the specific location.
+A more detailed view of the BSL processing sequence at each of those interaction points is described later in <<sec-workflow-bslctx>>.
+
 [#fig-bsl-interaction-points]
 .Interaction Points from the BPA into BSL
 graphviz::static/bsl-interaction-points.gv[format=svg]
 
-The high-level view of the BSL processing sequence is described later in <<sec-workflow-bslctx>>, where the BPA initiates security processing at each of the four interaction points for each bundle.
+=== Calling Directions
+
+Separate from the structural aspects of the BSL and its external APIs, there are different directions that calls are being made for different interactions between the same entities.
+For the factory configuration, using the dynamic backend, these interactions take two forms:
+
+Frontend API::
+These are calls into the BSL based on functions declared in its library headers.
+These functions are all declared by the BSL frontend library and defined by its backend library.
+The portion of the frontend API used by the BPA to initiate security processing is called its **Service API**.
+
+Callback API::
+Function calls from the BSL backend into its environment, either to its host BPA or to one of its registered PP or SC instances.
+The signature of these callback functions is declared by the BSL, but their definitions are made outside the BSL.
+
+The initiating calls are directed from the BPA into the BSL, and then into PPs (to inform what security operations need to be done) and SCs (to actually execute the security operations).
+This is depicted in <<fig-calls-service>>, where the BPA initiates the sequence using the frontend API and the BSL calls into each PP and necessary SC based on callbacks injected into the BPA at their times of registration.
+
+[#fig-calls-service]
+.Calls Directed From the BPA
+[graphviz]
+----
+digraph figure {
+    rankdir=TB;
+    node [shape=record, fontname=Helvetica, fontsize=12];
+
+    bpa [ label="BP Agent" ];
+    bsl [ label="BSL" ];
+    pp [ label="Policy Provider(s)" ];
+    sc [ label="Security Context(s)" ];
+
+    bpa -> bsl [ label="BSL\nFrontend API" ];
+    bsl -> pp [ label="PP\nCallback API"; ]
+    bsl -> sc [ label="SC\nCallback API"; ]
+}
+----
+
+As part of normal PP and SC processing, they will need to obtain data from the bundle, access its various blocks, and obtain some data from the BPA itself.
+Some of these calls will originate from the BSL itself and some will originate from the PP and SC instances, passing through the BSL based on its own frontend API.
+This is depicted in <<fig-calls-callback>>, which elides the ultimate source of each of these calls (which is always the BPA).
+
+[#fig-calls-callback]
+.Calls Directed To the BPA
+[graphviz]
+----
+digraph figure {
+    rankdir=TB;
+    node [shape=record, fontname=Helvetica, fontsize=12];
+
+    bpa [ label="BP Agent" ];
+    bsl [ label="BSL" ];
+    pp [ label="Policy Provider(s)" ];
+    sc [ label="Security Context(s)" ];
+
+    bpa -> bsl [ label="BPA\nCallback API"; dir=back; ];
+    bsl -> pp [ label="BSL\nFrontend API"; dir=back; ]
+    bsl -> sc [ label="BSL\nFrontend API"; dir=back; ]
+}
+----
+
+
+[#sec-api]
+== API Overview
+
+The following section provides an overview of the BSL API and references to specific sections of the online API documentation.
+
 The information model for how the BSL operates is built upon the BPSec terminology listed in <<list-terms-bpsec>> with its own additional terms needed for internal logic.
 
 === Logical Breakdown
