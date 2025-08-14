@@ -261,7 +261,7 @@ The dependencies between areas are shown in <<fig-deps-logical>>, where the sing
 
 [#fig-deps-logical]
 .Logical Structure and Dependencies
-[graphviz]
+[graphviz,format=svg]
 ----
 digraph figure {
     rankdir=TB;
@@ -322,7 +322,7 @@ This is depicted in <<fig-calls-service>>, where the BPA initiates the sequence 
 
 [#fig-calls-service]
 .Calls Directed From the BPA
-[graphviz]
+[graphviz,format=svg]
 ----
 digraph figure {
     rankdir=TB;
@@ -345,7 +345,7 @@ This is depicted in <<fig-calls-callback>>, which elides the ultimate source of 
 
 [#fig-calls-callback]
 .Calls Directed To the BPA
-[graphviz]
+[graphviz,format=svg]
 ----
 digraph figure {
     rankdir=TB;
