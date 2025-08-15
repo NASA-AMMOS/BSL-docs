@@ -580,7 +580,7 @@ Check the Mock BPA bundle block count limit that the Mock BPA was compiled with 
 I am using the Mock BPA to test my policy rules, but I cannot append more rules::
 Check the Mock BPA policy rule limit that the Mock BPA was compiled with (see `MOCK_BPA_MAX_POLICIES` in <<sec-preprocessor-directives>>).
 
-My policy rule with a long descripton or policy provider with a long name is failing to initialize::
+My policy rule with a long description or policy provider with a long name is failing to initialize::
 Check the character limit that the BSL was compiled with (see `BSL_DEFAULT_STRLEN` in <<sec-preprocessor-directives>>).
 
 [#sec-contact]
