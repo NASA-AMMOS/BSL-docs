@@ -231,6 +231,12 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |NASA Interplanetary Overlay Networking (ION) software[[NASA-ION]]
 |https://github.com/nasa-jpl/ION-DTN/[GitHub project for ION-DTN]
 
+|CMake Reference Documentation[[CMake]]
+|https://cmake.org/cmake/help/v3.26/index.html[CMake Project]
+
+|The Ninja build system[[Ninja]]
+|https://ninja-build.org/manual.html[Ninja manual]
+
 |Wireshark Project[[wireshark]]
 |https://www.wireshark.org/
 
@@ -272,7 +278,7 @@ These are depicted in <<fig-bsl-interaction-points>> and correspond to the follo
 
 [#fig-bsl-system-context]
 .BSL System Context
-image::images/bsl-system-context.png[]
+image::images/bsl-system-context.png[scaledwidth=100%]
 
 [#fig-bsl-interaction-points]
 .Interaction Points from the BPA into BSL
@@ -327,6 +333,8 @@ The Mock BPA also uses <<QCBOR>> for encoding and decoding of whole bundle PDUs,
 
 Unit tests for each of the BSL components use the <<unity-test>> library for defining test fixtures and assertion logic.
 
+The entire BSL repository tree is managed using the <<CMake>> tool and by default is configured to use the <<Ninja>> build tool.
+The official releases of the BSL use default CMake options, but developers can use other options as described in <<sec-proc-build-devel-cmake>>.
 
 === Software Packaging
 
@@ -498,6 +506,125 @@ Individual BSL releases may identify pre-upgrade or post-upgrade steps in their 
 
 When modifying the BSL itself (or one of its example Policy Provider or Security Context implementations or the Mock BPA) a more varied set of procedures is necessary, because RPM packages are not used as intermediate forms because of the time and resources it takes to build them and the separation they then have from the original BSL sources.
 
+[#sec-proc-build-devel-cmake]
+==== CMake Project Options
+
+The BSL CMake Project has several options to control what and how the components of the project are build, tested, and installed.
+
+Some https://cmake.org/cmake/help/v3.26/manual/cmake-variables.7.html[built-in CMake options] which are useful for development are:
+
+`CMAKE_PREFIX_PATH`:: Path specification to use for searching for external libraries and CMake packages
+`CMAKE_INSTALL_PREFIX`:: Path specification to use for installing the BSL libraries, executables, documentation, and other files
+`CMAKE_BUILD_TYPE`:: Choose between standard types "Debug", "Release", "RelWithDebInfo"
+`BUILD_SHARED_LIBS`:: Build using shared libraries (default ON)
+
+The BSL-specific options (defined at the top of the root `CMakeLists.txt`) are:
+
+`BUILD_LIB`:: Build the library itself (default ON)
+`BUILD_DOCS_API`:: Enable API documentation building (default OFF)
+`BUILD_DOCS_MAN`:: Enable manpage building (default OFF)
+`BUILD_MOCK_BPA`:: Enable building the Mock BPA library and executable (default ON)
+`BUILD_UNITTEST`:: Enable building unit tests (default ON)
+`TEST_MEMCHECK`:: Enable test runtime memory checking (default ON)
+`BUILD_COVERAGE`:: Enable runtime coverage logging and reporting (default OFF)
+`BUILD_FUZZING`:: Enable building fuzzing executables (default OFF)
+`BUILD_PACKAGE`:: Enable building package outputs (default OFF)
+
+[#sec-proc-build-devel-build]
+==== Local Building and Testing
+
+The coarse-grained procedure for building and testing the BSL locally is the following, based on a working copy of the BSL repository and starting shell commands within that working copy root directory.
+
+. Build the local dependencies an install into the local target tree `./testroot/` using:
++
+```
+./build.sh deps
+```
+. Prepare the CMake project, with optional additional options, using:
++
+```
+./build.sh prep -DBUILD_COVERAGE=ON
+```
+. Build the artifacts into the out-of-source tree `./build/default/` using:
++
+```
+./build.sh
+```
+. Install artifacts into the local target tree `./testroot` using:
++
+```
+./build.sh install
+```
+. Optionally, execute registered unit tests using:
++
+```
+./build.sh check
+```
+.. If BSL sources are updated and need re-testing, they must be built-and-installed using:
++
+```
+./build.sh && ./build.sh install
+```
+. Optionally, execute Mock BPA built-item tests using the following sub-procedure.
+.. Install and enter a local Python virtualenv using:
++
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r mock-bpa-test/requirements.txt
+```
+.. Run the test suite using:
++
+```
+python3 -m pytest mock-bpa-test --log-cli-level=info
+```
+.. If BSL sources are updated and need re-testing, they must be built-and-installed using:
++
+```
+./build.sh && ./build.sh install
+```
+.. Leave the virtualenv using:
++
+```
+deactivate
+```
+. Collect and report on coverage metrics using:
++
+```
+./build.sh coverage
+./build.sh coverage-summary
+```
+. The coverage outputs under the build tree can be viewed in a Web Browser using:
++
+```
+xdg-open build/default/coverage-html/index.html
+```
+
+[#sec-proc-build-devel-apidoc]
+==== Local API Documentation Building
+
+The full API documentation can be built and edited locally using the following procedure.
+
+. Build the local dependencies (the same as a normal build) using:
++
+```
+./build.sh deps
+```
+. Prepare the CMake project, with options to enable API documentation building, using:
++
+```
+./build.sh prep -DBUILD_DOCS_API=ON
+```
+. Build the documentation itself, observing warnings, using:
++
+```
+./build.sh docs
+```
+. The documentation outputs under the build tree can be viewed in a Web Browser using:
++
+```
+xdg-open build/default/docs/api/html/index.html
+```
 
 [#sec-proc-monitoring]
 === Monitoring
@@ -528,6 +655,11 @@ To enable logging of `dontaudit` events run:
 sudo semanage dontaudit off
 ----
 
+==== FIPS-140 Denials
+
+The effect of FIPS-140 enforcement and denied behavior appear as 'normal' failures of the corresponding cryptographic API and must be observed from logs of the BSL or of the cryptographic library itself.
+Because the BSL operates as a library, its logging is routed through the callback API to its host application (_i.e._ the BPA).
+Determining how to access the host application logs is outside the scope of this guide.
 
 [#sec-checkout]
 === Checkout Procedures
@@ -548,25 +680,44 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 [#sec-troubleshooting]
 === Troubleshooting
 
+The following situations provide troubleshooting guidance for the BSL from the perspective of a package maintainer or BSL developer, typically working from a local clone of the BSL git repository.
+Each situation consists of an observed state followed by a recommended troubleshooting activity.
+
+==== Building and Continuous Integration
+
+This section covers issues that can occur during packaging (see <<sec-proc-build-pkg>>) or during development (see <<sec-proc-build-devel>>) of the BSL.
+
+[qanda]
+Portions of the CMake project are giving errors during preparation::
+It is important that all CMake options (see <<sec-proc-build-devel-cmake>>) given at prep time are consistent.
+When the same option is supplied on the command multiple times, the last value is the one actually used.
+
+Mock BPA tests are failing inconsistently or due to symbol errors::
+Before running Mock BPA tests, the built artifacts must be installed to the `testroot` tree using `./build.sh install`.
+
+The API documentation target complains about misspellings::
+If it is a false positive (the word is correctly spelled, just not in the current dictionary) edit the file `docs/api/dictionary.txt` to add the word.
+
 ==== Installation
 
 This section covers issues that can occur during installation (see <<sec-proc-install>>) of the BSL.
 
+[qanda]
+Permission is denied by YUM/DNF to install packages::
 Because the RPM packages are installed to the OS, their use requires privileged user account or the use of `sudo`.
 
 ==== Operations
 
 This section covers issues that can occur after successful installation (see <<sec-proc-install>>) and checkout (see <<sec-checkout>>) of the BSL.
 
-==== SELinux Blocked Behavior
-
+[qanda]
+Behavior is reported or suspected to be blocked by SELinux::
 If there is any behavior of the BSL not working correctly and there is suspicion that it is being blocked because of local SELinux policy, the procedures of <<sec-proc-mon-selinux>> should be used to troubleshoot.
 
-==== FIPS-140 Blocked Behavior
-
+Behavior is reported or suspected to be blocked by FIPS-140 enforcement::
 The example security contexts maintained as part of the BSL make use of a FIPS-approved version of OpenSSL with algorithms and security parameters also compliant with FIPS-140.
 So these default security contexts should not run afoul of any blocks caused by enabling "FIPS mode" on the host OS.
-
++
 Any additional security contexts registered with a specific BSL instance may not be FIPS-140 compliant and should be carefully considered before use in an expected FIPS-enabled environment.
 
 
