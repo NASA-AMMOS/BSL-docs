@@ -1,5 +1,6 @@
 ABI
 Acceptor
+AES
 AMMOS
 APIs
 APL
@@ -33,6 +34,7 @@ EIDs
 executables
 frontend
 Frontend
+GCM
 HMAC
 IANA
 IEC
@@ -52,6 +54,8 @@ OpenSSL
 PDU
 POSIX
 PPs
+Preprocessor
+preprocessor
 QCBOR
 SCs
 SRD

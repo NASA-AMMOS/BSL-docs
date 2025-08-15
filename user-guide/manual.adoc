@@ -442,6 +442,51 @@ Security Contexts operate in the context of a single Security Operation over a b
 
 An executable used to provide a test fixture and example BPA integration. However, the Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point. Users may reference the Mock BPA for an example of library and bundle workflow.
 
+[#sec-preprocessor-directives]
+=== Preprocessor Define Directives
+
+The following are preprocessor define directives that limit certain capabilities within the BSL.
+
+[qanda]
+`BSL_DEFAULT_STRLEN` - 128::
+Length is used by Policy Provider names and Policy Rule Descriptions. Thus, those two fields must not exceed 128 characters.
+
+`BSL_LOG_QUEUE_SIZE` - 100::
+Number of logging events to buffer before output.
+
+`BSL_SECURITYRESPONSESET_ARRAYLEN` - 10::
+Maximum number of results a response set may hold. In future BSL versions, response sets will be removed, and this value will be removed.
+
+`BSL_SECURITYRESPONSESET_STRLEN` - 256::
+Maximum size of string representing error message for response set. In future BSL versions, response sets will be removed, and this value will be removed.
+
+`BSL_CRYPTO_AESGCM_AUTH_TAG_LEN` - 16::
+The length of an Authentication Tag for AES-GCM encryption and decryption as specified by <<RFC9173>>.
+
+`BSLX_MAX_KEYLEN` - 2048::
+Maximum size of a key as handled in the default security context. In future BSL versions, no key data will be copied to the security context, and this value will be removed.
+
+`BSLX_MAX_AES_PAD` - 64::
+Maximum size of padding added to AES operation by crypto finalize operation. AES-GCM will not produce extra padding, and this value is likely inconsequential.
+
+`RFC9173_BCB_DEFAULT_IV_LEN` - 12::
+The default initialization vector length as specified by <<RFC9173>>.
+
+`BSL_PP_POLICYRULE_PARAM_MAX_COUNT` - 10::
+The maximum number of parameters a policy rule may have. In future BSL versions, the number of parameters will not be limited, and this value will be removed.
+
+`BSLP_POLICYPREDICATE_ARRAY_CAPACITY` - 100::
+Maximum number of policy rules policy provider may hold. In future BSL versions, the number of policy rules will not be limited, and this value will be removed.
+
+`MockBPA_BUNDLE_MAXBLOCKS` - 10::
+Maximum number of blocks a Mock-BPA-defined bundle may hold. In future BSL versions, the number of blocks will not be limited, and this value will be removed.
+
+`MOCK_BPA_MAX_POLICIES` - 100::
+The maximum number of policies a Mock BPA registry may hold. In future BSL versions, the number of policies will not be limited, and this value will be removed.
+
+`DATA_QUEUE_SIZE` - 100::
+Size of the Mock BPA ingress and egress queues for each thread.
+
 == Workflows
 A simple BPA that utilizes the example policy provider, default security contexts, and dynamic backend could operate with the following workflow:
 
@@ -520,8 +565,23 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 [#sec-troubleshooting]
 === Troubleshooting
 
-TBD
+The following provides troubleshooting guidance for the BSL from the perspective of a normal or administrative user. Each situation consists of an observed state followed by a recommended troubleshooting activity.
 
+[qanda]
+My policy rule with many parameters is not initializing::
+Check the policy rule parameter limit that the BSL was compiled with (see `BSL_PP_POLICYRULE_PARAM_MAX_COUNT` in <<sec-preprocessor-directives>>).
+
+The sample policy provider, with already many appended policy rules, is failing to append more policy rules::
+Check the policy rule limit that the BSL was compiled with (see `BSLP_POLICYPREDICATE_ARRAY_CAPACITY` in <<sec-preprocessor-directives>>).
+
+I am using the Mock BPA Host Descriptors, and the BSL fails to add more blocks::
+Check the Mock BPA bundle block count limit that the Mock BPA was compiled with (see `MockBPA_BUNDLE_MAXBLOCKS` in <<sec-preprocessor-directives>>).
+
+I am using the Mock BPA to test my policy rules, but I cannot append more rules::
+Check the Mock BPA policy rule limit that the Mock BPA was compiled with (see `MOCK_BPA_MAX_POLICIES` in <<sec-preprocessor-directives>>).
+
+My policy rule with a long description or policy provider with a long name is failing to initialize::
+Check the character limit that the BSL was compiled with (see `BSL_DEFAULT_STRLEN` in <<sec-preprocessor-directives>>).
 
 [#sec-contact]
 === Contacting or Contributing
