@@ -278,7 +278,7 @@ These are depicted in <<fig-bsl-interaction-points>> and correspond to the follo
 
 [#fig-bsl-system-context]
 .BSL System Context
-image::images/bsl-system-context.png[scaledwidth=100%]
+image::images/bsl-system-context.png[scaledwidth=60%]
 
 [#fig-bsl-interaction-points]
 .Interaction Points from the BPA into BSL
@@ -725,8 +725,8 @@ Any additional security contexts registered with a specific BSL instance may not
 === Contacting or Contributing
 
 The BSL is hosted on a GitHub repository <<bsl-source>> with submodule references to several other repositories.
-There is a https://github.com/NASA-AMMOS/anms/blob/main/CONTRIBUTING.md[`CONTRIBUTING.md`] document in the BSL repository which describes detailed procedures for submitting tickets to identify defects and suggest enhancements.
+There is a https://github.com/NASA-AMMOS/BSL/blob/main/CONTRIBUTING.md[`CONTRIBUTING.md`] document in the BSL repository which describes detailed procedures for submitting tickets to identify defects and suggest enhancements.
 
-Separate from the source for the BSL proper, the BSL Product Guide and User Guide are hosted on a GitHub repository <<bsl-docs>>, with its own https://github.com/NASA-AMMOS/anms-docs/blob/main/CONTRIBUTING.md[`CONTRIBUTING.md`] document for submitting tickets about either the Product Guide or User Guide.
+Separate from the source for the BSL proper, the BSL Product Guide and User Guide are hosted on a GitHub repository <<bsl-docs>>, with its own https://github.com/NASA-AMMOS/BSL-docs/blob/main/CONTRIBUTING.md[`CONTRIBUTING.md`] document for submitting tickets about either the Product Guide or User Guide.
 
-While the GitHub repositories are the primary means by which users should submit detailed tickets, other inquiries can be made directly via email to the the support address mailto:dtnma-support@jhuapl.edu[,BSL Support].
+While the GitHub repositories are the primary means by which users should submit detailed tickets, other inquiries can be made directly via email to the the support address mailto:dtnma-support@jhuapl.edu[BSL Support].
