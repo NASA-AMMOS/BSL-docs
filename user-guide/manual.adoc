@@ -471,7 +471,7 @@ The Mock BPA has the option to parse and load ION-DTN JSON policy rules, with so
  A full policy action set implementation does not exist yet within BSL. For now, a temporary `_temp_not_ion_spec_policy_action_on_fail` attribute should be set to "delete_bundle", "drop_block", or "do_nothing".
 
 `key_wrap`::
- An extra security context parameter `id` `key_wrap` will be parsed. When the `value` is set to "0", key wrapping will be skipped. For all other values, key wrapping will be enabled. This addition is due to determination to key wrap being a required paramter for security operations when executed within the implementations of the Default Security Contexts.
+ An extra security context parameter `id` `key_wrap` will be parsed. When the `value` is set to "0", key wrapping will be skipped. For all other values, key wrapping will be enabled. Decision to key wrap is a required paramter for security operations when executed within the implementations of the Default Security Contexts.
 
 [#sec-preprocessor-directives]
 === Preprocessor Define Directives
