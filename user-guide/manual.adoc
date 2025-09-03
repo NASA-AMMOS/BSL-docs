@@ -442,6 +442,37 @@ Security Contexts operate in the context of a single Security Operation over a b
 
 An executable used to provide a test fixture and example BPA integration. However, the Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point. Users may reference the Mock BPA for an example of library and bundle workflow.
 
+[#sec-api-pp-json]
+==== JSON-Defined Policy Provider Rules
+The Mock BPA has the option to parse and load ION-DTN JSON policy rules, with some notable differences/modifications, into the sample policy provider. The current differences are as follows:
+
+`policyrule_set`::
+ Each `policyrule` should be included in a JSON list, which is the value of an attribute `policyrule_set`. An example format of JSON with two policy rules is as follows:
+
+```
+{ 
+    "policyrule_set": 
+    [
+        {
+            "policyrule": {
+                ...
+            }
+        },
+        {
+            "policyrule": {
+                ...
+            }
+        }
+    ]
+}
+```
+
+`_temp_not_ion_spec_policy_action_on_fail`::
+ A full policy action set implementation does not exist yet within BSL. For now, a temporary `_temp_not_ion_spec_policy_action_on_fail` attribute should be set to "delete_bundle", "drop_block", or "do_nothing".
+
+`key_wrap`::
+ An extra security context parameter `id` `key_wrap` will be parsed. When the `value` is set to "0", key wrapping will be skipped. For all other values, key wrapping will be enabled. Decision to key wrap is a required parameter for security operations when executed within the implementations of the Default Security Contexts.
+
 [#sec-preprocessor-directives]
 === Preprocessor Define Directives
 
