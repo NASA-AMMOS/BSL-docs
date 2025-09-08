@@ -450,7 +450,7 @@ An executable used to provide a test fixture and example BPA integration. Howeve
 The Mock BPA has the option to parse and load JSON-encoded ION-like policy rules into the sample policy provider from a file. Policy rules are as specified in <<ION-BPSec-Policy-Manual>> with some notable differences/modifications mentioned as follows:
 
 `policyrule_set`::
-Each file's JSON encoding must have the attribute `policyrule_set`, which contains a JSON list with each ION-like JSON-encoded `policyrule`s as specified in <<ION-BPSec-Policy-Manual>>. An example with two policy rules is as follows:
+Each file's JSON encoding must have the attribute `policyrule_set`, which contains a JSON list of ION-like JSON-encoded `policyrule` as specified in <<ION-BPSec-Policy-Manual>>. An example with two policy rules is as follows:
 
 ```
 { 
