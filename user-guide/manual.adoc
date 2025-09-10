@@ -461,7 +461,7 @@ Each file's JSON encoding must have the attribute `policyrule_set`, which contai
 ===== Example JSON-Encoded Policy Provider
 An example with two policy rules is as follows:
 
-[source,json]
+[source]
 ----
 include::https://raw.githubusercontent.com/NASA-AMMOS/BSL/refs/heads/main/mock-bpa-test/policy_provider_test.json[]
 ----

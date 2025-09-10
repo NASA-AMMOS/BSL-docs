@@ -51,6 +51,7 @@ add_custom_command(
         --base-dir ${CMAKE_CURRENT_SOURCE_DIR}
         --destination-dir ${CMAKE_CURRENT_BINARY_DIR}
         -o ${OUT_DBOOK}
+        -a allow-uri-read
     ${ADOC_SOURCE}
 )
 # Place source images into build directory

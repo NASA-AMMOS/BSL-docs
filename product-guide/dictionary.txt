@@ -64,6 +64,8 @@ RedHat
 RelWithDebInfo
 rhel
 RHEL
+runtime
+Runtime
 selinux
 SELinux
 SOVERSION
