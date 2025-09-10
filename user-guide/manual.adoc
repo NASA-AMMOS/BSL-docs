@@ -450,31 +450,21 @@ An executable used to provide a test fixture and example BPA integration. Howeve
 The Mock BPA has the option to parse and load JSON-encoded ION-like policy rules into the sample policy provider from a file. Policy rules are as specified in <<ION-BPSec-Policy-Manual>> with some notable differences/modifications mentioned as follows:
 
 `policyrule_set`::
-Each file's JSON encoding must have the attribute `policyrule_set`, which contains a JSON list of ION-like JSON-encoded `policyrule` as specified in <<ION-BPSec-Policy-Manual>>. An example with two policy rules is as follows:
-
-```
-{ 
-    "policyrule_set": 
-    [
-        {
-            "policyrule": {
-                ...
-            }
-        },
-        {
-            "policyrule": {
-                ...
-            }
-        }
-    ]
-}
-```
+Each file's JSON encoding must have the attribute `policyrule_set`, which contains a JSON list of ION-like JSON-encoded `policyrule` as specified in <<ION-BPSec-Policy-Manual>>.
 
 `_temp_not_ion_spec_policy_action_on_fail`::
  A full policy action set implementation does not exist yet within BSL. For now, a temporary `_temp_not_ion_spec_policy_action_on_fail` attribute should be set to "delete_bundle", "drop_block", or "do_nothing".
 
 `key_wrap`::
  An extra security context parameter id `key_wrap` will be parsed. When the value is set to "0", key wrapping will be skipped. For all other values, key wrapping will be enabled. Decision to key wrap is a required parameter for security operations when executed within the implementations of the Default Security Contexts.
+
+===== Example JSON-Encoded Policy Provider
+An example with two policy rules is as follows:
+
+[source,json]
+----
+include::https://raw.githubusercontent.com/NASA-AMMOS/BSL/refs/heads/main/mock-bpa-test/policy_provider_test.json[]
+----
 
 [#sec-preprocessor-directives]
 === Preprocessor Define Directives
