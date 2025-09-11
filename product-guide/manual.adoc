@@ -73,16 +73,16 @@ JavaScript Object Notation (JSON)::
 A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
 The BSL does not use JSON directly, but the example ION-based Policy Provider uses JSON for policy configuration.
 JSON Web Key (JWK)::
-A JSON Web Key is a JSON data structure that represents a cryptographic key.
+A JSON data structure defined in <<RFC7517>> which represents a set of cryptographic keys and their parameters.
 The BSL does not use JWK directly, but the Mock BPA uses JWK for its key store configuration.
 
 [#list-terms-bpsec]
 The following are BP- and BPSec-related terms:
 
 Bundle Protocol (BP)::
-The overlay network protocol used to transport BPSec blocks and target blocks between nodes.
+The overlay network protocol used to transport BPSec blocks and target blocks between nodes defined in <<RFC9171>>.
 Bundle Protocol Security (BPSec)::
-The mandatory-to-implement security mechanism to protect blocks of a BP bundle.
+The mandatory-to-implement security mechanism to protect blocks of a BP bundle defined in <<RFC9172>>.
 This is the principal scope of behavior implemented in the BSL.
 BP Agent (BPA)::
 The instantiation of a BP node with a unique administrative Endpoint ID.
@@ -239,6 +239,9 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 
 |Wireshark Project[[wireshark]]
 |https://www.wireshark.org/
+
+|JSON Web Key (JWK)[[RFC7517]]
+|https://www.rfc-editor.org/info/rfc7517[IETF RFC 7517]
 
 |The JavaScript Object Notation (JSON) Data Interchange Format[[RFC8259]]
 |https://www.rfc-editor.org/info/rfc8259[IETF RFC 8259]
