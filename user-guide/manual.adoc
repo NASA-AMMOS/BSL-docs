@@ -369,7 +369,7 @@ digraph figure {
 ----
 
 ==== EID CBOR CODEC Callback Limitation
-The dynamic backend calls host callback functions `eid_to_cbor` and `eid_from_cbor` with QCBOR contexts. Thus, BPAs **must** use QCBOR to append data to the context passed to these callback functions. Future versions of BSL will remove this limitation.
+The dynamic backend calls host callback functions `eid_to_cbor` and `eid_from_cbor` with QCBOR contexts. Thus, BPAs **must** use QCBOR to append data to the context passed to these callback functions when using the dynamic backend. Future versions of BSL will remove this limitation.
 
 [#sec-api]
 == API Overview
