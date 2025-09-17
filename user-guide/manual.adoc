@@ -368,9 +368,6 @@ digraph figure {
 }
 ----
 
-==== EID CBOR CODEC Callback Limitation
-The dynamic backend calls host callback functions `eid_to_cbor` and `eid_from_cbor` with QCBOR contexts. Thus, BPAs **must** use QCBOR to append data to the context passed to these callback functions when using the dynamic backend. Future versions of BSL will remove this limitation.
-
 [#sec-api]
 == API Overview
 
@@ -490,6 +487,9 @@ The default initialization vector length as specified by <<RFC9173>>.
 
 `BSLP_POLICYPREDICATE_ARRAY_CAPACITY` = 100::
 Maximum number of policy rules and policy predicates a policy provider may hold. In future BSL versions, the number of policy rules will not be limited, and this value will be removed.
+
+`POLICY_RULE_DESCRIPTION_MAX_STRLEN` = 100::
+Maximum length of sample policy provider rule description. When initializing a policy rule, only characters at position `0` through `POLICY_RULE_DESCRIPTION_MAX_STRLEN-1` are copied.
 
 `MOCK_BPA_MAX_POLICIES` = 100::
 The maximum number of policies a Mock BPA registry may hold. In future BSL versions, the number of policies will not be limited, and this value will be removed.
