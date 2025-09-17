@@ -489,7 +489,7 @@ The default initialization vector length as specified by <<RFC9173>>.
 Maximum number of policy rules and policy predicates a policy provider may hold. In future BSL versions, the number of policy rules will not be limited, and this value will be removed.
 
 `POLICY_RULE_DESCRIPTION_MAX_STRLEN` = 100::
-Maximum length of sample policy provider rule description. When initializing a policy rule, only characters at position `0` through `POLICY_RULE_DESCRIPTION_MAX_STRLEN-1` are copied.
+Maximum length of sample policy provider rule description. When initializing a policy rule, only characters at position `0` through `POLICY_RULE_DESCRIPTION_MAX_STRLEN-1` are copied from the source string buffer.
 
 `MOCK_BPA_MAX_POLICIES` = 100::
 The maximum number of policies a Mock BPA registry may hold. In future BSL versions, the number of policies will not be limited, and this value will be removed.
