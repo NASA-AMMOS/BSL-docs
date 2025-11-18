@@ -19,14 +19,13 @@ Institute of Technology, sponsored by the United States Government under
 the prime contract 80NM0018D0004 between the Caltech and NASA under
 subcontract 1700763.
 ////
-= Bundle Protocol Security Library (BSL) Product Guide
+= Bundle Protocol Security Library (BSL) v1.0 Product Guide
 :doctype: book
 :backend: docbook5
 :docinfo: shared
 :toc:
 
 
-[preface]
 == Introduction
 
 This Product Guide provides architectural and maintenance details about the Bundle Protocol Security Library (BSL), which is part of the NASA Advanced Multi-Mission Operations System (AMMOS) suite of tools.
@@ -42,7 +41,7 @@ This Product Guide provides architectural and maintenance details about the Bund
 |681.4
 
 |Element
-|Mission Control System (MCS)
+|Systems Engineering Office (SEO)
 
 |Program Set
 |Bundle Protocol Security Library (BSL)
@@ -164,10 +163,10 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |Document Number
 
 |MGSS Implementation and Maintenance Task Requirements (MIMTaR)[[mimtar,MIMTaR]]
-|DOC-001455 rev G
+|DOC-001455 rev I
 
-|BSL Architecture Description Document (ADD)[[bsl-add,BSL ADD]]
-|DOC-005089
+| BSL Software Design Document (SDD)[[bsl-sdd,BSL SDD]]
+|DOC-005834
 
 |BSL Software Requirements Document (SRD)[[bsl-srd,BSL SRD]]
 |https://github.com/NASA-AMMOS/BSL-docs/blob/main/BSL%20Software%20Requirements%20Document.pdf[DOC-005735]
