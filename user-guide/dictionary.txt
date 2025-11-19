@@ -55,12 +55,14 @@ OpenSSL
 PDU
 POSIX
 PPs
-Preprocessor
 preprocessor
+Preprocessor
 QCBOR
 runtime
 Runtime
 SCs
+SDD
+SEO
 SRD
 struct
 structs

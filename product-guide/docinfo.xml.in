@@ -38,8 +38,12 @@ subcontract 1700763.
     <revnumber>Initial</revnumber>
     <date>11 November 2025</date>
     <revdescription>
-      Initial release for BSL v1.0.0.
-      Affected sections or pages: All
+      <simpara>
+Initial release for BSL v1.0.0.
+      </simpara>
+      <simpara>
+Affected sections or pages: All
+      </simpara>
     </revdescription>
   </revision>
 </revhistory>

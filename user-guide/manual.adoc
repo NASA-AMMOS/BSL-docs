@@ -19,7 +19,7 @@ Institute of Technology, sponsored by the United States Government under
 the prime contract 80NM0018D0004 between the Caltech and NASA under
 subcontract 1700763.
 ////
-= Bundle Protocol Security Library (BSL) v1.0 User Guide
+= Bundle Protocol Security Library (BSL) v1.0 User{nbsp}Guide
 :doctype: book
 :backend: docbook5
 :docinfo: shared
