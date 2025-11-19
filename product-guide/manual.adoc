@@ -165,7 +165,7 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |MGSS Implementation and Maintenance Task Requirements (MIMTaR)[[mimtar,MIMTaR]]
 |DOC-001455 rev I
 
-| BSL Software Design Document (SDD)[[bsl-sdd,BSL SDD]]
+|BSL Software Design Document (SDD)[[bsl-sdd,BSL SDD]]
 |DOC-005834
 
 |BSL Software Requirements Document (SRD)[[bsl-srd,BSL SRD]]
@@ -174,7 +174,7 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |BSL Software Interface Specification (SIS)[[bsl-sis,BSL SIS]]
 |https://nasa-ammos.github.io/BSL/html/bsl-sis.html[DOC-005835]
 
-|BSL User Guide[[bsl-user-guide,BSL User Guide]]
+|BSL v1.0 User Guide[[bsl-user-guide,BSL User Guide]]
 |https://nasa-ammos.github.io/BSL-docs/user-guide/manual.pdf[DOC-005922]
 
 |===
