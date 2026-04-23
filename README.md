@@ -34,8 +34,8 @@ The initial design overview is presented as [Preliminary Design Review (PDR) sli
 
 ## Manuals
 
-This repository contains User and Product Guides for the BSL.
-The User GUide is focused on introducing the API and high-level workflows of the BSL and points to specific parts of the software interface API for lower-level details.
+This repository contains User and Product Guides for the BSL, with the main branch version available as HTML and PDF form [deployed to Pages](https://nasa-ammos.github.io/BSL-docs/).
+The User Guide is focused on introducing the API and high-level workflows of the BSL and points to specific parts of the software interface API for lower-level details.
 The Product Guide is focused on how to install the runtime and development packages to make use of the BSL and how to maintain and upgrade a deployment of the BSL.
 
 These are written with [AsciiDoc](https://asciidoc.org/) and intended for PDF and HTML publication formats.
