@@ -52,6 +52,7 @@ subgraph clusterLegend {
     "node6" -> "node5"  // bsl_mock_bpa -> bsl_front
     "node11" [ label = "bsl_sample_pp", shape = doubleoctagon ];
     "node11" -> "node3"  // bsl_sample_pp -> MLIB::mlib
+    "node11" -> "node7"  // bsl_sample_pp -> PkgConfig::JANSSON
     "node11" -> "node5"  // bsl_sample_pp -> bsl_front
     "node6" -> "node11"  // bsl_mock_bpa -> bsl_sample_pp
     "node0" -> "node6" [ style = dotted ] // bsl-mock-bpa -> bsl_mock_bpa

@@ -580,8 +580,6 @@ The following provides troubleshooting guidance for the BSL from the perspective
 
 [qanda]
 
-I am using the Mock BPA Host Descriptors, and the BSL fails to add more blocks::
-Check the Mock BPA bundle block count limit that the Mock BPA was compiled with (see `MockBPA_BUNDLE_MAXBLOCKS` in <<sec-preprocessor-directives>>).
 
 [#sec-contact]
 === Contacting or Contributing
