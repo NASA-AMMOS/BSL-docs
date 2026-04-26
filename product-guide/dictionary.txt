@@ -66,8 +66,10 @@ rhel
 RHEL
 runtime
 Runtime
+SDD
 selinux
 SELinux
+SEO
 SOVERSION
 SRD
 struct
