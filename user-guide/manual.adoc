@@ -442,7 +442,7 @@ Each file's JSON encoding must have the attribute `policyrule_set`, which contai
  `loc`::
  An attribute of `filter` that specifies the interaction point (APPIN, APPOUT, CLIN, CLOUT) where the policy rule should be applied.
 
-===== Sample policy provider initialization from JSON steps
+===== Steps to initialize policy provider from JSON
 
 . Initialize policy provider data with `BSLP_PolicyProvider_Init()`.
 
