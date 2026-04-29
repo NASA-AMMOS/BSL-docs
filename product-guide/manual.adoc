@@ -325,7 +325,7 @@ The basic requirements in the <<bsl-srd>> are that the build environment use a C
 The BSL dynamic backend uses the <<MLIB>> library for heap-allocated data containers, including dynamic arrays, linked lists, sorted trees, and hash maps.
 The BSL backend uses the <<QCBOR>> library for encoding and decoding of ASB sequences within security blocks.
 
-The example ION-heritage policy provider distributed with the BSL uses the <<Jansson>> library for JSON parsing.
+The example JSON-based ION-heritage policy provider and Mock BPA JWK registration tool distributed with the BSL both use the <<Jansson>> library for JSON parsing.
 
 The example security contexts distributed with the BSL uses the <<OpenSSL>> library for all cryptographic functions.
 
@@ -448,7 +448,7 @@ sudo dnf install -y epel-release
 sudo crb enable
 sudo dnf install -y \
 rsync cmake git ninja-build gcc ruby \
-    openssl-devel jansson-devel \
+    openssl-devel jansson-devel valgrind-devel \
     doxygen graphviz plantuml texlive-bibtex \
     asciidoctor \
     rpm-build rpmlint
@@ -458,6 +458,7 @@ rsync cmake git ninja-build gcc ruby \
 . The BSL CMake project is configured with:
 +
 ----
+./build.sh deps
 ./build.sh rpm-prep
 ----
 . The BSL packages are then built with:
