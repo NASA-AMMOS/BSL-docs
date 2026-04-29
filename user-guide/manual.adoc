@@ -301,11 +301,19 @@ There are four points along bundle traversal where BSL interaction from the BPA 
 4. Before bundle **forwarding** via a CLA (CLOUT).
 
 This is depicted in <<fig-bsl-interaction-points>>, where each of the edges in that diagram indicates a call from the BPA into the BSL to process security on that single bundle at the specific location.
-A more detailed view of the BSL processing sequence at each of those interaction points is described later in <<sec-workflow-bslctx>>.
+A more detailed view of the BSL processing sequence at each of those interaction points is described later in <<sec-workflow-bundle>>.
 
 [#fig-bsl-interaction-points]
 .Interaction Points from the BPA into BSL
 graphviz::static/bsl-interaction-points.gv[format=svg]
+
+In addition to the bundle-related calls into the BSL and from the BSL, there are also other calls related to:
+
+1. Heap memory management callbacks used by the BSL. If not provided, the standard `libc` functions for heap allocation are used.
+2. Logging callbacks related to determining if logging is enabled at a specific severity level and to record a log event.
+3. Telemetry counter access from each BSL instance through a synchronous call from the BPA.
+
+These secondary callbacks are registered by the BPA as part of the initialization of <<sec-workflow-bpa>> and explained in more detail in <<sec-api-secondary>>.
 
 === Calling Directions
 
@@ -377,7 +385,8 @@ The following section provides an overview of the BSL API and references to spec
 
 The information model for how the BSL operates is built upon the BPSec terminology listed in <<list-terms-bpsec>> with its own additional terms needed for internal logic.
 
-=== Logical Breakdown
+[#sec-api-bundle]
+=== Bundle Interactions
 
 All of the discussion in this subsection is at the level of logical entities and information models.
 It does not map one-for-one with the actual APIs of the BSL, but is useful for explaining terminology and framing explanations at a higher level than the C-language details discussed in the <<bsl-main-api>>.
@@ -418,22 +427,44 @@ Some options, like key identifiers for the default security contexts, do not hav
 .Security Operation Associations 
 plantuml::static/secop-associations.puml[]
 
+[#sec-api-secondary]
+=== Secondary Interactions
+
+Separately from the bundle-related interactions described in <<sec-api-bundle>>, the BPA and BSL interact through several other interfaces related to infrastructure needs.
+For the dynamic backend, the callbacks are registered during initialization of the process in <<sec-workflow-bpa>>.
+
+Heap Allocation::
+For the dynamic backend, heap memory management callbacks are contained in the `BSL_DynMemHostDescriptors_t` struct.
+If not provided, the standard `libc` functions for heap allocation are used.
+
+Event Logging::
+There are two callbacks in the dynamic backend related to logging.
+One is a function to determine if logging is enabled at a specific severity level, which is useful to avoid resource-intensive processing that is only actually recorded at low severity.
+The other is a function to actually process and record log events, each event includes a human-readable text message as well as metadata about the event such as its severity and the timestamp at which the event occurred.
+The event interface is similar to the POSIX `syslog` API but tailored to BSL use.
+
+Telemetry Counters::
+Telemetry from each BSL context is accessed through the synchronous function `BSL_LibCtx_AccumulateTlmCounters()`.
+It is up to the host BPA to determine if, when, and how often to collect BSL telemetry and either log or aggregate the values itself.
+The content of the obtained `BSL_TlmCounters_t` struct is designed to be aggregated across multiple BSL contexts to make it easy for a BPA to report on statistics at individual interaction points as well as aggregated to whole-node statistics.
+
+
 [#sec-api-pp]
 === Policy Providers
 
 Policy Providers need to be registered with a library context via the dynamic backend before they can be used.
-Policy Providers must implement the function headers of the frontend `PolicyProvider.h` header file.
+Policy Providers must implement the function headers of the dynamic backend `BSL_PolicyDesc_t` struct defined in the `BPSecLib_Private.h` header file.
 
 Policy Providers must inspect each bundle to produce an Action Set, containing Security Operations.
 Policy Providers also must finalize over a bundle after each Security Operation has been executed by the security context.
 
-The BSL includes a simple rule-based example PP that may be utilized.
+The BSL includes a simple rule-based example PP that may be utilized by any BPA, and is used by the Mock BPA used for BSL testing (see <<sec-mockbpa>>).
 
 [#sec-api-sc]
 === Security Contexts
 
 Security Contexts need to be registered with a library context via the dynamic backend before they can be used.
-Security Contexts must implement the function headers of the frontend `SecurityContext.h` header file.
+Security Contexts must implement the function headers of the dynamic backend `BSL_SecCtxDesc_t` struct defined in the `SecurityContext.h` header file.
 
 The BSL includes two Default Security Context implementations, both specified in <<RFC9173>>:
 
@@ -444,7 +475,7 @@ The BSL backend cryptographic interface utilizes OpenSSL to perform HMAC-signing
 
 Security Contexts operate in the context of a single Security Operation over a bundle. Security Contexts must validate Security Operations for consistency, and process Security Operations on bundles to produce security outcomes.
 
-[#sec-api-mockbpa]
+[#sec-mockbpa]
 === Mock BPA
 
 An executable used to provide a test fixture and example BPA integration. However, the Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point. Users may reference the Mock BPA for an example of library and bundle workflow.
@@ -525,6 +556,7 @@ Register the example Policy Provider with the Library Context.
 . *Initialize Cryptographic State & Register Default Security Contexts with the Library Context*:
 Initialize the backend cryptographic interface with `BSL_CryptoInit()`. Then, register the `BIB-HMAC-SHA2` and `BCB-AES-GCM` Default Security Contexts with the Library Context.
 
+[#sec-workflow-bundle]
 === Single-Bundle Workflow
 
 The following steps should be performed for each bundle being processed, their entity relationships are depicted in <<fig-bsl-bundle-workflow>>.
