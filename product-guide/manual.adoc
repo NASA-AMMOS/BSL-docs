@@ -70,7 +70,7 @@ A binary encoding defined in <<RFC8949>> which follows a superset of the JSON da
 The BSL itself uses CBOR to encode the contents of BPSec ASBs.
 JavaScript Object Notation (JSON)::
 A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
-The BSL does not use JSON directly, but the example ION-based Policy Provider uses JSON for policy configuration.
+The BSL does not use JSON directly, but the example ION-heritage Policy Provider uses JSON for encoding policy configuration.
 JSON Web Key (JWK)::
 A JSON data structure defined in <<RFC7517>> which represents a set of cryptographic keys and their parameters.
 The BSL does not use JWK directly, but the Mock BPA uses JWK for its key store configuration.

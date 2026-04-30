@@ -71,7 +71,7 @@ A binary encoding defined in <<RFC8949>> which follows a superset of the JSON da
 The BSL itself uses CBOR to encode the contents of BPSec ASBs.
 JavaScript Object Notation (JSON)::
 A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
-The BSL does not use JSON directly, but the example ION-based Policy Provider uses JSON for policy configuration.
+The BSL does not use JSON directly, but the example ION-heritage Policy Provider uses JSON for encoding policy configuration.
 JSON Web Key (JWK)::
 A JSON data structure defined in <<RFC7517>> which represents a set of cryptographic keys and their parameters.
 The BSL does not use JWK directly, but the Mock BPA uses JWK for its key store configuration.
@@ -295,10 +295,10 @@ The Backend library implements forward-declared structs and functions from the F
 Most interactions with the BSL/frontend API occur within the context of a single bundle.
 There are four points along bundle traversal where BSL interaction from the BPA is necessary:
 
-1. After bundle **transmission** from an application source (APPIN).
-2. Before bundle **delivery** to an application destination (APPOUT).
-3. After bundle **reception** via a CLA (CLIN).
-4. Before bundle **forwarding** via a CLA (CLOUT).
+. After bundle **transmission** from an application source (APPIN).
+. Before bundle **delivery** to an application destination (APPOUT).
+. After bundle **reception** via a CLA (CLIN).
+. Before bundle **forwarding** via a CLA (CLOUT).
 
 This is depicted in <<fig-bsl-interaction-points>>, where each of the edges in that diagram indicates a call from the BPA into the BSL to process security on that single bundle at the specific location.
 A more detailed view of the BSL processing sequence at each of those interaction points is described later in <<sec-workflow-bundle>>.
@@ -309,9 +309,9 @@ graphviz::static/bsl-interaction-points.gv[format=svg]
 
 In addition to the bundle-related calls into the BSL and from the BSL, there are also other calls related to:
 
-1. Heap memory management callbacks used by the BSL. If not provided, the standard `libc` functions for heap allocation are used.
-2. Logging callbacks related to determining if logging is enabled at a specific severity level and to record a log event.
-3. Telemetry counter access from each BSL instance through a synchronous call from the BPA.
+. Heap memory management callbacks used by the BSL. If not provided, the standard `libc` functions for heap allocation are used.
+. Logging callbacks related to determining if logging is enabled at a specific severity level and to record a log event.
+. Telemetry counter access from each BSL instance through a synchronous call from the BPA.
 
 These secondary callbacks are registered by the BPA as part of the initialization of <<sec-workflow-bpa>> and explained in more detail in <<sec-api-secondary>>.
 
@@ -445,9 +445,8 @@ Telemetry from each BSL context is accessed through the synchronous function `BS
 It is up to the host BPA to determine if, when, and how often to collect BSL telemetry and either log or aggregate the values itself.
 The content of the obtained `BSL_TlmCounters_t` struct is designed to be aggregated across multiple BSL contexts to make it easy for a BPA to report on statistics at individual interaction points as well as aggregated to whole-node statistics.
 
-
 [#sec-api-pp]
-=== Policy Providers
+=== Policy Provider Interface
 
 Policy Providers need to be registered with a library context via the dynamic backend before they can be used.
 Policy Providers must implement the function headers of the dynamic backend `BSL_PolicyDesc_t` struct defined in the `BPSecLib_Private.h` header file.
@@ -455,40 +454,8 @@ Policy Providers must implement the function headers of the dynamic backend `BSL
 Policy Providers must inspect each bundle to produce an Action Set, containing Security Operations.
 Policy Providers also must finalize over a bundle after each Security Operation has been executed by the security context.
 
-The BSL includes a simple rule-based example PP that may be utilized by any BPA, and is used by the Mock BPA used for BSL testing (see <<sec-mockbpa>>).
+The BSL includes a simple rule-based example PP that may be utilized by any BPA (see <<sec-examplepp>>), and is used by the Mock BPA for BSL testing (see <<sec-mockbpa>>).
 This policy provider's data is mutex-protected and may be re-used among multiple threads / BSL contexts (see the Mock BPA for an example).
-
-[#sec-api-pp-json]
-==== JSON-Defined Policy Provider Rules
-The sample policy provider has the option to parse and load JSON-encoded ION-like policy rules into the sample policy provider from a file. Policy rules are as specified in <<ION-BPSec-Policy-Manual>> with some notable differences/modifications mentioned as follows:
-
-`policyrule_set`::
-Each file's JSON encoding must have the attribute `policyrule_set`, which contains a JSON list of ION-like JSON-encoded `policyrule` as specified in <<ION-BPSec-Policy-Manual>>.
-
-`policy_action_on_fail`::
- A full policy action set implementation does not exist yet within BSL. For now, a temporary `policy_action_on_fail` attribute should be set to "delete_bundle", "drop_block", or "do_nothing".
-
-`key_wrap`::
- An extra security context parameter id `key_wrap` will be parsed. When the value is set to "0", key wrapping will be skipped. For all other values, key wrapping will be enabled. Decision to key wrap is a required parameter for security operations when executed within the implementations of the Default Security Contexts.
-
- `loc`::
- An attribute of `filter` that specifies the interaction point (APPIN, APPOUT, CLIN, CLOUT) where the policy rule should be applied.
-
-===== Steps to initialize policy provider from JSON
-
-. Initialize policy provider data with `BSLP_PolicyProvider_Init()`.
-
-. Initialize policy rules from JSON by calling `BSLP_RegisterPolicyFromJSON()`.
-
-. Register the policy with BSL by calling `BSL_API_RegisterPolicyProvider()`, the policy where the `user_data` of the policy provider descriptor is set to the initialized policy provider.
-
-===== Example JSON-Encoded Policy Provider
-An example with two policy rules is as follows:
-
-[source]
-----
-include::https://raw.githubusercontent.com/NASA-AMMOS/BSL/refs/heads/main/mock-bpa-test/policy_provider_test.json[]
-----
 
 [#sec-api-sc]
 === Security Contexts
@@ -496,40 +463,28 @@ include::https://raw.githubusercontent.com/NASA-AMMOS/BSL/refs/heads/main/mock-b
 Security Contexts need to be registered with a library context via the dynamic backend before they can be used.
 Security Contexts must implement the function headers of the dynamic backend `BSL_SecCtxDesc_t` struct defined in the `SecurityContext.h` header file.
 
-The BSL includes two Default Security Context implementations, both specified in <<RFC9173>>:
+Security Contexts operate in the context of a single Security Operation over a bundle.
+Security Contexts must validate Security Operations for consistency, and process Security Operations on bundles to produce security outcomes.
 
- * `BIB-HMAC-SHA2` (context ID 1) for Block Integrity
- * `BCB-AES-GCM` (context ID 2) for Block Confidentiality
+The BSL includes two Default Security Context implementations, as explained in <<sec-defaultsc>>, which are also used by the Mock BPA for BSL testing (see <<sec-mockbpa>>).
 
-The BSL backend cryptographic interface utilizes OpenSSL to perform HMAC-signing, encryption, and decryption operations.
+[#sec-api-sc-crypto]
+==== Cryptographic Processing
 
-Security Contexts operate in the context of a single Security Operation over a bundle. Security Contexts must validate Security Operations for consistency, and process Security Operations on bundles to produce security outcomes.
+Both of the default contexts use the BSL frontend for abstracting cryptographic processing.
+It is expected that alternative and/or future contexts will also use the BSL frontend for abstracting such processing, and that that frontend API will evolve as those needs change.
 
-[#sec-mockbpa]
-=== Mock BPA
+The BSL backend cryptographic interface utilizes OpenSSL to perform HMAC-signing, encryption, and decryption operations through its "EVP" primitives APIs <<OpenSSL>>.
 
-An executable used to provide a test fixture and example BPA integration. However, the Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point. Users may reference the Mock BPA for an example of library and bundle workflow.
-
-[#sec-preprocessor-directives]
+[#sec-api-preprocessor]
 === Preprocessor Define Directives
 
-The following are preprocessor define directives that limit certain capabilities within the BSL.
+The BSL library frontend and its dynamic backend do not rely on any externally configured preprocessor defines to operate normally.
 
-`MOCK_BPA_LOG_QUEUE_SIZE` = 100::
-Number of logging events to buffer before output.
+The dynamic backend does use defines to configure how the M*LIB library allocates memory, routing all allocation calls to the host heap allocation callbacks (see <<sec-api-secondary>>).
 
-`BSL_CRYPTO_AESGCM_AUTH_TAG_LEN` = 16::
-The length of an Authentication Tag for AES-GCM encryption and decryption as specified by <<RFC9173>>.
 
-`BSLX_MAX_AES_PAD` = 64::
-Maximum size of padding added to AES operation by crypto finalize operation. AES-GCM will not produce extra padding, and this value is likely inconsequential.
-
-`RFC9173_BCB_DEFAULT_IV_LEN` = 12::
-The default initialization vector length as specified by <<RFC9173>>.
-
-`DATA_QUEUE_SIZE` = 100::
-Size of the Mock BPA ingress and egress queues for each thread.
-
+[#sec-workflow]
 == Workflows
 A simple BPA that utilizes the example policy provider, default security contexts, and dynamic backend could operate with the following workflow:
 
@@ -598,6 +553,99 @@ The BSL Frontend API consists of two primary functions for per-bundle operation:
 Before joining or termination of an associated work thread, each `BSL_LibCtx_t` instance should be de-initialized with `BSL_LibCtx_Deinit()` to free its resources.
 
 Each BSL Context is independent of all others, so there is no need to coordinate activities of one with any other.
+
+[#sec-defaultsc]
+== Implementation of Default Security Contexts (RFC9173)
+
+The BSL source and default build includes two Default Security Context implementations, both specified in <<RFC9173>>:
+
+ * `BIB-HMAC-SHA2` (context ID 1) for Block Integrity
+ * `BCB-AES-GCM` (context ID 2) for Block Confidentiality
+
+[#sec-defaultsc-preprocessor]
+=== Preprocessor Define Directives
+
+The following are preprocessor define directives that limit certain capabilities within the security contexts.
+
+`BSL_CRYPTO_AESGCM_AUTH_TAG_LEN` = 16::
+The length of an Authentication Tag for AES-GCM encryption and decryption as specified by <<RFC9173>>.
+
+`BSLX_MAX_AES_PAD` = 64::
+Maximum size of padding added to AES operation by crypto finalize operation.
+AES-GCM will not produce extra padding, and this value is likely inconsequential.
+
+`RFC9173_BCB_DEFAULT_IV_LEN` = 12::
+The default initialization vector length as specified by <<RFC9173>>.
+
+
+[#sec-examplepp]
+== Example ION-Heritage Policy Provider
+
+The BSL source and default build includes a policy provider which has heritage in the ION BPA and is used to configure options for the Default Security Context implementations of <<sec-defaultsc>>.
+Alternative SC implementations can have other internal options that the example policy provider is unaware of and cannot configure.
+
+[#sec-examplepp-json]
+=== JSON-Defined Policy Provider Rules
+
+The sample policy provider has the option to parse and load JSON-encoded ION-like policy rules into the sample policy provider from a file.
+Policy rules are as specified in <<ION-BPSec-Policy-Manual>> with some notable differences/modifications mentioned as follows:
+
+`policyrule_set`::
+Each file's JSON encoding must have the attribute `policyrule_set`, which contains a JSON list of ION-like JSON-encoded `policyrule` as specified in <<ION-BPSec-Policy-Manual>>.
+
+`policy_action_on_fail`::
+ A full policy action set implementation does not exist yet within BSL. For now, a temporary `policy_action_on_fail` attribute should be set to "delete_bundle", "drop_block", or "do_nothing".
+
+`key_wrap`::
+ An extra security context parameter id `key_wrap` will be parsed. When the value is set to "0", key wrapping will be skipped. For all other values, key wrapping will be enabled. Decision to key wrap is a required parameter for security operations when executed within the implementations of the Default Security Contexts.
+
+ `loc`::
+ An attribute of `filter` that specifies the interaction point (APPIN, APPOUT, CLIN, CLOUT) where the policy rule should be applied.
+
+==== Steps to initialize policy provider from JSON
+
+This procedure is how a BPA making use of the example policy provider initializes and registers with each instance of the BSL.
+
+. Initialize policy provider data with `BSLP_PolicyProvider_Init()`.
+
+. Initialize policy rules from JSON by calling `BSLP_RegisterPolicyFromJSON()`.
+
+. Register the policy with BSL by calling `BSL_API_RegisterPolicyProvider()`, the policy where the `user_data` of the policy provider descriptor is set to the initialized policy provider.
+
+==== Example JSON-Encoded Policy Provider
+An example with two policy rules is as follows:
+
+[source]
+----
+include::https://raw.githubusercontent.com/NASA-AMMOS/BSL/refs/heads/main/mock-bpa-test/policy_provider_test.json[]
+----
+
+[#sec-examplepp-preprocessor]
+=== Preprocessor Define Directives
+
+The Example PP does not rely on any externally configured preprocessor defines to operate normally.
+It does rely on the defines from the Default Security Context to control options of security operations used by the PP.
+
+
+[#sec-mockbpa]
+== Mock BPA
+
+This is an executable used to provide a test fixture and example BPA integration of specific security context and policy provider instances.
+The Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point.
+
+Users may find it useful to reference the Mock BPA for a working example of library and bundle workflow, and working examples of initializing, registering, and operating the Default Security Context (of <<sec-defaultsc>>) and the Example Policy Provider (of <<sec-examplepp>>).
+Exercising of the Mock BPA is part of normal BSL continuous integration (CI) testing and release testing, so it is always in-sync with the BSL APIs.
+
+[#sec-mockbpa-preprocessor]
+=== Preprocessor Define Directives
+
+The following are preprocessor define directives that limit certain capabilities within the Mock BPA.
+
+`MOCK_BPA_LOG_QUEUE_SIZE` = 100::
+Number of logging events to buffer before output.
+
+`DATA_QUEUE_SIZE` = 100::
+Size of the Mock BPA ingress and egress queues for each thread.
 
 
 [#sec-support]
