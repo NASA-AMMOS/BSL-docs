@@ -455,7 +455,8 @@ Policy Providers must implement the function headers of the dynamic backend `BSL
 Policy Providers must inspect each bundle to produce an Action Set, containing Security Operations.
 Policy Providers also must finalize over a bundle after each Security Operation has been executed by the security context.
 
-The BSL includes a simple rule-based example PP that may be utilized by any BPA, and is used by the Mock BPA used for BSL testing (see <<sec-mockbpa>>). This policy provider's data is mutex-protected and may be re-used amongst multiple threads / BSL contexts (see the Mock BPA for an example).
+The BSL includes a simple rule-based example PP that may be utilized by any BPA, and is used by the Mock BPA used for BSL testing (see <<sec-mockbpa>>).
+This policy provider's data is mutex-protected and may be re-used among multiple threads / BSL contexts (see the Mock BPA for an example).
 
 [#sec-api-pp-json]
 ==== JSON-Defined Policy Provider Rules
@@ -479,7 +480,7 @@ Each file's JSON encoding must have the attribute `policyrule_set`, which contai
 
 . Initialize policy rules from JSON by calling `BSLP_RegisterPolicyFromJSON()`.
 
-. Register the policy with BSL by calling `BSL_API_RegisterPolicyProvider()`, the policy where the policy descriptor's user_data is set to the initialized policy provider.
+. Register the policy with BSL by calling `BSL_API_RegisterPolicyProvider()`, the policy where the `user_data` of the policy provider descriptor is set to the initialized policy provider.
 
 ===== Example JSON-Encoded Policy Provider
 An example with two policy rules is as follows:
@@ -611,7 +612,7 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 The following provides troubleshooting guidance for the BSL from the perspective of a normal or administrative user. Each situation consists of an observed state followed by a recommended troubleshooting activity.
 
 [qanda]
-
+TBD:: missing
 
 [#sec-contact]
 === Contacting or Contributing

@@ -51,6 +51,7 @@ LLC
 MCS
 MGSS
 MIMTaR
+mutex
 OpenSSL
 PDU
 POSIX
