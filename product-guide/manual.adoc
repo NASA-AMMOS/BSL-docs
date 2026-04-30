@@ -236,6 +236,9 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |The Ninja build system[[Ninja]]
 |https://ninja-build.org/manual.html[Ninja manual]
 
+|Tito: A tool for managing rpm based git projects[[tito]]
+|https://github.com/rpm-software-management/tito[GitHub project Tito]
+
 |Wireshark Project[[wireshark]]
 |https://www.wireshark.org/
 
@@ -447,30 +450,20 @@ git submodule update --init --recursive
 sudo dnf install -y epel-release
 sudo crb enable
 sudo dnf install -y \
-rsync cmake git ninja-build gcc ruby \
+    rsync cmake git ninja-build gcc ruby \
     openssl-devel jansson-devel valgrind-devel \
     doxygen graphviz plantuml texlive-bibtex \
     asciidoctor \
-    rpm-build rpmlint
+    tito rpm-build rpmlint
 ----
 +
 The packages `doxygen graphviz plantuml texlive-bibtex asciidoctor` are optional, and used only for the `bsl-docs` subpackage.
-. The BSL CMake project is configured with:
-+
-----
-./build.sh deps
-----
-. Prepare the CMake project, with options to enable API documentation building, using:
-+
-----
-./build.sh prep
-----
-. The BSL packages are then built with:
+. The BSL packages are then built (using the Tito packaging tool <<tito>>) with:
 +
 ----
 ./build.sh rpm-build
 ----
-. The resulting packages can be seen by the listing:
+. The resulting packages are placed in the directory `build/default/pkg` and can be seen by the listing:
 +
 ----
 find build/default/pkg/rpmbuild -name '*.rpm'
@@ -480,6 +473,16 @@ find build/default/pkg/rpmbuild -name '*.rpm'
 ----
 ./build.sh rpm-check
 ----
+
+An alternative to the procedure for building on an RHEL host is to build within a container with an RHEL base image.
+This can be done using the following on any host with docker available using the command:
+
+----
+./build.sh rpm-container
+----
+
+With package files copied into the same `build/default/pkg` as the native build.
+The specific docker executable is configured through the `DOCKER` environment.
 
 [#sec-proc-install]
 === Installation
