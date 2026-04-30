@@ -459,6 +459,10 @@ The packages `doxygen graphviz plantuml texlive-bibtex asciidoctor` are optional
 +
 ----
 ./build.sh deps
+----
+. Prepare the CMake project, with options to enable API documentation building, using:
++
+----
 ./build.sh prep
 ----
 . The BSL packages are then built with:
@@ -540,68 +544,68 @@ The coarse-grained procedure for building and testing the BSL locally is the fol
 
 . Build the local dependencies an install into the local target tree `./testroot/` using:
 +
-```
+----
 ./build.sh deps
-```
+----
 . Prepare the CMake project, with optional additional options, using:
 +
-```
+----
 ./build.sh prep -DBUILD_COVERAGE=ON
-```
+----
 . Build the artifacts into the out-of-source tree `./build/default/` using:
 +
-```
+----
 ./build.sh
-```
+----
 . Install artifacts into the local target tree `./testroot` using:
 +
-```
+----
 ./build.sh install
-```
+----
 . Optionally, execute registered unit tests using:
 +
-```
+----
 ./build.sh check
-```
+----
 .. If BSL sources are updated and need re-testing, they must be built-and-installed using:
 +
-```
+----
 ./build.sh && ./build.sh install
-```
+----
 . Optionally, execute Mock BPA built-item tests using the following sub-procedure.
 .. Install and enter a local Python virtualenv using:
 +
-```
+----
 python3 -m venv venv
 source venv/bin/activate
 pip install -r mock-bpa-test/requirements.txt
-```
+----
 .. Run the test suite using:
 +
-```
+----
 python3 -m pytest mock-bpa-test --log-cli-level=info
-```
+----
 .. If BSL sources are updated and need re-testing, they must be built-and-installed using:
 +
-```
+----
 ./build.sh && ./build.sh install
-```
+----
 .. Leave the virtualenv using:
 +
-```
+----
 deactivate
-```
+----
 . Collect and report on coverage metrics using:
 +
-```
+----
 ./build.sh coverage
 ./build.sh coverage-summary
-```
+----
 . The coverage outputs under the build tree can be viewed in a Web Browser using:
 +
-```
+----
 xdg-open build/default/coverage-html/index.html
-```
+----
 
 [#sec-proc-build-devel-apidoc]
 ==== Local API Documentation Building
@@ -610,24 +614,24 @@ The full API documentation can be built and edited locally using the following p
 
 . Build the local dependencies (the same as a normal build) using:
 +
-```
+----
 ./build.sh deps
-```
+----
 . Prepare the CMake project, with options to enable API documentation building, using:
 +
-```
+----
 ./build.sh prep -DBUILD_DOCS_API=ON
-```
+----
 . Build the documentation itself, observing warnings, using:
 +
-```
+----
 ./build.sh docs
-```
+----
 . The documentation outputs under the build tree can be viewed in a Web Browser using:
 +
-```
+----
 xdg-open build/default/docs/api/html/index.html
-```
+----
 
 [#sec-proc-monitoring]
 === Monitoring
