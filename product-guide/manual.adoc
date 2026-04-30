@@ -283,11 +283,11 @@ These are depicted in <<fig-bsl-interaction-points>> and correspond to the follo
 
 [#fig-bsl-system-context]
 .BSL System Context
-image::images/bsl-system-context.png[scaledwidth=60%]
+image::images/bsl-system-context.png[width=120mm]
 
 [#fig-bsl-interaction-points]
 .Interaction Points from the BPA into BSL
-graphviz::images/bsl-interaction-points.gv[format=svg]
+graphviz::images/bsl-interaction-points.gv[format=svg,width=140mm]
 
 
 [#sec-arch-components]
@@ -356,28 +356,33 @@ The set of packages for each BSL release (or local package build) contains the f
 `bsl`::
 The runtime files needed for the library itself.
 This contains versioned shared objects.
++
 Major files are installed under `/usr/lib64/`.
 `bsl-devel`::
 Development files needed to build and link against the BSL.
 This contains C headers and shared object version links.
++
 Major files are installed under `/usr/include/` and `/usr/lib64/`.
 `bsl-apidoc`::
 Doxygen-generated API documentation derived from in-source markup.
++
 Major files are installed under `/usr/share/doc/bsl/`, which contains an `html` directory.
 `bsl-debuginfo`::
-Runtime debug information associated with the `bsl` package.
+Runtime debug information for the `bsl` package.
 This relies on `bsl-debugsource` for tracing to individual source lines for interactive debugging.
 `bsl-debugsource`::
 Copies of the original source files used along with the `*-debuginfo` packages to support interactive debugging.
 `bsl-test`::
-
-Major files are installed under `/usr/bin/`, containing the `bsl-mock-bpa` executable, `/usr/lib64/` for its libraries, and `/usr/libexec/bsl/` which contains each unit test executable for the BSL.
+Unit test and Mock BPA executables and support libraries.
++
+Major files are installed under `/usr/bin/`, containing the `bsl-mock-bpa` daemon executable, `/usr/lib64/` for its libraries, and `/usr/libexec/bsl/` which contains each unit test executable for the BSL.
 `bsl-test-devel`::
 Development files needed to build and link against the Mock BPA of the BSL.
 This contains C headers and shared object version links, including the Unity test library.
++
 Major files are installed under `/usr/include/` and `/usr/lib64/`.
 `bsl-test-debuginfo`::
-Runtime debug information associated with the `bsl-test` package.
+Runtime debug information for the `bsl-test` package.
 This relies on `bsl-debugsource` for tracing to individual source lines for interactive debugging.
 
 
