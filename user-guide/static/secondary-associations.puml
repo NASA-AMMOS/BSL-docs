@@ -1,0 +1,17 @@
+@startuml
+hide circle
+hide members
+skinparam ClassAttributeIconSize 0
+skinparam minClassWidth 200
+
+class "BP Agent" as BPA {
+}
+
+class "BSL Context" as BSL {
+}
+
+BSL --> BPA : memory
+BSL --> BPA : logging
+BPA --> BSL : telemetry
+
+@enduml
