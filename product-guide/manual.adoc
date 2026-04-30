@@ -454,12 +454,12 @@ rsync cmake git ninja-build gcc ruby \
     rpm-build rpmlint
 ----
 +
-  The packages `doxygen graphviz plantuml texlive-bibtex asciidoctor` are optional, and used only for the `bsl-docs` subpackage.
+The packages `doxygen graphviz plantuml texlive-bibtex asciidoctor` are optional, and used only for the `bsl-docs` subpackage.
 . The BSL CMake project is configured with:
 +
 ----
 ./build.sh deps
-./build.sh rpm-prep
+./build.sh prep
 ----
 . The BSL packages are then built with:
 +
