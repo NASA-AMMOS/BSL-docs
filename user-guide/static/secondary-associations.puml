@@ -2,7 +2,7 @@
 hide circle
 hide members
 skinparam ClassAttributeIconSize 0
-skinparam minClassWidth 200
+skinparam minClassWidth 160
 
 class "BP Agent" as BPA {
 }
