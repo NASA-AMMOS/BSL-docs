@@ -54,7 +54,14 @@ Affected sections or pages: All
 Updates for BSL v1.1.0.
       </simpara>
       <simpara>
-Affected sections or pages: TBD
+Affected sections or pages:
+Sec 2.4.1 removed EID callback limitation.
+Sec 3.2 added for secondary interactions.
+Sec 3.3 and 3.4 clarified BSL backend registrations.
+Sec 3.4.1 added for crypto discussion.
+Sec 5 relocated Default SC.
+Sec 6 relocated Example PP.
+Sec 7 relocated Mock BPA.
       </simpara>
     </revdescription>
   </revision>
