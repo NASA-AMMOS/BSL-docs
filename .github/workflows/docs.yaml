@@ -64,14 +64,14 @@ jobs:
           path: public
       - uses: actions/upload-artifact@v7
         with:
-          name: product-guide-pdf
+          name: bsl-product-guide.pdf
           archive: false
-          path: public/product-guide/manual.pdf
+          path: public/product-guide/bsl-product-guide.pdf
       - uses: actions/upload-artifact@v7
         with:
-          name: user-guide-pdf
+          name: bsl-user-guide.pdf
           archive: false
-          path: public/user-guide/manual.pdf
+          path: public/user-guide/bsl-user-guide.pdf
 
   deploy:
     # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages

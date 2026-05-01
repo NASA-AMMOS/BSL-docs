@@ -148,6 +148,6 @@ add_custom_target(
 )
 install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/${OUT_PDF}"
+    RENAME "bsl-user-guide.pdf"
     DESTINATION ${PROJECT_NAME}
-#  RENAME "BSL User Guide v${PROJECT_VERSION}.pdf"
 )
