@@ -45,8 +45,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-              cmake make coreutils ruby asciidoctor graphviz inkscape dblatex docbook-xsl-ns xmlstarlet aspell
-          sudo gem install asciidoctor-diagram asciidoctor-diagram-plantuml
+              cmake make coreutils \
+              ruby asciidoctor graphviz plantuml inkscape \
+              dblatex docbook-xsl-ns xmlstarlet aspell
+          sudo gem install \
+              asciidoctor-diagram \
+              asciidoctor-diagram-plantuml -v '~> 1.2024.8'
       - name: Build
         env:
           DESTDIR: public
@@ -54,7 +58,7 @@ jobs:
           cmake -S . -B build
           cmake --build build
           cmake --install build
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: docs
           path: public
@@ -77,16 +81,16 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: docs
           path: public
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v6
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: public
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

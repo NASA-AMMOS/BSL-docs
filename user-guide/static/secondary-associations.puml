@@ -2,13 +2,10 @@
 hide circle
 hide members
 skinparam ClassAttributeIconSize 0
-skinparam minClassWidth 160
+skinparam minClassWidth 150
 
-class "BP Agent" as BPA {
-}
-
-class "BSL Context" as BSL {
-}
+!include classes.puml!bpa
+!include classes.puml!bsl
 
 BSL --> BPA : memory
 BSL --> BPA : logging
