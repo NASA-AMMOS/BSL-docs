@@ -54,7 +54,9 @@ Affected sections or pages: All
 Updates for BSL v1.1.0.
       </simpara>
       <simpara>
-Affected sections or pages: TBD
+Affected sections or pages:
+Sec 3.1 to correct package building.
+Sec 3.4.1, 3.4.2, 4.1.1 to clarify `CMAKE_INSTALL_PREFIX` use.
       </simpara>
     </revdescription>
   </revision>
