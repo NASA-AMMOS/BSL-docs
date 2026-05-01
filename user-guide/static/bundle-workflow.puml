@@ -10,6 +10,9 @@ participant "Crypto Library" as Crypto
 activate BPA #dcebff
 BPA -> BSL : query security
 activate BSL #dcebff
+
+BSL -> BSL : index ASBs
+
 loop each provider
     BSL -> Policy : query
 
@@ -19,12 +22,25 @@ loop each provider
     activate BPA #dcebff
     BPA --> Policy
     deactivate BPA
-
     ||5||
 
     Policy --> BSL : action set
-    ||5||
     deactivate Policy
+    ||5||
+
+    loop each action
+
+        loop each secop
+            BSL -> SC : validate secop
+            activate SC #dcebff
+            SC --> BSL
+            deactivate SC
+        end
+    end
+
+    alt any validation failed
+        BSL -> BSL : actions ignored
+    end
 end
 BSL --> BPA : action set
 deactivate BSL
@@ -36,69 +52,49 @@ activate BSL #dcebff
 
 loop each action
     loop each secop
-        BSL -> SC : validate secop
+
+        BSL -> SC : run secop
         activate SC #dcebff
-        ||10||
-        SC --> BSL
+
+        SC -> BPA : [as needed]\nget data
+        activate BPA #dcebff
+        BPA --> SC
+        deactivate BPA
+
+        SC -> Crypto : [as needed]\ncrypto functions
+        activate Crypto #dcebff
+        Crypto --> SC
+        deactivate Crypto
+
+        SC -> BPA : [as needed]\nalter bundle
+        activate BPA #dcebff
+        BPA --> SC
+        deactivate BPA
+
+        SC --> BSL : secop outcome
         deactivate SC
-    end
-
-    alt all validated
-
-        loop each secop
-
-            BSL -> SC : run secop
-            activate SC #dcebff
-
-            SC -> BPA : [as needed]\nget data
-            activate BPA #dcebff
-            BPA --> SC
-            deactivate BPA
-
-            SC -> Crypto : [as needed]\ncrypto functions
-            activate Crypto #dcebff
-            ||10||
-            Crypto --> SC
-            deactivate Crypto
-
-            SC -> BPA : [as needed]\nalter bundle
-            activate BPA #dcebff
-            deactivate BPA
-
-            SC --> BSL : secop outcome
-            ||5||
-            deactivate SC
-        end
-    else any validation failed
-        BSL -> BSL : action failed
+        ||5||
     end
 end
-BSL --> BPA : action outcomes
-deactivate BSL
-
-||20||
 
 loop each action
-    BPA -> BSL : finalize
-    activate BSL #dcebff
-
-    BSL -> BSL : lookup PP
+    BSL -> BSL : lookup action PP
 
     BSL -> Policy : finalize
     activate Policy #dcebff
 
     Policy -> BPA : [as needed]\nalter bundle
     activate BPA #dcebff
+    BPA --> Policy
     deactivate BPA
 
     Policy --> BSL
     deactivate Policy
-
-    BSL --> BPA
-    deactivate BSL
     ||5||
 end
 
+BSL --> BPA : outcomes
+deactivate BSL
 ||10||
 
 @enduml
