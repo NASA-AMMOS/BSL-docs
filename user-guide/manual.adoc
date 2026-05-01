@@ -402,7 +402,7 @@ The purpose of a Bundle Context is to both relate back to some form of BPA-speci
 
 [#fig-bpa-associations]
 .BPA and Bundle Context Associations 
-plantuml::static/bpa-associations.puml[format=svg,width=60mm]
+plantuml::static/bpa-associations.puml[format=svg,scale=60]
 
 Each BSL Context instance is associated with one or more Policy Provider instances and one or more Security Context instances, as depicted in <<fig-bsl-breakdown>>.
 The Policy Providers are used to control _what_ the BSL needs to do for a specific bundle, as discussed in more detail in <<sec-api-pp>>.
@@ -410,7 +410,7 @@ The Security Contexts are used to validate and actually execute each security op
 
 [#fig-bsl-breakdown]
 .BSL Structure Breakdown 
-plantuml::static/bsl-breakdown.puml[format=svg,width=70mm]
+plantuml::static/bsl-breakdown.puml[format=svg,scale=60]
 
 In addition to the externally-visible information about security operations and their _target_, _parameters_, and _results_ the BSL adds the notion of a security Action which is an ordered sequence of specific operations.
 This is necessary because some policies require, for example, some operations to be accepted before others are sourced which would refer to the same target block.
@@ -421,7 +421,7 @@ Some options, like key identifiers for the default security contexts, do not hav
 
 [#fig-secop-assoctaions]
 .Security Operation Associations 
-plantuml::static/secop-associations.puml[format=svg,width=100mm]
+plantuml::static/secop-associations.puml[format=svg,scale=60]
 
 [#sec-api-secondary]
 === Secondary Interactions
@@ -447,7 +447,7 @@ The content of the obtained `BSL_TlmCounters_t` struct is designed to be aggrega
 
 [#fig-secondary-assoctaions]
 .Secondary Associations with BPA
-plantuml::static/secondary-associations.puml[format=svg,width=50mm]
+plantuml::static/secondary-associations.puml[format=svg,scale=60]
 
 [#sec-api-pp]
 === Policy Provider Interface
@@ -543,20 +543,25 @@ Utilize the example Policy Provider's finalize function to verify successful sec
 The bundle has now completed the required BSL interactions, and the bundle context resources can be released. The bundle can now be forwarded within the BPA.
 
 [#fig-bsl-bundle-workflow]
-.Visual Representation of Per-Bundle Workflow
-plantuml::static/bundle-workflow.puml[format=svg,width=100mm]
+.Sequence Diagram of Per-Bundle Workflow
+plantuml::static/bundle-workflow.puml[format=svg,width=110mm]
 
 The BSL Frontend API consists of two primary functions for per-bundle operation: 
 
-1. `BSL_API_QuerySecurity` covers steps 1 through 6 above. The function first utilizes the policy providers to query on a bundle. Next, each security operation in the resulting Action Set is validated using the security context associated with that security operation.
+1. `BSL_API_QuerySecurity` covers steps 1 through 6 above.
+The function first utilizes the policy providers to query on a bundle.
+Next, each security operation in the resulting Action Set is validated using the security context associated with that security operation.
 
-2. `BSL_API_ApplySecurity` covers steps 7 through 17 above. The function first executes each security operation with its associated security context. Next, the policy providers will finalize over the results.
+2. `BSL_API_ApplySecurity` covers steps 7 through 18 above.
+The function first executes each security operation with its associated security context.
+Next, the policy providers will finalize over the results.
 
 === De-initialization of a BSL Context
 
 Before joining or termination of an associated work thread, each `BSL_LibCtx_t` instance should be de-initialized with `BSL_LibCtx_Deinit()` to free its resources.
 
 Each BSL Context is independent of all others, so there is no need to coordinate activities of one with any other.
+
 
 [#sec-defaultsc]
 == Example of Default Security Contexts
@@ -673,7 +678,7 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 The following provides troubleshooting guidance for the BSL from the perspective of a normal or administrative user. Each situation consists of an observed state followed by a recommended troubleshooting activity.
 
 [qanda]
-Why is BSL writing logs to standard error (`stderr`)?::
+Why is BSL writing logs to standard error?::
 The host callback for handling log events has not been set and BSL is falling back to default `stderr` logging.
 Set the `log_event` (and optionally the `log_enabled_for`) callbacks in the registered `BSL_HostDescriptors_t` struct to handle logging via the BPA.
 

@@ -8,10 +8,10 @@ participant "Security Context" as SC
 participant "Crypto Library" as Crypto
 
 activate BPA #dcebff
-BPA -> BSL : inspect
+BPA -> BSL : query security
 activate BSL #dcebff
 loop each provider
-    BSL -> Policy : check
+    BSL -> Policy : query
 
     activate Policy #dcebff
     Policy -> BPA : [as needed]\nget data
@@ -31,10 +31,10 @@ deactivate BSL
 
 ||20||
 
-loop each action
-    BPA -> BSL : execute action
-    activate BSL #dcebff
+BPA -> BSL : apply security
+activate BSL #dcebff
 
+loop each action
     loop each secop
         BSL -> SC : validate secop
         activate SC #dcebff
@@ -43,33 +43,37 @@ loop each action
         deactivate SC
     end
 
-    loop each secop
+    alt all validated
 
-        BSL -> SC : run secop
-        activate SC #dcebff
+        loop each secop
 
-        SC -> BPA : [as needed]\nget data
-        activate BPA #dcebff
-        BPA --> SC
-        deactivate BPA
-    
-        SC -> Crypto : [as needed]\ncrypto functions
-        activate Crypto #dcebff
-        ||10||
-        Crypto --> SC
-        deactivate Crypto
-    
-        SC -> BPA : [as needed]\nalter bundle
-        activate BPA #dcebff
-        deactivate BPA
-    
-        SC --> BSL : secop outcome
-        ||5||
-        deactivate SC
+            BSL -> SC : run secop
+            activate SC #dcebff
+
+            SC -> BPA : [as needed]\nget data
+            activate BPA #dcebff
+            BPA --> SC
+            deactivate BPA
+
+            SC -> Crypto : [as needed]\ncrypto functions
+            activate Crypto #dcebff
+            ||10||
+            Crypto --> SC
+            deactivate Crypto
+
+            SC -> BPA : [as needed]\nalter bundle
+            activate BPA #dcebff
+            deactivate BPA
+
+            SC --> BSL : secop outcome
+            ||5||
+            deactivate SC
+        end
+    else any validation failed
+        BSL -> BSL : action failed
     end
-
-    BSL --> BPA : action outcomes
 end
+BSL --> BPA : action outcomes
 deactivate BSL
 
 ||20||

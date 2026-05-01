@@ -64,12 +64,10 @@ jobs:
           path: public
       - uses: actions/upload-artifact@v7
         with:
-          name: bsl-product-guide.pdf
           archive: false
           path: public/product-guide/bsl-product-guide.pdf
       - uses: actions/upload-artifact@v7
         with:
-          name: bsl-user-guide.pdf
           archive: false
           path: public/user-guide/bsl-user-guide.pdf
 
