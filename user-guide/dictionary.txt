@@ -42,6 +42,7 @@ IANA
 IEC
 IETF
 instantiation
+IP
 ISA
 Jansson
 JHU
@@ -71,6 +72,7 @@ structs
 submodule
 superset
 TBD
+UDP
 UML
 Verifier
 Wireshark

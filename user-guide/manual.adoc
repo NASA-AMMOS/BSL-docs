@@ -644,7 +644,7 @@ This is an executable used to provide a test fixture and example BPA integration
 This implementation corresponds to the executable `bsl-mock-bpa` and shared library `bsl_mock_bpa` as explained in the <<bsl-product-guide>> and the API Docs subsection on https://nasa-ammos.github.io/BSL/html/examples-and-mocks.html#mock-bpa[Mock BPA].
 
 The Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point.
-The Mock BPA communicates with "the outside" at each interaction point using UDP socket binds configured by command options explained in detail in <<bsl-main-api>>.
+The Mock BPA communicates with "the outside" at each interaction point using UDP/IP socket binds configured by command options explained in detail in <<bsl-main-api>>.
 
 Users may find it useful to reference the Mock BPA for a working example of library and bundle workflow, and working examples of initializing, registering, and operating the Default Security Context (of <<sec-defaultsc>>) and the Example Policy Provider (of <<sec-examplepp>>).
 Exercising of the Mock BPA is part of normal BSL continuous integration (CI) testing and release testing, so it is always in-sync with the BSL APIs.
