@@ -402,7 +402,7 @@ The purpose of a Bundle Context is to both relate back to some form of BPA-speci
 
 [#fig-bpa-associations]
 .BPA and Bundle Context Associations 
-plantuml::static/bpa-associations.puml[format=png,width=60mm]
+plantuml::static/bpa-associations.puml[format=svg,width=60mm]
 
 Each BSL Context instance is associated with one or more Policy Provider instances and one or more Security Context instances, as depicted in <<fig-bsl-breakdown>>.
 The Policy Providers are used to control _what_ the BSL needs to do for a specific bundle, as discussed in more detail in <<sec-api-pp>>.
@@ -410,7 +410,7 @@ The Security Contexts are used to validate and actually execute each security op
 
 [#fig-bsl-breakdown]
 .BSL Structure Breakdown 
-plantuml::static/bsl-breakdown.puml[format=png,width=70mm]
+plantuml::static/bsl-breakdown.puml[format=svg,width=70mm]
 
 In addition to the externally-visible information about security operations and their _target_, _parameters_, and _results_ the BSL adds the notion of a security Action which is an ordered sequence of specific operations.
 This is necessary because some policies require, for example, some operations to be accepted before others are sourced which would refer to the same target block.
@@ -421,7 +421,7 @@ Some options, like key identifiers for the default security contexts, do not hav
 
 [#fig-secop-assoctaions]
 .Security Operation Associations 
-plantuml::static/secop-associations.puml[format=png,width=100mm]
+plantuml::static/secop-associations.puml[format=svg,width=100mm]
 
 [#sec-api-secondary]
 === Secondary Interactions
@@ -447,7 +447,7 @@ The content of the obtained `BSL_TlmCounters_t` struct is designed to be aggrega
 
 [#fig-secondary-assoctaions]
 .Secondary Associations with BPA
-plantuml::static/secondary-associations.puml[format=png,width=50mm]
+plantuml::static/secondary-associations.puml[format=svg,width=50mm]
 
 [#sec-api-pp]
 === Policy Provider Interface
@@ -544,7 +544,7 @@ The bundle has now completed the required BSL interactions, and the bundle conte
 
 [#fig-bsl-bundle-workflow]
 .Visual Representation of Per-Bundle Workflow
-plantuml::static/bundle-workflow.puml[format=png,width=100mm]
+plantuml::static/bundle-workflow.puml[format=svg,width=100mm]
 
 The BSL Frontend API consists of two primary functions for per-bundle operation: 
 
