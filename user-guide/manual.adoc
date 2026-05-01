@@ -47,7 +47,7 @@ This User Guide provides an overview of the application programming interface (A
 |Bundle Protocol Security Library (BSL)
 
 |Version
-|1.0
+|1.1
 |===
 
 === Scope
