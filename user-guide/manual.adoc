@@ -664,7 +664,14 @@ Attempts to troubleshoot should be made before submitting issue tickets to the u
 The following provides troubleshooting guidance for the BSL from the perspective of a normal or administrative user. Each situation consists of an observed state followed by a recommended troubleshooting activity.
 
 [qanda]
-TBD:: missing
+Why is BSL writing logs to standard error (`stderr`)?::
+The host callback for handling log events has not been set and BSL is falling back to default `stderr` logging.
+Set the `log_event` (and optionally the `log_enabled_for`) callbacks in the registered `BSL_HostDescriptors_t` struct to handle logging via the BPA.
+
+Why is BSL not using my memory management functions?::
+All of the members of the `BSL_DynMemHostDescriptors_t` must non-NULL to be used.
+If some but not all members are non-NULL that is treated as an error (along with a log event) and the default `libc` functions are used.
+
 
 [#sec-contact]
 === Contacting or Contributing
