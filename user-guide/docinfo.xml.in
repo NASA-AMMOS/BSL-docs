@@ -8,7 +8,7 @@
   </orgname>
 </author>
 <copyright>
-  <year>2023-2025</year>
+  <year>2023-2026</year>
   <holder>The Johns Hopkins University Applied Physics Laboratory LLC</holder>
 </copyright>
 <legalnotice>
@@ -43,6 +43,25 @@ Initial release for BSL v1.0.0.
       </simpara>
       <simpara>
 Affected sections or pages: All
+      </simpara>
+    </revdescription>
+  </revision>
+  <revision>
+    <revnumber>Revision A</revnumber>
+    <date>15 May 2026</date>
+    <revdescription>
+      <simpara>
+Updates for BSL v1.1.0.
+      </simpara>
+      <simpara>
+Affected sections or pages:
+Sec 2.4.1 removed EID callback limitation.
+Sec 3.2 added for secondary interactions.
+Sec 3.3 and 3.4 clarified BSL backend registrations.
+Sec 3.4.1 added for crypto discussion.
+Sec 5 relocated Default SC.
+Sec 6 relocated Example PP.
+Sec 7 relocated Mock BPA.
       </simpara>
     </revdescription>
   </revision>

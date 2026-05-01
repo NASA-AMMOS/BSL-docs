@@ -1,5 +1,5 @@
 ##
-## Copyright (c) 2023-2025 The Johns Hopkins University Applied Physics
+## Copyright (c) 2023-2026 The Johns Hopkins University Applied Physics
 ## Laboratory LLC.
 ##
 ## This file is part of the Bundle Protocol Security Library (BSL).
@@ -37,7 +37,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: recursive
@@ -54,7 +54,7 @@ jobs:
           cmake -S . -B build
           cmake --build build
           cmake --install build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: docs
           path: public

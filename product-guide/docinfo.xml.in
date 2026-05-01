@@ -8,7 +8,7 @@
   </orgname>
 </author>
 <copyright>
-  <year>2023-2025</year>
+  <year>2023-2026</year>
   <holder>The Johns Hopkins University Applied Physics Laboratory LLC</holder>
 </copyright>
 <legalnotice>
@@ -43,6 +43,20 @@ Initial release for BSL v1.0.0.
       </simpara>
       <simpara>
 Affected sections or pages: All
+      </simpara>
+    </revdescription>
+  </revision>
+  <revision>
+    <revnumber>Revision A</revnumber>
+    <date>15 May 2026</date>
+    <revdescription>
+      <simpara>
+Updates for BSL v1.1.0.
+      </simpara>
+      <simpara>
+Affected sections or pages:
+Sec 3.1 to correct package building.
+Sec 3.4.1, 3.4.2, 4.1.1 to clarify `CMAKE_INSTALL_PREFIX` use.
       </simpara>
     </revdescription>
   </revision>
