@@ -1,5 +1,4 @@
 digraph bpa_interaction {
-    size="5,3"
     rankdir=LR;
     node [shape=record, fontname=Helvetica, fontsize=12];
 

@@ -2,6 +2,7 @@
 hide circle
 hide members
 skinparam ClassAttributeIconSize 0
+skinparam minClassWidth 150
 
 !include classes.puml!bsl
 !include classes.puml!pp

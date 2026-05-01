@@ -47,7 +47,7 @@ This Product Guide provides architectural and maintenance details about the Bund
 |Bundle Protocol Security Library (BSL)
 
 |Version
-|1.0
+|1.1
 |===
 
 === Scope

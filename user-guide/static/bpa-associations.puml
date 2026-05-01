@@ -2,13 +2,8 @@
 hide circle
 skinparam ClassAttributeIconSize 0
 
-class "BP Agent" as BPA {
-  + bundles : Bundle [0..*]
-}
-
-class "BSL Context" as BSL {
-  + process(ctx: Bundle Context)
-}
+!include classes.puml!bpa
+!include classes.puml!bsl
 
 class "Bundle Context" as Bundle {
   + location : Processing Location

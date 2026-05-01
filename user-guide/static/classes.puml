@@ -1,3 +1,10 @@
+
+@startuml(id=bpa)
+class "BP Agent" as BPA {
+  + bundles : Bundle [0..*]
+}
+@enduml
+
 @startuml(id=bsl)
 class "BSL Context" as BSL {
   + process(ctx: Bundle Context)
