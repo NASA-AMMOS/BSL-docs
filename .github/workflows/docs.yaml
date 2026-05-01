@@ -50,7 +50,7 @@ jobs:
               dblatex docbook-xsl-ns xmlstarlet aspell
           sudo gem install \
               asciidoctor-diagram \
-              asciidoctor-diagram-plantuml -v '~> 1.2024.8'
+              'asciidoctor-diagram-plantuml:~>1.2024.8'
       - name: Build
         env:
           DESTDIR: public
