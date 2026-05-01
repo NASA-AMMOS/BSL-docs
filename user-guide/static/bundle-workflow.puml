@@ -1,4 +1,6 @@
 @startuml
+autonumber
+
 participant "BPA" as BPA
 participant "BSL" as BSL
 participant "Policy Provider" as Policy
@@ -8,7 +10,7 @@ participant "Crypto Library" as Crypto
 activate BPA #dcebff
 BPA -> BSL : inspect
 activate BSL #dcebff
-group loop each\nprovider
+loop each provider
     BSL -> Policy : check
 
     activate Policy #dcebff
@@ -29,17 +31,19 @@ deactivate BSL
 
 ||20||
 
-group loop each action
-    BPA -> BSL : execute
+loop each action
+    BPA -> BSL : execute action
     activate BSL #dcebff
 
-    group loop each secop
-    
+    loop each secop
         BSL -> SC : validate secop
         activate SC #dcebff
         ||10||
         SC --> BSL
         deactivate SC
+    end
+
+    loop each secop
 
         BSL -> SC : run secop
         activate SC #dcebff
@@ -59,17 +63,18 @@ group loop each action
         activate BPA #dcebff
         deactivate BPA
     
-        SC --> BSL : security outcome
+        SC --> BSL : secop outcome
         ||5||
         deactivate SC
     end
+
+    BSL --> BPA : action outcomes
 end
-BSL --> BPA : action outcomes
 deactivate BSL
 
 ||20||
 
-group loop each action
+loop each action
     BPA -> BSL : finalize
     activate BSL #dcebff
 
