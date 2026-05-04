@@ -1,22 +1,23 @@
 <!-- These parameters tweak the XHTML settings.
 Options are listed in https://docbook.sourceforge.net/release/xsl/current/doc/html/
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-  <!-- use system resolver for this URL -->
-  <xsl:import href="http://docbook.sourceforge.net/release/xsl-ns/current/xhtml5/docbook.xsl"/>
+<xsl:stylesheet
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:db="http://docbook.org/ns/docbook"
+  xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"
+  xmlns:m="http://docbook.org/ns/docbook/modes"
+  exclude-result-prefixes="db l m" version="3.0">
+  <!-- use catalog resolver for this URL -->
+  <xsl:import href="http://docbook.org/ns/docbook/docbook.xsl"/>
 
-  <xsl:param name="doc.collab.show">0</xsl:param>
-  <xsl:param name="section.autolabel">1</xsl:param>
-  <xsl:param name="section.label.includes.component.label">1</xsl:param>
-  <xsl:param name="preface.tocdepth">2</xsl:param>
-  <xsl:param name="generate.toc">
-book      toc,title,figure,table,example,equation
-  </xsl:param>
+  <xsl:param name="user-css-links">css/manual.css</xsl:param>
+  <xsl:param name="use-docbook-css" select="true()" />
 
-  <xsl:param name="xref.with.number.and.title">0</xsl:param>
-  <xsl:param name="html.stylesheet">manual.css</xsl:param>
+  <xsl:param name="revhistory-style">list</xsl:param>
+  <xsl:param name="sections-inherit-from">component section</xsl:param>
+  <xsl:param name="section-toc-depth">2</xsl:param>
+  <xsl:param name="persistent-toc" select="true()"/>
 
-  <xsl:param name="qanda.defaultlabel">none</xsl:param>
-  <xsl:param name="bibliography.numbered">1</xsl:param>
-  <xsl:param name="index.numbered">0</xsl:param>
+  <xsl:param name="qandaset-default-toc" select="false()"/>
+  <xsl:param name="qandaset-default-label">none</xsl:param>
 </xsl:stylesheet>

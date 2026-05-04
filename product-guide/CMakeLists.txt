@@ -63,22 +63,30 @@ add_custom_target(
         ${CMAKE_CURRENT_BINARY_DIR} ${OUT_DBOOK}
 )
 
+find_program(JAVA_BIN java REQUIRED)
+find_program(XMLSTARLET xmlstarlet REQUIRED)
 set(HTML_XSLT "${CMAKE_CURRENT_SOURCE_DIR}/xhtml-opts.xsl")
 set(MANUAL_CSS "${CMAKE_CURRENT_SOURCE_DIR}/manual.css")
-find_program(XMLSTARLET xmlstarlet REQUIRED)
+set(DOCBOOK_CSS_FILES
+    "docbook.css" "docbook-paged.css"
+    "docbook-toc.css" "pygments.css"
+)
+set(DOCBOOK_JS_FILES "copy-verbatim.js" "persistent-toc.js")
+set(OUT_MANUAL_CSS "html/css/manual.css")
 set(OUT_HTML "html/index.html")
-set(OUT_DOCBOOK_CSS "html/docbook.css")
-set(OUT_MANUAL_CSS "html/manual.css")
-add_custom_command(
-    OUTPUT "html"
-    COMMAND ${CMAKE_COMMAND} -E make_directory html
+
+configure_file(
+    "xml-catalog.xml.in"
+    "xml-catalog.xml"
+    @ONLY
 )
 add_custom_command(
     OUTPUT ${OUT_HTML}
-    BYPRODUCTS ${OUT_DOCBOOK_CSS}
-    DEPENDS ${OUT_DBOOK} ${HTML_XSLT} "html"
-    WORKING_DIRECTORY html
-    COMMAND ${XMLSTARLET} tr ${HTML_XSLT} ${OUT_DBOOK} >index.html
+    DEPENDS ${OUT_DBOOK} "xml-catalog.xml" ${HTML_XSLT}
+    COMMAND
+        ${JAVA_BIN} -jar ${xsltng_JAR}
+        -catalog:xml-catalog.xml -xsl:${HTML_XSLT}
+        -o:${OUT_HTML} ${OUT_DBOOK}
 )
 # Place needed files into HTML tree
 add_custom_command(
@@ -87,6 +95,29 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${MANUAL_CSS} ${OUT_MANUAL_CSS}
     COMMENT "Copy manual.css"
 )
+set(OUT_DOCBOOK_FILES "")
+foreach(FILENAME ${DOCBOOK_CSS_FILES})
+  set(INPATH "${xsltng_SOURCE_DIR}/resources/css/${FILENAME}")
+  set(OUTPATH "html/css/${FILENAME}")
+  add_custom_command(
+      OUTPUT ${OUTPATH}
+      DEPENDS ${INPATH}
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${INPATH} ${OUTPATH}
+      COMMENT "Copy css/${FILENAME}"
+  )
+  list(APPEND OUT_DOCBOOK_FILES ${OUTPATH})
+endforeach()
+foreach(FILENAME ${DOCBOOK_JS_FILES})
+  set(INPATH "${xsltng_SOURCE_DIR}/resources/js/${FILENAME}")
+  set(OUTPATH "html/js/${FILENAME}")
+  add_custom_command(
+      OUTPUT ${OUTPATH}
+      DEPENDS ${INPATH}
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${INPATH} ${OUTPATH}
+      COMMENT "Copy js/${FILENAME}"
+  )
+  list(APPEND OUT_DOCBOOK_FILES ${OUTPATH})
+endforeach()
 add_custom_target(
     ${PROJECT_NAME}-img-html
     DEPENDS ${INSTALL_IMGS} ${OUT_HTML} ${PROJECT_NAME}-img-bin
@@ -97,7 +128,7 @@ add_custom_target(
 add_custom_target(
     ${PROJECT_NAME}-html ALL
     DEPENDS
-        ${OUT_HTML} ${OUT_DOCBOOK_CSS} ${OUT_MANUAL_CSS} ${PROJECT_NAME}-img-html
+        ${OUT_HTML} ${OUT_MANUAL_CSS} ${OUT_DOCBOOK_FILES} ${PROJECT_NAME}-img-html
 )
 install(
     DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/html"
@@ -134,12 +165,16 @@ add_custom_target(
 
 # PDF document output
 find_program(DBLATEX dblatex REQUIRED)
+set(PDF_STYLE "${CMAKE_CURRENT_SOURCE_DIR}/manual.sty")
 set(PDF_XSLT "${CMAKE_CURRENT_SOURCE_DIR}/pdf-opts.xsl")
 set(OUT_PDF "manual.pdf")
 add_custom_command(
     OUTPUT ${OUT_PDF}
-    DEPENDS ${OUT_DBOOK} ${PDF_XSLT} ${PROJECT_NAME}-img-bin
-    COMMAND ${DBLATEX} -o ${OUT_PDF} --xsl-user=${PDF_XSLT} ${OUT_DBOOK}
+    DEPENDS ${OUT_DBOOK} ${PDF_STYLE} ${PDF_XSLT} ${PROJECT_NAME}-img-bin
+    COMMAND
+        ${DBLATEX}
+        --texstyle=${PDF_STYLE} --xsl-user=${PDF_XSLT}
+        -o ${OUT_PDF} ${OUT_DBOOK}
 )
 add_custom_target(
     ${PROJECT_NAME}-pdf ALL

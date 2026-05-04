@@ -24,6 +24,19 @@ cmake_minimum_required(VERSION 3.16)
 project(bsl-docs LANGUAGES )
 set(CMAKE_INSTALL_PREFIX "")
 
+include(FetchContent)
+FetchContent_Declare(
+  xsltng
+  URL https://codeberg.org/DocBook/xslTNG/releases/download/2.8.0/docbook-xslTNG-2.8.0.zip
+  URL_HASH SHA256=adbbddbf33a4fcc5c949a2851cac53e8111d30a5fd0b32429eeec68aedb61efd
+  DOWNLOAD_EXTRACT_TIMESTAMP OFF
+)
+FetchContent_MakeAvailable(xsltng)
+file(GLOB xsltng_JAR "${xsltng_SOURCE_DIR}/libs/*.jar")
+if(NOT xsltng_JAR)
+  message(FATAL_ERROR "No xslTNG jar file found under ${xsltng_SOURCE_DIR}")
+endif(NOT xsltng_JAR)
+
 add_subdirectory(user-guide)
 add_subdirectory(product-guide)
 
