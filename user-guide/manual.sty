@@ -1,0 +1,40 @@
+%%
+%% This style is derivated from the docbook one
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mystyle}[2007/04/04 My DocBook Style]
+
+%% Just use the original package and pass the options
+\RequirePackageWithOptions{docbook}
+
+%% Allow "json" source files
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\small\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    string=[s]{"}{"},
+    comment=[l]{:[},
+    morecomment=[l]{:"},
+    literate=
+     *{0}{{{\color{red}0}}}{1}
+      {1}{{{\color{red}1}}}{1}
+      {2}{{{\color{red}2}}}{1}
+      {3}{{{\color{red}3}}}{1}
+      {4}{{{\color{red}4}}}{1}
+      {5}{{{\color{red}5}}}{1}
+      {6}{{{\color{red}6}}}{1}
+      {7}{{{\color{red}7}}}{1}
+      {8}{{{\color{red}8}}}{1}
+      {9}{{{\color{red}9}}}{1}
+      {:}{{{\color{black}:}}}{1}
+      {,}{{{\color{black},}}}{1}
+      {\{}{{{\color{black}\{}}}{1}
+      {\}}{{{\color{black}\}}}}{1}
+      {[}{{{\color{black}[}}}{1}
+      {]}{{{\color{black}]}}}{1},
+}

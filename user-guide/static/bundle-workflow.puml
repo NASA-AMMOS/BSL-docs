@@ -1,4 +1,6 @@
 @startuml
+autonumber
+
 participant "BPA" as BPA
 participant "BSL" as BSL
 participant "Policy Provider" as Policy
@@ -6,10 +8,13 @@ participant "Security Context" as SC
 participant "Crypto Library" as Crypto
 
 activate BPA #dcebff
-BPA -> BSL : inspect
+BPA -> BSL : query security
 activate BSL #dcebff
-group loop each\nprovider
-    BSL -> Policy : check
+
+BSL -> BSL : index ASBs
+
+loop each provider
+    BSL -> Policy : query
 
     activate Policy #dcebff
     Policy -> BPA : [as needed]\nget data
@@ -17,29 +22,36 @@ group loop each\nprovider
     activate BPA #dcebff
     BPA --> Policy
     deactivate BPA
-
     ||5||
 
     Policy --> BSL : action set
-    ||5||
     deactivate Policy
+    ||5||
+
+    loop each action
+
+        loop each secop
+            BSL -> SC : validate secop
+            activate SC #dcebff
+            SC --> BSL
+            deactivate SC
+        end
+    end
+
+    alt any validation failed
+        BSL -> BSL : actions ignored
+    end
 end
 BSL --> BPA : action set
 deactivate BSL
 
 ||20||
 
-group loop each action
-    BPA -> BSL : execute
-    activate BSL #dcebff
+BPA -> BSL : apply security
+activate BSL #dcebff
 
-    group loop each secop
-    
-        BSL -> SC : validate secop
-        activate SC #dcebff
-        ||10||
-        SC --> BSL
-        deactivate SC
+loop each action
+    loop each secop
 
         BSL -> SC : run secop
         activate SC #dcebff
@@ -48,48 +60,41 @@ group loop each action
         activate BPA #dcebff
         BPA --> SC
         deactivate BPA
-    
+
         SC -> Crypto : [as needed]\ncrypto functions
         activate Crypto #dcebff
-        ||10||
         Crypto --> SC
         deactivate Crypto
-    
+
         SC -> BPA : [as needed]\nalter bundle
         activate BPA #dcebff
+        BPA --> SC
         deactivate BPA
-    
-        SC --> BSL : security outcome
-        ||5||
+
+        SC --> BSL : secop outcome
         deactivate SC
+        ||5||
     end
 end
-BSL --> BPA : action outcomes
-deactivate BSL
 
-||20||
-
-group loop each action
-    BPA -> BSL : finalize
-    activate BSL #dcebff
-
-    BSL -> BSL : lookup PP
+loop each action
+    BSL -> BSL : lookup action PP
 
     BSL -> Policy : finalize
     activate Policy #dcebff
 
     Policy -> BPA : [as needed]\nalter bundle
     activate BPA #dcebff
+    BPA --> Policy
     deactivate BPA
 
     Policy --> BSL
     deactivate Policy
-
-    BSL --> BPA
-    deactivate BSL
     ||5||
 end
 
+BSL --> BPA : outcomes
+deactivate BSL
 ||10||
 
 @enduml

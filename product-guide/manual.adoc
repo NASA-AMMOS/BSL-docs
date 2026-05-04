@@ -319,7 +319,11 @@ These components are represented as targets (libraries and executables) in the d
 
 [#fig-bsl-targets]
 .CMake-Generated Target Graph
-graphviz::images/dep_chart.dot[format=svg,scaledwidth=100%]
+graphviz::images/dep_chart.dot[format=svg,width=180mm]
+
+[#fig-cmake-legent]
+.CMake Graph Legend
+graphviz::images/dep_chart_legend.dot[format=svg,width=120mm]
 
 === Build and Runtime Environments
 
