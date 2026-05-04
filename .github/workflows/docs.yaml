@@ -47,7 +47,7 @@ jobs:
           sudo apt-get install -y \
               cmake make coreutils \
               ruby asciidoctor graphviz plantuml inkscape \
-              dblatex docbook-xsl-ns xmlstarlet aspell
+              dblatex xmlstarlet aspell
           sudo gem install \
               asciidoctor-diagram \
               'asciidoctor-diagram-plantuml:~>1.2024.8'
