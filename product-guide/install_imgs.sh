@@ -3,7 +3,7 @@ SRCDIR=$1
 OUTDIR=$2
 DBOOKFILE=$3
 
-if [ -z "${DBOOKFILE}" ]
+if [[ -z "${DBOOKFILE}" ]]
 then
     FILENAMES=""
     for HTMLFILE in ${OUTDIR}/*.html
@@ -19,7 +19,7 @@ fi
 for FN in ${FILENAMES}
 do
     SRCFN="${SRCDIR}/${FN}"
-    if [ ! -f "${SRCFN}" ]
+    if [[ ! -f "${SRCFN}" ]]
     then
         continue
     fi
