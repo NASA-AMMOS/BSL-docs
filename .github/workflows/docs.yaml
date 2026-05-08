@@ -56,7 +56,7 @@ jobs:
           DESTDIR: public
         run: ./build.sh
       - name: Misspelling
-        env: ./build.sh docs-spelling
+        run: ./build.sh docs-spelling
       - uses: actions/upload-artifact@v7
         with:
           name: docs
