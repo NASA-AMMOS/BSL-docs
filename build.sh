@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+##
+## Copyright (c) 2023-2026 The Johns Hopkins University Applied Physics
+## Laboratory LLC.
+##
+## This file is part of the Asynchronous Network Management System (ANMS).
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## you may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##     http://www.apache.org/licenses/LICENSE-2.0
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+##
+## This work was performed for the Jet Propulsion Laboratory, California
+## Institute of Technology, sponsored by the United States Government under
+## the prime contract 80NM0018D0004 between the Caltech and NASA under
+## subcontract 1658085.
+##
+
+# Build documentation artifacts in a "build" directory.
+set -e
+
+SELFDIR=$(realpath $(dirname "${BASH_SOURCE[0]}"))
+cd ${SELFDIR}
+
+if [[ "$1" == "docs-spelling" ]]
+then
+    USER_MISSPELLING_TXT="build/user-guide/misspelling.txt"
+    USER_MISSPELLING_CTX_TXT="build/user-guide/misspelling-ctx.txt"
+    PROD_MISSPELLING_TXT="build/product-guide/misspelling.txt"
+    PROD_MISSPELLING_CTX_TXT="build/product-guide/misspelling-ctx.txt"
+    # success means file is present and empty
+    FAILURES=0
+    if [[ -s "${USER_MISSPELLING_TXT}" ]]
+    then
+        printf "\nUser guide:\n"
+        cat "${USER_MISSPELLING_TXT}"
+        printf "\nIn context:\n"
+        cat "${USER_MISSPELLING_CTX_TXT}"
+        ((FAILURES += 1))
+    fi
+    if [[ -s "${PROD_MISSPELLING_TXT}" ]]
+    then
+        printf "\nProduct guide:\n"
+        cat "${PROD_MISSPELLING_TXT}"
+        printf "\nIn context:\n"
+        cat "${PROD_MISSPELLING_CTX_TXT}"
+        ((FAILURES += 1))
+    fi
+    exit ${FAILURES}
+else
+    # actual build
+    cmake -S . -B build
+    cmake --build build "$@"
+    if [[ -n "${DESTDIR}" ]]
+    then
+        cmake --install build
+    fi
+fi
