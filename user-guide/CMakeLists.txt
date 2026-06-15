@@ -136,53 +136,60 @@ install(
     DESTINATION ${PROJECT_NAME}
 )
 
-
-# spellcheck on HTML output
-set(DICTIONARY_TXT "${CMAKE_CURRENT_SOURCE_DIR}/dictionary.txt")
-set(SPELLCHECK_XSL "${CMAKE_CURRENT_SOURCE_DIR}/spellcheck.xsl")
-set(MISSPELLING_TXT "misspelling.txt")
-add_custom_command(
-    OUTPUT "dictionary.cwl"
-    DEPENDS "${DICTIONARY_TXT}"
-    COMMAND cat "${DICTIONARY_TXT}" |
-        ${ASPELL} --lang=en create master "./dictionary.cwl"
-)
-add_custom_command(
-    OUTPUT "${MISSPELLING_TXT}"
-    DEPENDS "${OUT_HTML}" "${SPELLCHECK_XSL}" "dictionary.cwl"
-    COMMAND ${XMLSTARLET} tr "${SPELLCHECK_XSL}" "${OUT_HTML}" |
-        ${ASPELL} --mode=html --lang=EN_US --extra-dicts=./dictionary.cwl list |
-        sort | uniq > "${MISSPELLING_TXT}"
-)
-add_custom_target(
-    ${PROJECT_NAME}-misspelling ALL
-    DEPENDS "${MISSPELLING_TXT}"
-    COMMAND cat "${MISSPELLING_TXT}"
-    # success means file is present and empty
-    COMMAND test -f "${MISSPELLING_TXT}" -a ! -s "${MISSPELLING_TXT}"
-    COMMENT "Checking ${MISSPELLING_TXT}"
-)
-
+if(XMLSTARLET AND ASPELL)
+    # spellcheck on HTML output
+    set(DICTIONARY_TXT "${CMAKE_CURRENT_SOURCE_DIR}/dictionary.txt")
+    set(SPELLCHECK_XSL "${CMAKE_CURRENT_SOURCE_DIR}/spellcheck.xsl")
+    add_custom_command(
+        OUTPUT "dictionary.cwl"
+        DEPENDS "${DICTIONARY_TXT}"
+        COMMAND cat "${DICTIONARY_TXT}" |
+            ${ASPELL} --lang=en create master "./dictionary.cwl"
+    )
+    add_custom_command(
+        OUTPUT "misspelling.txt"
+        DEPENDS
+            "${OUT_HTML}" "${SPELLCHECK_XSL}" "dictionary.cwl"
+        COMMAND
+            ${XMLSTARLET} tr "${SPELLCHECK_XSL}" "${OUT_HTML}" |
+            ${ASPELL} --mode=html --lang=EN_US --extra-dicts=./dictionary.cwl list |
+            sort -u >"misspelling.txt"
+    )
+    add_custom_command(
+        OUTPUT "misspelling-ctx.txt"
+        DEPENDS
+            "${OUT_HTML}" "misspelling.txt"
+        COMMAND
+            ${XMLSTARLET} fo "${OUT_HTML}" |
+            grep --file "misspelling.txt" >"misspelling-ctx.txt" || true
+    )
+    add_custom_target(
+        ${PROJECT_NAME}-misspelling ALL
+        DEPENDS "misspelling.txt" "misspelling-ctx.txt"
+    )
+endif(XMLSTARLET AND ASPELL)
 
 # PDF document output
 find_program(DBLATEX dblatex REQUIRED)
-set(PDF_STYLE "${CMAKE_CURRENT_SOURCE_DIR}/manual.sty")
-set(PDF_XSLT "${CMAKE_CURRENT_SOURCE_DIR}/pdf-opts.xsl")
-set(OUT_PDF "manual.pdf")
-add_custom_command(
-    OUTPUT ${OUT_PDF}
-    DEPENDS ${OUT_DBOOK} ${PDF_STYLE} ${PDF_XSLT} ${PROJECT_NAME}-img-bin
-    COMMAND
-        ${DBLATEX}
-        --texstyle=${PDF_STYLE} --xsl-user=${PDF_XSLT}
-        -o ${OUT_PDF} ${OUT_DBOOK}
-)
-add_custom_target(
-    ${PROJECT_NAME}-pdf ALL
-    DEPENDS ${OUT_PDF}
-)
-install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/${OUT_PDF}"
-    RENAME "bsl-user-guide.pdf"
-    DESTINATION ${PROJECT_NAME}
-)
+if(DBLATEX)
+    set(PDF_STYLE "${CMAKE_CURRENT_SOURCE_DIR}/manual.sty")
+    set(PDF_XSLT "${CMAKE_CURRENT_SOURCE_DIR}/pdf-opts.xsl")
+    set(OUT_PDF "manual.pdf")
+    add_custom_command(
+        OUTPUT ${OUT_PDF}
+        DEPENDS ${OUT_DBOOK} ${PDF_STYLE} ${PDF_XSLT} ${PROJECT_NAME}-img-bin
+        COMMAND
+            ${DBLATEX}
+            --texstyle=${PDF_STYLE} --xsl-user=${PDF_XSLT}
+            -o ${OUT_PDF} ${OUT_DBOOK}
+    )
+    add_custom_target(
+        ${PROJECT_NAME}-pdf ALL
+        DEPENDS ${OUT_PDF}
+    )
+    install(
+        FILES "${CMAKE_CURRENT_BINARY_DIR}/${OUT_PDF}"
+        RENAME "bsl-user-guide.pdf"
+        DESTINATION ${PROJECT_NAME}
+    )
+endif(DBLATEX)
