@@ -455,14 +455,39 @@ plantuml::static/bsl-breakdown.puml[format=svg,scale=60]
 
 In addition to the externally-visible information about security operations and their _target_, _parameters_, and _results_ the BSL adds the notion of a security Action which is an ordered sequence of specific operations.
 This is necessary because some policies require, for example, some operations to be accepted before others are sourced which would refer to the same target block.
-
-Another internal information item is the security Option, which is used to communicate configuration of individual security operations between a Policy Provider and an associated Security Context.
-Some options are converted by the SC into Parameters or Results that get encoded into the ASB when acting as the Source role.
-Some options, like key identifiers for the default security contexts, do not have representation in the ASB but are necessary for correct processing of the security operation.
+The data-use relationships of security operations between PP and SC are depicted in <<fig-secop-assoctaions>>.
 
 [#fig-secop-assoctaions]
 .Security Operation Associations 
 plantuml::static/secop-associations.puml[format=svg,scale=60]
+
+Another internal information item is the security Option, which is used to communicate configuration of individual security operations between a Policy Provider and an associated Security Context, as depicted in <<fig-secop-in-out>>.
+Some options are converted by the SC into Parameters or Results that get encoded into the ASB when acting as the Source role.
+Some options, like key identifiers for the default security contexts, do not have representation in the ASB but are necessary for correct processing of the security operation.
+A key distinction from the point of view of the SC is that options are internal to the BSL and implicitly trusted, while Parameters and Results (when used as verifier or acceptor role) are untrusted input coming from outside the BPA.
+
+Options are also used to define how operations behave for the source role, but are also used to constrain acceptable behaviors for verifier or acceptor role.
+For example, an option can restrict that verification _must_ use a specific security algorithm/strength and if the received operation uses a different algorithm/strength it will be treated as a failure during execution.
+
+[#fig-secop-in-out]
+.Logical Relationship between Options and Parameters
+[graphviz,format=svg,width=80mm]
+----
+digraph figure {
+    node [shape=rectangle];
+    
+    sc [label="Security Context\n(execute)"]
+    policy [label="Policy Provider"]
+    asbin [label="ASB (input)"]
+    asbout [label="ASB (output)"]
+    
+    { rank=same; policy; sc; }
+    
+    policy -> sc [label="Options"]
+    asbin -> sc [label="Parameters\n and Results", style=dashed]
+    sc -> asbout [label="Parameters\n and Results", style=dashed]
+}
+----
 
 [#sec-api-secondary]
 === Secondary Interactions
