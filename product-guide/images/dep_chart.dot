@@ -3,41 +3,50 @@ digraph "bsl" {
       fontsize = "12"
     ];
     "node0" [ label = "bsl-mock-bpa", shape = egg ];
-    "node1" [ label = "Threads::Threads", shape = pentagon ];
-    "node0" -> "node1" [ style = dotted ] // bsl-mock-bpa -> Threads::Threads
-    "node2" [ label = "bsl_crypto", shape = doubleoctagon ];
-    "node3" [ label = "MLIB::mlib", shape = pentagon ];
-    "node2" -> "node3"  // bsl_crypto -> MLIB::mlib
-    "node4" [ label = "OpenSSL::Crypto", shape = septagon ];
-    "node2" -> "node4" [ style = dashed ] // bsl_crypto -> OpenSSL::Crypto
-    "node5" [ label = "bsl_front", shape = doubleoctagon ];
-    "node2" -> "node5"  // bsl_crypto -> bsl_front
-    "node0" -> "node2" [ style = dotted ] // bsl-mock-bpa -> bsl_crypto
-    "node6" [ label = "bsl_mock_bpa", shape = doubleoctagon ];
-    "node6" -> "node3"  // bsl_mock_bpa -> MLIB::mlib
-    "node7" [ label = "PkgConfig::JANSSON\n(Jansson::Jansson)", shape = pentagon ];
-    "node6" -> "node7"  // bsl_mock_bpa -> PkgConfig::JANSSON
-    "node8" [ label = "QCBOR::qcbor", shape = doubleoctagon ];
-    "node6" -> "node8"  // bsl_mock_bpa -> QCBOR::qcbor
-    "node9" [ label = "bsl_default_sc", shape = doubleoctagon ];
-    "node9" -> "node8"  // bsl_default_sc -> QCBOR::qcbor
-    "node9" -> "node2"  // bsl_default_sc -> bsl_crypto
-    "node9" -> "node5"  // bsl_default_sc -> bsl_front
-    "node6" -> "node9"  // bsl_mock_bpa -> bsl_default_sc
-    "node10" [ label = "bsl_dynamic", shape = doubleoctagon ];
-    "node10" -> "node3"  // bsl_dynamic -> MLIB::mlib
-    "node10" -> "node8"  // bsl_dynamic -> QCBOR::qcbor
-    "node10" -> "node5"  // bsl_dynamic -> bsl_front
-    "node6" -> "node10"  // bsl_mock_bpa -> bsl_dynamic
-    "node6" -> "node5"  // bsl_mock_bpa -> bsl_front
-    "node11" [ label = "bsl_sample_pp", shape = doubleoctagon ];
-    "node11" -> "node3"  // bsl_sample_pp -> MLIB::mlib
-    "node11" -> "node7"  // bsl_sample_pp -> PkgConfig::JANSSON
-    "node11" -> "node5"  // bsl_sample_pp -> bsl_front
-    "node6" -> "node11"  // bsl_mock_bpa -> bsl_sample_pp
-    "node0" -> "node6" [ style = dotted ] // bsl-mock-bpa -> bsl_mock_bpa
-    "node12" [ label = "bsl_test_utils", shape = doubleoctagon ];
-    "node12" -> "node10"  // bsl_test_utils -> bsl_dynamic
-    "node12" -> "node5"  // bsl_test_utils -> bsl_front
-    "node12" -> "node6"  // bsl_test_utils -> bsl_mock_bpa
+    "node1" [ label = "bsl_crypto", shape = doubleoctagon ];
+    "node2" [ label = "MLIB::mlib", shape = pentagon ];
+    "node1" -> "node2" [ style = dotted ] // bsl_crypto -> MLIB::mlib
+    "node3" [ label = "OpenSSL::Crypto", shape = septagon ];
+    "node1" -> "node3" [ style = dotted ] // bsl_crypto -> OpenSSL::Crypto
+    "node4" [ label = "PkgConfig::JANSSON\n(Jansson::Jansson)", shape = pentagon ];
+    "node1" -> "node4" [ style = dotted ] // bsl_crypto -> PkgConfig::JANSSON
+    "node5" [ label = "bsl_dynamic", shape = doubleoctagon ];
+    "node5" -> "node2"  // bsl_dynamic -> MLIB::mlib
+    "node6" [ label = "bsl_front", shape = doubleoctagon ];
+    "node5" -> "node6"  // bsl_dynamic -> bsl_front
+    "node7" [ label = "qcbor::qcbor", shape = doubleoctagon ];
+    "node5" -> "node7"  // bsl_dynamic -> qcbor::qcbor
+    "node1" -> "node5"  // bsl_crypto -> bsl_dynamic
+    "node1" -> "node6"  // bsl_crypto -> bsl_front
+    "node1" -> "node7" [ style = dotted ] // bsl_crypto -> qcbor::qcbor
+    "node0" -> "node1" [ style = dotted ] // bsl-mock-bpa -> bsl_crypto
+    "node8" [ label = "bsl_mock_bpa", shape = doubleoctagon ];
+    "node8" -> "node2"  // bsl_mock_bpa -> MLIB::mlib
+    "node9" [ label = "Threads::Threads", shape = pentagon ];
+    "node8" -> "node9"  // bsl_mock_bpa -> Threads::Threads
+    "node10" [ label = "bsl_cose_sc", shape = doubleoctagon ];
+    "node10" -> "node2" [ style = dotted ] // bsl_cose_sc -> MLIB::mlib
+    "node10" -> "node1" [ style = dotted ] // bsl_cose_sc -> bsl_crypto
+    "node10" -> "node5"  // bsl_cose_sc -> bsl_dynamic
+    "node10" -> "node6"  // bsl_cose_sc -> bsl_front
+    "node10" -> "node7" [ style = dotted ] // bsl_cose_sc -> qcbor::qcbor
+    "node8" -> "node10"  // bsl_mock_bpa -> bsl_cose_sc
+    "node11" [ label = "bsl_default_sc", shape = doubleoctagon ];
+    "node11" -> "node1" [ style = dotted ] // bsl_default_sc -> bsl_crypto
+    "node11" -> "node6"  // bsl_default_sc -> bsl_front
+    "node8" -> "node11"  // bsl_mock_bpa -> bsl_default_sc
+    "node12" [ label = "bsl_sample_pp", shape = doubleoctagon ];
+    "node12" -> "node2"  // bsl_sample_pp -> MLIB::mlib
+    "node12" -> "node4" [ style = dotted ] // bsl_sample_pp -> PkgConfig::JANSSON
+    "node12" -> "node10" [ style = dotted ] // bsl_sample_pp -> bsl_cose_sc
+    "node12" -> "node11" [ style = dotted ] // bsl_sample_pp -> bsl_default_sc
+    "node12" -> "node5"  // bsl_sample_pp -> bsl_dynamic
+    "node12" -> "node6"  // bsl_sample_pp -> bsl_front
+    "node8" -> "node12"  // bsl_mock_bpa -> bsl_sample_pp
+    "node8" -> "node7"  // bsl_mock_bpa -> qcbor::qcbor
+    "node0" -> "node8" [ style = dotted ] // bsl-mock-bpa -> bsl_mock_bpa
+    "node13" [ label = "bsl_test_utils", shape = doubleoctagon ];
+    "node13" -> "node5"  // bsl_test_utils -> bsl_dynamic
+    "node13" -> "node6"  // bsl_test_utils -> bsl_front
+    "node13" -> "node8"  // bsl_test_utils -> bsl_mock_bpa
 }
