@@ -65,4 +65,17 @@ Sec 7 relocated Mock BPA.
       </simpara>
     </revdescription>
   </revision>
+  <revision>
+    <revnumber>Revision B</revnumber>
+    <date>1 October 2026</date>
+    <revdescription>
+      <simpara>
+Updates for BSL v2.0.0.
+      </simpara>
+      <simpara>
+Affected sections or pages:
+TBD
+      </simpara>
+    </revdescription>
+  </revision>
 </revhistory>
