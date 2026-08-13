@@ -265,7 +265,7 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 
 |Bundle Protocol Security (BPSec) COSE Context
 [[draft-ietf-dtn-bpsec-cose]]
-|https://www.ietf.org/archive/id/draft-ietf-dtn-bpsec-cose-16.html[draft-ietf-dtn-bpsec-cose-16]
+|https://datatracker.ietf.org/doc/draft-ietf-dtn-bpsec-cose/[draft-ietf-dtn-bpsec-cose]
 
 |===
 
@@ -334,16 +334,22 @@ This is library artifact `bsl_mock_bpa` and executable `bsl-mock-bpa`.
 An executable used to provide a test fixture and example BPA integration.
 This Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point.
 
-These components are represented as targets (libraries and executables) in the diagram of <<fig-bsl-targets>>, which was auto-generated from the BSL CMake project.
+These components are represented as targets (libraries and executables) in the diagram of <<fig-bsl-targets>>, showing external dependency artifacts, and <<fig-bsl-targets-noext>>, which hides externals to highlight just the BSL artifacts.
+These graphs are auto-generated from the BSL CMake project using the build target `graphviz` and have a symbol legend in <<fig-cmake-legend>>.
 
 [#fig-bsl-targets]
-.CMake-Generated Target Graph
+.CMake-Generated Target Graph including external artifacts
 graphviz::images/dep_chart.dot[format=svg,width=180mm,pdfwidth=100%]
 
-[#fig-cmake-legent]
+[#fig-bsl-targets-noext]
+.CMake-Generated Target Graph excluding external artifacts
+graphviz::images/dep_chart_noext.dot[format=svg,width=100mm]
+
+[#fig-cmake-legend]
 .CMake Graph Legend
 graphviz::images/dep_chart_legend.dot[format=svg,width=120mm]
 
+[#sec-arch-envs]
 === Build and Runtime Environments
 
 The basic requirements in the <<bsl-srd>> are that the build environment use a C compiler, with its standard headers and libraries <<C99>>, and include POSIX headers and libraries <<POSIX>>.
@@ -464,25 +470,27 @@ This chapter includes specific procedures related to managing an BSL deployment 
 
 The BSL source is composed of a top-level repository `BSL` <<bsl-source>> and a number of submodule repositories; all of them are required for building the BSL.
 
-The following procedure is targeted for the RHEL-9 environment.
+The following procedure is targeted for the RHEL-9 environment, where the variable `TAGNAME` is a placeholder for the actual git tag name being used.
 Other conditions and procedures are discussed in more detail in the source repository `README.md` document.
 
 . The top-level checkout can be done with:
 +
+[source,bash]
 ----
-git clone --recursive --branch <TAGNAME> https://github.com/NASA-AMMOS/BSL.git
+git clone --recursive --branch ${TAGNAME} https://github.com/NASA-AMMOS/BSL.git
 ----
 . Optional: switching to a different tag or branch can be done with the sequence:
 +
+[source,bash]
 ----
-git checkout <TAGNAME>
+git checkout ${TAGNAME}
 git submodule update --init --recursive
 ----
 . If necessary, dependency OS packages can be installed with:
 +
 ----
-sudo dnf install -y epel-release
-sudo crb enable
+sudo dnf install -y 'dnf-command(config-manager)' epel-release
+sudo dnf config-manager --set-enabled crb
 sudo dnf install -y \
     rsync cmake git ninja-build gcc ruby \
     openssl-devel jansson-devel valgrind-devel \
@@ -498,6 +506,7 @@ The packages `doxygen graphviz plantuml texlive-bibtex asciidoctor` are optional
 ----
 . The resulting packages are placed in the directory `build/default/pkg` and can be seen by the listing:
 +
+[source,bash]
 ----
 find build/default/pkg/rpmbuild -name '*.rpm'
 ----
@@ -521,6 +530,7 @@ The specific docker executable is configured through the `DOCKER` environment.
 === Installation
 
 Once packages are built locally, they can all be installed by running:
+[source,bash]
 ----
 pushd build/default/pkg/rpmbuild/RPMS/x86_64
 dnf install -y bsl-*.rpm
@@ -529,6 +539,7 @@ popd
 Or by some more discriminate choice of packages, such as only the two necessary to integrate the BSL library: `bsl bsl-devel`
 
 Or if pre-built packages are available on an enabled YUM/DNF repository, they can be installed (more simply by name) using:
+[source,bash]
 ----
 dnf install -y bsl bsl-devel
 ----
@@ -570,15 +581,15 @@ Build using shared libraries (default ON)
 
 The BSL-specific options (defined at the top of the root `CMakeLists.txt`) are:
 
-`BUILD_LIB`:: Build the library itself (default ON)
-`BUILD_DOCS_API`:: Enable API documentation building (default OFF)
-`BUILD_DOCS_MAN`:: Enable manpage building (default OFF)
-`BUILD_MOCK_BPA`:: Enable building the Mock BPA library and executable (default ON)
-`BUILD_UNITTEST`:: Enable building unit tests (default ON)
-`TEST_MEMCHECK`:: Enable test runtime memory checking (default ON)
-`BUILD_COVERAGE`:: Enable runtime coverage logging and reporting (default OFF)
-`BUILD_FUZZING`:: Enable building fuzzing executables (default OFF)
-`BUILD_PACKAGE`:: Enable building package outputs (default OFF)
+`BUILD_LIB`:: Build the library itself (default ON). This will require all normal dependencies of the BSL.
+`BUILD_DOCS_API`:: Enable API documentation building (default OFF). This will require the doxygen tool to be installed.
+`BUILD_DOCS_MAN`:: Enable manpage building (default OFF). This will require the asciidoctor tool to be installed.
+`BUILD_MOCK_BPA`:: Enable building the Mock BPA library and executable (default ON).
+`BUILD_UNITTEST`:: Enable building unit tests (default ON).
+`TEST_MEMCHECK`:: Enable test runtime memory checking (default ON). This will require the valgrind tool to be installed.
+`BUILD_COVERAGE`:: Enable runtime coverage logging and reporting (default OFF). This will require the gcovr tool to be installed.
+`BUILD_FUZZING`:: Enable building fuzzing executables (default OFF). This will cause unit tests to be disabled.
+`BSL_LOG_PLAINTEXT_ENABLE`:: Enable debug logging of internal state, which will leak secrets in log events and should be used only for test builds.
 
 [#sec-proc-build-devel-build]
 ==== Local Building and Testing
@@ -614,6 +625,7 @@ If a non-default install prefix is used, this install command may need to be run
 ----
 .. If BSL sources are updated and need re-testing, they must be built-and-installed using:
 +
+[source,bash]
 ----
 ./build.sh && ./build.sh install
 ----
@@ -679,12 +691,26 @@ xdg-open build/default/docs/api/html/index.html
 ----
 
 
-[#sec-proc-buildconfig]
+[#sec-proc-bpabuild]
 === Compiling and Linking with BSL
 
 The RPM packages for BSL contain both CMake and `pkg-config` control files to allow user applications to compile and link with the various BSL libraries (see <<sec-arch-components>>).
 Using these control files, which ones and how to use them, depends on the build system from which the user is linking.
 Two common examples are explained in the following subsections.
+
+==== General Requirements on BPA Environment
+
+As explained in <<sec-arch-envs>> the BSL is designed to be used in a C99 and POSIX environment.
+
+It is a build configuration matter for the BPA to ensure that it compiles with at least C99 compatibility.
+
+Part of the BSL interface related to log events (both generating events through the frontend and handling events via callbacks) requires the use of `struct timespec` defined by POSIX headers.
+This means that BPA hosts linking in the BSL need to themselves support some version of POSIX no earlier than the 2008 compatibility version needed by BSL.
+
+As defined by <<POSIX>> itself, the compile-time configuration to enable this compatibility is a preprocessor define set similar to the following
+----
+-D_POSIX_C_SOURCE=200809L
+----
 
 ==== Linking From a CMake Project
 
@@ -700,7 +726,7 @@ If successful, this command will import each of the BSL target libraries under t
 The CMake targets in this namespace are
 `bsl::bsl_front`,
 `bsl::bsl_dynamic`,
-`bsl::bcl_crypto`,
+`bsl::bsl_crypto`,
 `bsl::bsl_sample_pp`,
 `bsl::bsl_default_sc`, and
 `bsl::bsl_cose_sc`.
@@ -740,8 +766,17 @@ The BSL itself, as a software library, does not directly make use of any OS-leve
 
 As discussed more in the BPA integration portion of the <<bsl-user-guide>>, one form of monitoring output from the BSL is its log events and another form is polling for BSL telemetry counters.
 
-Because the Mock BPA uses "normal" BPv7/UDPCL it can be monitored using off-the-shelf Wireshark since version 4.0 <<wireshark>> with the protocols "BPv7" and "UDPCL" enabled, and the appropriate UDP ports used by the Mock BPA set to "Decode As..." the UDPCL.
+Because the Mock BPA uses "normal" BPv7/UDPCL it can be monitored using off-the-shelf Wireshark since version 4.0 <<wireshark>> with the protocol "BPv7" enabled, and the appropriate UDP ports used by the Mock BPA set to "Decode As..." for BPv7.
 
+An example of starting wireshark with this kind of configuration is the following command.
+[source,bash]
+----
+wireshark -i lo -k \
+    -f 'udp port 4556 or udp port 14556 or udp port 24556 or udp port 34556' \
+    -d 'udp.port==4556,bundle' -d 'udp.port==14556,bundle' \
+    -d 'udp.port==24556,bundle' -d 'udp.port==34556,bundle' \
+    -Y bpv7
+----
 
 [#sec-proc-mon-selinux]
 ==== SELinux Audit Events
@@ -751,6 +786,7 @@ The procedures in this section are a summary of more detail provided in Chapter 
 By default, the `setroubleshootd` service is running, which intercepts SELinux audit events
 
 To observe the system audit log in a formatted way run:
+[source,bash]
 ----
 sudo sealert -l '*'
 ----
@@ -758,6 +794,7 @@ sudo sealert -l '*'
 Some SELinux denials are marked as "don't audit" which suppresses normal audit logging when they occur.
 They are often associated with network access requests which would flood an audit log if they happen often and repeatedly.
 To enable logging of `dontaudit` events run:
+[source,bash]
 ----
 sudo semanage dontaudit off
 ----
@@ -775,9 +812,10 @@ Determining how to access the host application logs is outside the scope of this
 
 The BSL packaging procedure includes built unit tests within the `bsl-test` RPM package which allows executing unit tests on the BSL library after build time on any other host.
 
-==== Library Linking Test
+==== Library Linking Tests
 
-
+The top `build.sh` includes a sub-command `check-install` which will exercise the installed BSL via both `pkg-config` and CMake means as described in <<sec-proc-bpabuild>>.
+These tests use their own control files under the source directory `lib-user-test` to build and link with the BSL just as any other C library.
 
 ==== Mock BPA Tests
 

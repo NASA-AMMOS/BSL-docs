@@ -1,0 +1,34 @@
+digraph "bsl" {
+    node [
+      fontsize = "12"
+    ];
+    "node0" [ label = "bsl-mock-bpa", shape = egg ];
+    "node1" [ label = "bsl_crypto", shape = doubleoctagon ];
+    "node5" [ label = "bsl_dynamic", shape = doubleoctagon ];
+    "node6" [ label = "bsl_front", shape = doubleoctagon ];
+    "node5" -> "node6"  // bsl_dynamic -> bsl_front
+    "node1" -> "node5"  // bsl_crypto -> bsl_dynamic
+    "node1" -> "node6"  // bsl_crypto -> bsl_front
+    "node0" -> "node1" [ style = dotted ] // bsl-mock-bpa -> bsl_crypto
+    "node8" [ label = "bsl_mock_bpa", shape = doubleoctagon ];
+    "node10" [ label = "bsl_cose_sc", shape = doubleoctagon ];
+    "node10" -> "node1" [ style = dotted ] // bsl_cose_sc -> bsl_crypto
+    "node10" -> "node5"  // bsl_cose_sc -> bsl_dynamic
+    "node10" -> "node6"  // bsl_cose_sc -> bsl_front
+    "node8" -> "node10"  // bsl_mock_bpa -> bsl_cose_sc
+    "node11" [ label = "bsl_default_sc", shape = doubleoctagon ];
+    "node11" -> "node1" [ style = dotted ] // bsl_default_sc -> bsl_crypto
+    "node11" -> "node6"  // bsl_default_sc -> bsl_front
+    "node8" -> "node11"  // bsl_mock_bpa -> bsl_default_sc
+    "node12" [ label = "bsl_sample_pp", shape = doubleoctagon ];
+    "node12" -> "node10" [ style = dotted ] // bsl_sample_pp -> bsl_cose_sc
+    "node12" -> "node11" [ style = dotted ] // bsl_sample_pp -> bsl_default_sc
+    "node12" -> "node5"  // bsl_sample_pp -> bsl_dynamic
+    "node12" -> "node6"  // bsl_sample_pp -> bsl_front
+    "node8" -> "node12"  // bsl_mock_bpa -> bsl_sample_pp
+    "node0" -> "node8" [ style = dotted ] // bsl-mock-bpa -> bsl_mock_bpa
+    "node13" [ label = "bsl_test_utils", shape = doubleoctagon ];
+    "node13" -> "node5"  // bsl_test_utils -> bsl_dynamic
+    "node13" -> "node6"  // bsl_test_utils -> bsl_front
+    "node13" -> "node8"  // bsl_test_utils -> bsl_mock_bpa
+}

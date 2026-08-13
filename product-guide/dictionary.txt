@@ -41,6 +41,7 @@ FIPS
 Freedesktop
 frontend
 Frontend
+gcovr
 graphviz
 IANA
 IEC
@@ -72,6 +73,7 @@ Podman
 POSIX
 PPs
 pre
+preprocessor
 QCBOR
 RDD
 RedHat
@@ -97,6 +99,7 @@ toc
 UDP
 UDPCL
 un
+valgrind
 Verifier
 virtualenv
 wireshark
