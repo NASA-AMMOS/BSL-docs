@@ -2,6 +2,7 @@ AAD
 ABI
 acceptor
 Acceptor
+AEAD
 AES
 AMMOS
 APIs
@@ -24,6 +25,7 @@ BTSD
 Caltech
 CBOR
 centric
+ciphertext
 CLA
 CLAs
 CLIN
@@ -32,6 +34,7 @@ cose
 COSE
 crypto
 cryptographic
+CSRC
 de
 De
 dtn
@@ -59,6 +62,8 @@ JSON
 JWK
 JWKs
 KDF
+KDK
+KEK
 LLC
 MCS
 MGSS
