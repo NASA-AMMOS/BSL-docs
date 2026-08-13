@@ -70,13 +70,39 @@ A combination of instruction set architecture (ISA) and operating-system-specifi
 A built library has a specific ABI that can be different on different platforms even if its API does not change.
 Concise Binary Object Representation (CBOR)::
 A binary encoding defined in <<RFC8949>> which follows a superset of the JSON data model (see below) and enables both small encoded size as well as efficient encoding and decoding.
+This is also known as IETF STD 94.
 The BSL itself uses CBOR to encode the contents of BPSec ASBs.
+CBOR Object Signing and Encryption (COSE)::
+A message encoding and processing defined in <<RFC9052>> which uses CBOR as its extensible encoded structure for MAC, Signing, and Encryption operations.
+COSE algorithms and header parameters are managed by IANA registries for extensibility.
+This is also known as IETF STD 96.
+COSE Key and Key Set::
+The BSL does not use COSE Keys directly, but the dynamic backend provides an API for loading a COSE Key Set file into a key store and the Mock BPA makes use of this API during its startup.
 JavaScript Object Notation (JSON)::
 A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
 The BSL does not use JSON directly, but the example ION-heritage Policy Provider uses JSON for encoding policy configuration.
-JSON Web Key (JWK)::
+JSON Web Key (JWK) and JWK Set::
 A JSON data structure defined in <<RFC7517>> which represents a set of cryptographic keys and their parameters.
-The BSL does not use JWK directly, but the Mock BPA uses JWK for its key store configuration.
+The BSL does not use JWKs directly, but the dynamic backend provides an API for loading a JWK Set file into a key store and the Mock BPA makes use of this API during its startup.
+
+The following are cryptographic terms (used within security context options and explanations) consistent with NIST <<CSRC>> definitions:
+
+Key Derivation Function (KDF)::
+A cryptographic function used to derive symmetric key material from input key material, an entropy-adding "salt" value, and opaque context information data.
+Key Derivation Key (KDK)::
+A key used as an input to a key-derivation function to derive additional keying material.
+Key Encryption Key (KEK)::
+A cryptographic key that is used for the encryption or decryption of other keys to provide confidentiality protection for those keys. Also known as a key-wrapping key.
+Content Key::
+The lowest-layer symmetric key used as input for MAC or AEAD algorithms.
+Authenticated Encryption with Associated Data (AEAD)::
+A subset of encryption algorithms which outputs an authentication tag along with its ciphertext, and inputs data which is authenticated but not encrypted (AAD).
+Initialization Vector (IV)::
+An input to authenticated encryption which must be unique for each combination of content key and plaintext.
+Additional Authenticated Data (AAD)::
+The input data to the authenticated encryption function that is authenticated but not encrypted.
+Message Authentication Code (MAC)::
+A symmetric key algorithm used to provide integrity over some plaintext, which can itself be composed of a payload along with additional authenticated data.
 
 [#list-terms-bpsec]
 The following are BP- and BPSec-related terms:
@@ -200,6 +226,9 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |IEEE Standard for Information Technology - Portable Operating System Interface (POSIX(R))[[POSIX]]
 |https://pubs.opengroup.org/onlinepubs/9699919799.2008edition/[IEEE Std 1003.1-2008]
 
+|US NIST Computer Security Resource Center Glossary[[CSRC,CSRC Glossary]]
+|https://csrc.nist.gov/glossary
+
 |M*LIB: Generic type-safe Container Library for C language[[MLIB]]
 |https://github.com/P-p-H-d/mlib[GitHub project for M*LIB]
 
@@ -233,6 +262,9 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |Concise Binary Object Representation (CBOR)[[RFC8949]]
 |https://www.rfc-editor.org/info/rfc8949[IETF RFC 8949]
 
+|CBOR Object Signing and Encryption (COSE): Structures and Process[[RFC9052]]
+|https://www.rfc-editor.org/info/rfc9052[IETF RFC 9052]
+
 |Bundle Protocol Version 7[[RFC9171]]
 |https://www.rfc-editor.org/info/rfc9171[IETF RFC 9171]
 
@@ -242,23 +274,27 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |Default Security Contexts for Bundle Protocol Security (BPSec)[[RFC9173]]
 |https://www.rfc-editor.org/info/rfc9173[IETF RFC 9173]
 
+|Bundle Protocol Security (BPSec) COSE Context[[draft-ietf-dtn-bpsec-cose]]
+|https://datatracker.ietf.org/doc/draft-ietf-dtn-bpsec-cose/[draft-ietf-dtn-bpsec-cose]
+
 |===
 
 
 [#sec-arch]
 == Architecture
 
-The BSL is a set of software libraries and plugin modules which together perform the functions required by Bundle Protocol Security (BPSec) <<RFC9172>> and its Default Security Contexts <<RFC9173>> in a way which can be instantiated from and used by a Bundle Protocol Agent (BPA) operating according to the BPv7 specification <<RFC9171>>.
+The BSL is a set of software libraries and plugin modules which together perform the functions required by Bundle Protocol Security (BPSec) <<RFC9172>> in a way which can be instantiated from and used by a Bundle Protocol Agent (BPA) operating according to the BPv7 specification <<RFC9171>>.
+The BSL comes with an implementation of the BPSec Default Security Contexts <<RFC9173>> and COSE Context <<draft-ietf-dtn-bpsec-cose>>, as well as a sample policy provider which uses JSON configuration inputs with heritage from and limited backward compatibility with ION.
 
 The BSL is made to interact with its environment (BPA, libraries, host OS, _etc._) through function calls into and out of the BSL library based on a <<C99>> Application Programming Interface (API) from header declarations and corresponding Application Binary Interface (ABI) for compiled libraries.
 
 === Factory Default Configuration
 
-The "factory default" BSL is configured to operate with a "dynamic backend" which uses dynamic heap allocation and variable-sized data containers (arrays, lists, maps, _etc._).
+The "factory default" BSL is configured to operate with a dynamic backend which uses dynamic heap allocation and variable-sized data containers (arrays, lists, maps, _etc._).
 An alternative backend could be developed for specific BPA needs, but that is outside the scope of the BSL project.
 
-The factory default BSL also builds example Policy Providers and example Security Contexts in order to be able to fully exercise the BSL behaviors.
-Alternative Policy Providers are expected to be developed for each deployment.
+The factory default BSL also builds a sample Policy Provider and example Security Contexts in order to be able to fully exercise the BSL behaviors.
+Alternative Policy Providers are expected to be developed and tailored for each BPA integration.
 Alternative Security Context implementations are expected to be developed for future contexts, and to adapt to deployment-specific needs such as for key management or specialized cryptographic interfaces.
 
 === Library Associations
@@ -272,17 +308,19 @@ The dependencies between areas are shown in <<fig-deps-logical>>, where the sing
 ----
 digraph figure {
     rankdir=TB;
-    node [shape=record, fontname=Helvetica, fontsize=12];
+    node [shape=box, fontname=Helvetica, fontsize=12];
 
     bpa [ label="BP Agent" ];
     bsl [ label="BSL\n(frontend+backend)" ];
-    pp [ label="Example\nPolicy Provider" ];
-    sc [ label="Example\nSecurity Context" ];
+    pp [ label="Policy Provider(s)" ];
+    sc [ label="Security Context(s)" ];
     crypto [ label="Crypto Provider" ];
+    { rank=same; pp; sc; }
 
     bpa -> bsl [ label="BSL Service API" ];
     bsl -> pp [ label="PP Register"; dir=back; ]
     bsl -> sc [ label="SC Register"; dir=back; ]
+    pp -> sc [ label="Options" ];
     sc -> crypto;
 }
 ----
@@ -342,7 +380,7 @@ This is depicted in <<fig-calls-service>>, where the BPA initiates the sequence 
 ----
 digraph figure {
     rankdir=TB;
-    node [shape=record, fontname=Helvetica, fontsize=12];
+    node [shape=box, fontname=Helvetica, fontsize=12];
 
     bpa [ label="BP Agent" ];
     bsl [ label="BSL" ];
@@ -361,11 +399,11 @@ This is depicted in <<fig-calls-callback>>, which elides the ultimate source of 
 
 [#fig-calls-callback]
 .Calls Directed To the BPA
-[graphviz,format=svg,width=80mm]
+[graphviz,format=svg,width=100mm]
 ----
 digraph figure {
     rankdir=TB;
-    node [shape=record, fontname=Helvetica, fontsize=12];
+    node [shape=box, fontname=Helvetica, fontsize=12];
 
     bpa [ label="BP Agent" ];
     bsl [ label="BSL" ];
@@ -504,7 +542,7 @@ Policy Providers must implement the function headers of the dynamic backend `BSL
 Policy Providers must inspect each bundle to produce an Action Set, containing Security Operations.
 Policy Providers also must finalize over a bundle after each Security Operation has been executed by the security context.
 
-The BSL includes a simple rule-based example PP that may be utilized by any BPA (see <<sec-examplepp>>), and is used by the Mock BPA for BSL testing (see <<sec-mockbpa>>).
+The BSL includes a simple rule-based example PP that may be utilized by any BPA (see <<sec-samplepp>>), and is used by the Mock BPA for BSL testing (see <<sec-mockbpa>>).
 This policy provider's data is mutex-protected and may be re-used among multiple threads / BSL contexts (see the Mock BPA for an example).
 
 [#sec-api-sc]
@@ -631,42 +669,119 @@ Each BSL Context is independent of all others, so there is no need to coordinate
 
 
 [#sec-defaultsc]
-== Example Default Security Contexts
+== Default Security Contexts
 
 The BSL source and default build includes implementations of the two Default Security Contexts <<RFC9173>> as an working example of how to use the BSL frontend and crypto APIs.
 
-This implementation corresponds to the shared library `bsl_default_sc` as explained in the <<bsl-product-guide>> and the API Docs subsection on https://nasa-ammos.github.io/BSL/html/examples-and-mocks.html#example-default-scs[Example Default Security Contexts].
+This implementation corresponds to the shared library `bsl_default_sc` as explained in the <<bsl-product-guide>> and the API Docs subsection on https://nasa-ammos.github.io/BSL/html/examples-and-mocks.html#default-scs[Default Contexts].
 
 The default security contexts are:
 
- * Context ID 1 "BIB-HMAC-SHA2" for Block Integrity
- * Context ID 2 "BCB-AES-GCM" for Block Confidentiality
+ * Context ID 1 "BIB-HMAC-SHA2" for BIB use
+ * Context ID 2 "BCB-AES-GCM" for BCB use
 
 [#sec-defaultsc-preprocessor]
 === Preprocessor Define Directives
 
-The following are preprocessor define directives that limit certain capabilities within the security contexts.
+The following are preprocessor define directives related to options of the BIB-HMAC-SHA2 context.
+Their enumerated values are not part of the API.
 
-`BSL_CRYPTO_AESGCM_AUTH_TAG_LEN` = 16::
-The length of an Authentication Tag for AES-GCM encryption and decryption as specified by <<RFC9173>>.
+`BSLX_BIB_OPT_KEY_ID`::
+The ID of an option used to convey the mandatory key ID as a text string.
+Valid values must be present in the BPA key store to be usable in any BPSec role.
+`BSLX_BIB_OPT_USE_KEY_WRAP`::
+The ID of an option used to convey the integer value 0, to skip key wrap and use as a content key, or 1, to perform key wrap of a random content key.
+`BSLX_BIB_OPT_SHA_VARIANT`::
+The ID of an option used to convey the integer SHA Variant.
+Valid values are defined by Section 3.3.1 of <<RFC9173>> and are used directly by this option.
+`BSLX_BIB_OPT_SCOPE`::
+The ID of an option used to convey the integer IPPT Scope.
+Valid values are defined by Section 3.3.3 of <<RFC9173>> and are used directly by this option.
 
-`BSLX_MAX_AES_PAD` = 64::
-Maximum size of padding added to AES operation by crypto finalize operation.
-AES-GCM will not produce extra padding, and this value is likely inconsequential.
+The following are preprocessor define directives related to options of the BCB-AES-GCM context.
+Their enumerated values are not part of the API.
 
-`RFC9173_BCB_DEFAULT_IV_LEN` = 12::
-The default initialization vector length as specified by <<RFC9173>>.
+`BSLX_BCB_OPT_KEY_ID`:: 
+The ID of an option used to convey the mandatory key ID as a text string.
+Valid values must be present in the BPA key store to be usable in any BPSec role.
+`BSLX_BCB_OPT_USE_KEY_WRAP`::
+The ID of an option used to convey the integer value 0, to skip key wrap and use as a content key, or 1, to perform key wrap of a random content key.
+`BSLX_BCB_OPT_AES_VARIANT`::
+The ID of an option used to convey the integer AES Variant.
+Valid values are defined by Section 4.3.2 of <<RFC9173>> and are used directly by this option.
+`BSLX_BCB_OPT_SCOPE`::
+The ID of an option used to convey the integer AAD Scope.
+Valid values are defined by Section 4.3.4 of <<RFC9173>> and are used directly by this option.
 
 
-[#sec-examplepp]
-== Example ION-Heritage Policy Provider
+[#sec-cosesc]
+== COSE Context
 
-The BSL source and default build includes a policy provider which has heritage in the ION BPA and is used to configure options for the Default Security Context implementations of <<sec-defaultsc>>.
+The BSL source and default build includes an implementation of the COSE Context <<draft-ietf-dtn-bpsec-cose>> as a more complex and full-featured use of the crypto APIs.
+This implementation is limited to only the symmetric key COSE algorithms listed in Section 3.2.2 and related COSE header parameters listed in Section 3.3 with key identifier considerations discussed in Section 3.4 of that specification.
+
+This implementation corresponds to the shared library `bsl_cose_sc` as explained in the <<bsl-product-guide>> and the API Docs subsection on https://nasa-ammos.github.io/BSL/html/examples-and-mocks.html#cose-sc[COSE Context].
+
+The COSE context has Context ID 3 for both BIB and BCB use.
+
+[#sec-cosesc-preprocessor]
+=== Preprocessor Define Directives
+
+The following are preprocessor define directives related to options of the COSE context.
+Their enumerated values are not part of the API.
+
+`BSLX_COSESC_OPTION_KEY_ID`::
+The ID of an option used to convey a key ID as a byte string (which may contain encoded UTF8 text, but that is not inspected by the implementation).
+Valid values must be present in the BPA key store to be usable in any BPSec role.
+This is required for source role and an optional filter for verifier/acceptor.
+If the COSE Key algorithm is different than `BSLX_COSESC_OPTION_TGT_ALG` option,
+the key will be used for the recipient layer, otherwise it will be used
+for a single-layer message.
+
+`BSLX_COSESC_OPTION_KEY_ALG`::
+The ID of an option used to convey the integer COSE algorithm associated with the top COSE layer (recipient).
+This is optional for source role and optional filter for verifier/acceptor.
+If not provided the COSE Key must contain an algorithm parameter.
+Valid values are taken from the subset of the COSE algorithms registry implemented by this plugin.
+
+`BSLX_COSESC_OPTION_TGT_ALG`::
+The ID of an option used to convey the integer COSE algorithm associated with the lowest COSE layer (content).
+This is required for source role and optional filter for verifier/acceptor.
+Valid values are taken from the subset of the COSE algorithms registry implemented by this plugin.
+
+`BSLX_COSESC_OPTION_AAD_SCOPE`::
+The ID of an option used to convey the a byte string of the CBOR-encoded AAD Scope parameter.
+This is optional for source role, optional exact-match for verifier/acceptor.
+Valid values follow the structure defined in Section 2.2.2 of <<draft-ietf-dtn-bpsec-cose>>.
+A helper function `BSLX_CoseSc_SetAadScope()` is provided to simplify value encoding.
+
+`BSLX_COSESC_OPTION_IV_COUNTER_OFFSET`::
+The ID of an option used to convey the integer offset to add to the key use counter and treated as a partial IV according to COSE processing rules.
+
+`BSLX_COSESC_OPTION_IV_BASE`::
+The ID of an option used to convey the byte string treated as a base IV according to COSE processing rules.
+This is optional for source role and unused for verifier/acceptor.
+Valid values must match the IV length of the content encryption algorithm.
+
+`BSLX_COSESC_OPTION_SALT_LENGTH`::
+The ID of an option used to convey the integer length (in bytes) of salt for KDF sources.
+This is optional for source role and unused for verifier/acceptor.
+When not present, the default salt length for the KDF algorithm will be used.
+
+`BSLX_COSESC_OPTION_SALT_COUNTER_OFFSET`::
+`BSLX_COSESC_OPTION_SALT_BASE`::
+These IDs of options are used to control deterministic recipient KDF salt generation using the same algorithm defined by COSE for partial and base IV combination.
+If these are present, the `BSLX_COSESC_OPTION_SALT_LENGTH` option is ignored as the base byte string defines the length.
+
+[#sec-samplepp]
+== Sample Policy Provider
+
+The BSL source and default build includes a policy provider which has heritage in the ION BPA and is used to configure options for the Security Context implementations of <<sec-defaultsc>> and <<sec-cosesc>>.
 Alternative SC implementations can have other internal options that the example policy provider is unaware of and cannot configure.
 
-This implementation corresponds to the shared library `bsl_example_pp` as explained in the <<bsl-product-guide>> and the API Docs subsection on https://nasa-ammos.github.io/BSL/html/examples-and-mocks.html#example-pps[Example Policy Providers].
+This implementation corresponds to the shared library `bsl_sample_pp` as explained in the <<bsl-product-guide>> and the API Docs subsection on https://nasa-ammos.github.io/BSL/html/examples-and-mocks.html#example-pps[Example Policy Providers].
 
-[#sec-examplepp-json]
+[#sec-samplepp-json]
 === JSON-Defined Policy Provider Rules
 
 The sample policy provider has the option to parse and load JSON-encoded ION-like policy rules into the sample policy provider from a file.
@@ -702,14 +817,14 @@ This procedure is how a BPA making use of the example policy provider initialize
 
 An example with two policy rules is shown below.
 
-[#src-examplepp-json]
+[#src-samplepp-json]
 .Example JSON-Encoded Policy Provider
 [source,json]
 ----
 include::https://raw.githubusercontent.com/NASA-AMMOS/BSL/refs/heads/main/mock-bpa-test/policy_provider_test.json[]
 ----
 
-[#sec-examplepp-preprocessor]
+[#sec-samplepp-preprocessor]
 === Preprocessor Define Directives
 
 The Example PP does not rely on any externally configured preprocessor defines to operate normally.
@@ -725,7 +840,7 @@ This implementation corresponds to the executable `bsl-mock-bpa` and shared libr
 The Mock BPA does not provide any of the normal processing required of a real BPA by <<RFC9171>>, it is limited to decoding and encoding BPv7 protocol data unit (PDU) byte strings, processing specific BPv7 primary block fields, providing BSL-required integration callbacks, and calling into the BSL for each bundle being processed at each interaction point.
 The Mock BPA communicates with "the outside" at each interaction point using UDP/IP socket binds configured by command options explained in detail in <<bsl-main-api>>.
 
-Users may find it useful to reference the Mock BPA for a working example of library and bundle workflow, and working examples of initializing, registering, and operating the Default Security Context (of <<sec-defaultsc>>) and the Example Policy Provider (of <<sec-examplepp>>).
+Users may find it useful to reference the Mock BPA for a working example of library and bundle workflow, and working examples of initializing, registering, and operating the Default Security Context (of <<sec-defaultsc>>) and the Example Policy Provider (of <<sec-samplepp>>).
 Exercising of the Mock BPA is part of normal BSL continuous integration (CI) testing and release testing, so it is always in-sync with the BSL APIs.
 
 [#sec-mockbpa-preprocessor]
