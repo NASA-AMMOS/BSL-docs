@@ -201,7 +201,7 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |https://nasa-ammos.github.io/BSL/html/bsl-sis.html[DOC-005835]
 
 |[[bsl-product-guide,BSL Product Guide]]BSL v2.0 Product Guide
-|https://nasa-ammos.github.io/BSL-docs/product-guide/manual.pdf[DOC-005921]
+|https://nasa-ammos.github.io/BSL-docs/product-guide/bsl-product-guide.pdf[DOC-005921]
 
 |===
 
@@ -546,7 +546,7 @@ The BSL includes a simple rule-based example PP that may be utilized by any BPA 
 This policy provider's data is mutex-protected and may be re-used among multiple threads / BSL contexts (see the Mock BPA for an example).
 
 [#sec-api-sc]
-=== Security Contexts
+=== Security Context Interface
 
 Security Contexts need to be registered with a library context via the dynamic backend before they can be used.
 Security Contexts must implement the function headers of the dynamic backend `BSL_SecCtxDesc_t` struct defined in the `SecurityContext.h` header file.
@@ -554,7 +554,7 @@ Security Contexts must implement the function headers of the dynamic backend `BS
 Security Contexts operate in the context of a single Security Operation over a bundle.
 Security Contexts must validate Security Operations for consistency, and process Security Operations on bundles to produce security outcomes.
 
-The BSL includes two Default Security Context implementations, as explained in <<sec-defaultsc>>, which are also used by the Mock BPA for BSL testing (see <<sec-mockbpa>>).
+The BSL includes its own context implementations, as explained in <<sec-defaultsc>> and <<sec-cosesc>>, which are also used by the Mock BPA for BSL testing (see <<sec-mockbpa>>).
 
 [#sec-api-crypto]
 === Cryptographic Processing
