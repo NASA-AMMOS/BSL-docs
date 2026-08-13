@@ -69,6 +69,7 @@ MCS
 MGSS
 MIMTaR
 mutex
+NIST
 OpenSSL
 PDU
 plaintext
