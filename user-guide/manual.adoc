@@ -89,6 +89,7 @@ The following are cryptographic terms (used within security context options and 
 
 Key Derivation Function (KDF)::
 A cryptographic function used to derive symmetric key material from input key material, an entropy-adding "salt" value, and opaque context information data.
+One variety of of this type of function is a hash-based KDF (HKDF).
 Key Derivation Key (KDK)::
 A key used as an input to a key-derivation function to derive additional keying material.
 Key Encryption Key (KEK)::
@@ -103,6 +104,7 @@ Additional Authenticated Data (AAD)::
 The input data to the authenticated encryption function that is authenticated but not encrypted.
 Message Authentication Code (MAC)::
 A symmetric key algorithm used to provide integrity over some plaintext, which can itself be composed of a payload along with additional authenticated data.
+One variety of of this type of function is a hash-based MAC (HMAC).
 
 [#list-terms-bpsec]
 The following are BP- and BPSec-related terms:
