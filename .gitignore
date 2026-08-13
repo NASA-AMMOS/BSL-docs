@@ -1,10 +1,11 @@
 # editor files
 *~
 .#*
-.project
-.cproject
+/.project
+/.cproject
+/.externalToolBuilders/
 
 # generated files
-build
+/build
 */docinfo.xml
-public
+/public

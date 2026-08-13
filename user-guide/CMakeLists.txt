@@ -161,7 +161,7 @@ if(XMLSTARLET AND ASPELL)
             "${OUT_HTML}" "misspelling.txt"
         COMMAND
             ${XMLSTARLET} fo "${OUT_HTML}" |
-            grep --file "misspelling.txt" >"misspelling-ctx.txt" || true
+            grep --word-regexp --file "misspelling.txt" >"misspelling-ctx.txt" || true
     )
     add_custom_target(
         ${PROJECT_NAME}-misspelling ALL
