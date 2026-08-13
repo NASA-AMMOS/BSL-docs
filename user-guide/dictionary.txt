@@ -46,6 +46,7 @@ executables
 frontend
 Frontend
 GCM
+HKDF
 HMAC
 IANA
 IEC
