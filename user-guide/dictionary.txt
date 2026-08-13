@@ -1,4 +1,6 @@
+AAD
 ABI
+acceptor
 Acceptor
 AES
 AMMOS
@@ -13,6 +15,7 @@ Backend
 BCB
 BPA
 BPAs
+bpsec
 BPSec
 BPv
 bsl
@@ -25,10 +28,13 @@ CLA
 CLAs
 CLIN
 CODEC
+cose
+COSE
 crypto
 cryptographic
 de
 De
+dtn
 DTN
 EID
 EIDs
@@ -40,15 +46,19 @@ GCM
 HMAC
 IANA
 IEC
+ietf
 IETF
 instantiation
 IP
+IPPT
 ISA
 Jansson
 JHU
 JPL
 JSON
 JWK
+JWKs
+KDF
 LLC
 MCS
 MGSS
@@ -56,6 +66,7 @@ MIMTaR
 mutex
 OpenSSL
 PDU
+plaintext
 POSIX
 PPs
 preprocessor
@@ -76,5 +87,7 @@ TBD
 toc
 UDP
 UML
+UTF
+verifier
 Verifier
 Wireshark
