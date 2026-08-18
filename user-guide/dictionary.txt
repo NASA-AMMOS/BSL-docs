@@ -46,6 +46,7 @@ executables
 frontend
 Frontend
 GCM
+HKDF
 HMAC
 IANA
 IEC
@@ -93,6 +94,7 @@ TBD
 toc
 UDP
 UML
+untrusted
 UTF
 verifier
 Verifier

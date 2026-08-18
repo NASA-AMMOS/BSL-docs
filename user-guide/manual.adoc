@@ -89,6 +89,7 @@ The following are cryptographic terms (used within security context options and 
 
 Key Derivation Function (KDF)::
 A cryptographic function used to derive symmetric key material from input key material, an entropy-adding "salt" value, and opaque context information data.
+One variety of this type of function is a hash-based KDF (HKDF).
 Key Derivation Key (KDK)::
 A key used as an input to a key-derivation function to derive additional keying material.
 Key Encryption Key (KEK)::
@@ -103,6 +104,7 @@ Additional Authenticated Data (AAD)::
 The input data to the authenticated encryption function that is authenticated but not encrypted.
 Message Authentication Code (MAC)::
 A symmetric key algorithm used to provide integrity over some plaintext, which can itself be composed of a payload along with additional authenticated data.
+One variety of this type of function is a hash-based MAC (HMAC).
 
 [#list-terms-bpsec]
 The following are BP- and BPSec-related terms:
@@ -455,14 +457,57 @@ plantuml::static/bsl-breakdown.puml[format=svg,scale=60]
 
 In addition to the externally-visible information about security operations and their _target_, _parameters_, and _results_ the BSL adds the notion of a security Action which is an ordered sequence of specific operations.
 This is necessary because some policies require, for example, some operations to be accepted before others are sourced which would refer to the same target block.
-
-Another internal information item is the security Option, which is used to communicate configuration of individual security operations between a Policy Provider and an associated Security Context.
-Some options are converted by the SC into Parameters or Results that get encoded into the ASB when acting as the Source role.
-Some options, like key identifiers for the default security contexts, do not have representation in the ASB but are necessary for correct processing of the security operation.
+The data-use relationships of security operations between PP and SC are depicted in <<fig-secop-assoctaions>>.
 
 [#fig-secop-assoctaions]
 .Security Operation Associations 
 plantuml::static/secop-associations.puml[format=svg,scale=60]
+
+Another internal information item is the security Option, which is used to communicate configuration of individual security operations between a Policy Provider and an associated Security Context, as depicted in <<fig-secop-in-out>>.
+Some options are converted by the SC into Parameters or Results that get encoded into the ASB when acting as the Source role.
+Some options, like key identifiers for the default security contexts, do not have representation in the ASB but are necessary for correct processing of the security operation.
+A key distinction from the point of view of the SC is that options are internal to the BSL and implicitly trusted, while Parameters and Results (when used as verifier or acceptor role) are untrusted input coming from outside the BPA.
+
+Options are also used to define how operations behave for the source role, but are also used to constrain acceptable behaviors for verifier or acceptor role.
+For example, an option can restrict that verification _must_ use a specific security algorithm/strength and if the received operation uses a different algorithm/strength it will be treated as a failure during execution.
+
+[#fig-secop-in-out]
+.Logical Relationship between Options and Parameters
+[graphviz,format=svg,width=80mm]
+----
+digraph figure {
+    node [shape=rectangle];
+    
+    sc [label="Security Context\n(execute)"]
+    policy [label="Policy Provider"]
+    asbin [label="ASB (input)"]
+    asbout [label="ASB (output)"]
+    
+    { rank=same; policy; sc; }
+    
+    policy -> sc [label="Options"]
+    asbin -> sc [label="Parameters\n and Results", style=dashed]
+    sc -> asbout [label="Parameters\n and Results", style=dashed]
+}
+----
+
+The internal representation of Options, Parameters, and Results within the BSL takes the form of a _variant_ capable of holding a value with one of the following types:
+
+Int64::
+Used to convey signed and unsigned integer values.
+This is limited to 63-bits of magnitude, but currently there are no code points or flags that require all 64 bits of unsigned integer.
+
+Byte String::
+Used to convey byte string values from configuration or from ASB content.
+For example, authentication tags of default security contexts or COSE messages of the COSE context.
+
+Text String::
+Used to convey text string values from configuration.
+There are currently no security contexts which use text strings as a parameter or result.
+
+Raw::
+Used to convey other context-specific byte-string-encoded values.
+For example, the AAD Scope option and parameter for the COSE context as a CBOR-encoded map.
 
 [#sec-api-secondary]
 === Secondary Interactions
@@ -513,13 +558,21 @@ Security Contexts must validate Security Operations for consistency, and process
 
 The BSL includes its own context implementations, as explained in <<sec-defaultsc>> and <<sec-cosesc>>, which are also used by the Mock BPA for BSL testing (see <<sec-mockbpa>>).
 
-[#sec-api-sc-crypto]
-==== Cryptographic Processing
+[#sec-api-crypto]
+=== Cryptographic Processing
 
-Both of the default contexts use the BSL frontend for abstracting cryptographic processing.
-It is expected that alternative and/or future contexts will also use the BSL frontend for abstracting such processing, and that that frontend API will evolve as those needs change.
+Both of the default contexts and the COSE context use a BSL "crypto" library for abstracting cryptographic processing.
+It is expected that alternative and/or future contexts will also use this library for abstracting such processing, and the frontend API of that library will evolve as those needs change.
 
-The BSL backend cryptographic interface utilizes OpenSSL to perform HMAC-signing, encryption, and decryption operations through its "EVP" primitives APIs <<OpenSSL>>.
+The BSL backend cryptographic interface utilizes OpenSSL to perform AES key wrap/unwrap, HKDF derivation, HMAC integrity, and AES-GCM encryption operations through its "EVP" primitives APIs <<OpenSSL>>.
+
+[#sec-api-crypto-keystore]
+==== Key Store Interface
+
+Part of the software-only cryptographic API is the need for an in-memory symmetric key store to provide key material to OpenSSL APIs.
+
+The crypto library reads key material and updates telemetry counters in the key store.
+The implementation of the key store is delegated to the host BPA through callbacks (registered during startup <<sec-workflow-bpa>>).
 
 [#sec-api-preprocessor]
 === Preprocessor Define Directives
@@ -538,10 +591,15 @@ A simple BPA that utilizes the example policy provider, default security context
 
 The following steps are not thread safe and must be performed before any BSL context instances are initialized (in <<sec-workflow-bslctx>>).
 
-. *Set & Initialize Host Descriptors*:
+. *Set Host Descriptors*:
 The BSL backend relies on host-specific information from the BPA, such as EID registering and encoding information.
 The function-pointer fields of a `BSL_HostDescriptors_t` struct should be set with host-implemented functions and initialized with `BSL_HostDescriptors_Set()` for successful BSL operation.
 See the Mock BPA for a simple example of implementing host descriptors.
+
+. *Set Key Store Descriptors*:
+The BSL crypto interface relies on a host-specific cryptographic key store to access key material needed by security contexts.
+The function-pointer fields of a `BSL_KeyStore_Descriptors_t` struct should be set with host-implemented functions and initialized with `BSL_KeyStore_Init()` for successful BSL operation.
+
 
 [#sec-workflow-bslctx]
 === Initialization of a BSL Context
@@ -560,9 +618,8 @@ Each EID must be registered with the host using `BSL_HostEID_Init()`.
 . *Register Example Policy Provider with the Library Context*:
 Register the example Policy Provider with the Library Context.
 
-. *Initialize Cryptographic State & Register Default Security Contexts with the Library Context*:
-Initialize the backend cryptographic interface with `BSL_CryptoInit()`.
-Then, register the two Default Security Contexts ("BIB-HMAC-SHA2" and "BCB-AES-GCM") with the Library Context.
+. *Register Default Security Contexts with the Library Context*:
+Register the needed Default Security Contexts (BIB-HMAC-SHA2, BCB-AES-GCM, and COSE) with the Library Context.
 
 [#sec-workflow-bundle]
 === Single-Bundle Workflow

@@ -30,7 +30,9 @@ class "Security Operation" as SecOp {
   + role : BPSec Role
   + target : uint64
   + context ID : int16
-  + options : Option[0..*]
+  + options : Map<int64,Variant>
+  + parameters : Map<int64,Variant>
+  + results : Map<int64,Variant>
   + conclusion : bool [0..1]
 }
 
