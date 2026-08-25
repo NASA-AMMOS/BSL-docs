@@ -181,7 +181,7 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |Title
 |Document Number
 
-|Software Development[[jpl-sd,JPL SD]]
+|[[jpl-sd,JPL SD]]Software Development
 |57653 rev 10
 
 |===
@@ -193,16 +193,16 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |Title
 |Document Number
 
-|MGSS Implementation and Maintenance Task Requirements (MIMTaR)[[mimtar,MIMTaR]]
+|[[mimtar,MIMTaR]]MGSS Implementation and Maintenance Task Requirements (MIMTaR)
 |DOC-001455 rev I
 
-|BSL Software Requirements Document (SRD)[[bsl-srd,BSL SRD]]
+|[[bsl-srd,BSL SRD]]BSL Software Requirements Document (SRD)
 |https://github.com/NASA-AMMOS/BSL-docs/blob/main/BSL%20Software%20Requirements%20Document.pdf[DOC-005735]
 
-|BSL Software Interface Specification (SIS)[[bsl-sis,BSL SIS]]
+|[[bsl-sis,BSL SIS]]BSL Software Interface Specification (SIS)
 |https://nasa-ammos.github.io/BSL/html/bsl-sis.html[DOC-005835]
 
-|BSL v2.0 Product Guide[[bsl-product-guide,BSL Product Guide]]
+|[[bsl-product-guide,BSL Product Guide]]BSL v2.0 Product Guide
 |https://nasa-ammos.github.io/BSL-docs/product-guide/bsl-product-guide.pdf[DOC-005921]
 
 |===
@@ -213,70 +213,70 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |Title
 |Reference
 
-|BSL Source[[bsl-source]]
+|[[bsl-source]]BSL Source
 |https://github.com/NASA-AMMOS/BSL[GitHub project BSL]
 
-|BSL Documentation Source[[bsl-docs]]
+|[[bsl-docs]]BSL Documentation Source
 |https://github.com/NASA-AMMOS/BSL-docs[GitHub project BSL-docs]
 
-|BSL API Documentation -- Main Branch[[bsl-main-api,BSL API Docs]]
+|[[bsl-main-api,BSL API Docs]]BSL API Documentation -- Main Branch
 |https://nasa-ammos.github.io/BSL/html/[GitHub Pages for BSL]
 
-|Programming Languages -- C[[C99]]
+|[[C99]]Programming Languages -- C
 |https://www.iso.org/standard/29237.html[ISO/IEC 9899:1999]
 
-|IEEE Standard for Information Technology - Portable Operating System Interface (POSIX(R))[[POSIX]]
+|[[POSIX]]IEEE Standard for Information Technology - Portable Operating System Interface (POSIX(R))
 |https://pubs.opengroup.org/onlinepubs/9699919799.2008edition/[IEEE Std 1003.1-2008]
 
-|US NIST Computer Security Resource Center Glossary[[CSRC,CSRC Glossary]]
+|[[CSRC,CSRC Glossary]]US NIST Computer Security Resource Center Glossary
 |https://csrc.nist.gov/glossary
 
-|M*LIB: Generic type-safe Container Library for C language[[MLIB]]
+|[[MLIB]]M*LIB: Generic type-safe Container Library for C language
 |https://github.com/P-p-H-d/mlib[GitHub project for M*LIB]
 
-|QCBOR Library[[QCBOR]]
+|[[QCBOR]]QCBOR Library
 |https://github.com/laurencelundblade/QCBOR[GitHub project for QCBOR]
 
-|OpenSSL Library[[OpenSSL]]
+|[[OpenSSL]]OpenSSL Library
 |https://openssl-library.org/[OpenSSL Project]
 
-|Jansson Library[[Jansson]]
+|[[Jansson]]Jansson Library
 |https://github.com/akheron/jansson[GitHub project for Jansson]
 
-|Unity Test Library[[unity-test]]
+|[[unity-test]]Unity Test Library
 |https://github.com/ThrowTheSwitch/Unity[GitHub project Unity]
 
-|NASA Interplanetary Overlay Networking (ION) software[[NASA-ION]]
+|[[NASA-ION]]NASA Interplanetary Overlay Networking (ION) software
 |https://github.com/nasa-jpl/ION-DTN/[GitHub project for ION-DTN]
 
-|Bundle Protocol Security (BPSec) Policy Configuration for ION Open Source (ION-IOS)[[ION-BPSec-Policy-Manual]]
+|[[ION-BPSec-Policy-Manual]]Bundle Protocol Security (BPSec) Policy Configuration for ION Open Source (ION-IOS)
 |https://github.com/nasa-jpl/ION-DTN/blob/current/Security_Policy_User_Manual.docx[ION BPSec Policy Manual]
 
-|Wireshark Project[[wireshark]]
+|[[wireshark]]Wireshark Project
 |https://www.wireshark.org/
 
-|JSON Web Key (JWK)[[RFC7517]]
+|[[RFC7517]]JSON Web Key (JWK)
 |https://www.rfc-editor.org/info/rfc7517[IETF RFC 7517]
 
-|The JavaScript Object Notation (JSON) Data Interchange Format[[RFC8259]]
+|[[RFC8259]]The JavaScript Object Notation (JSON) Data Interchange Format
 |https://www.rfc-editor.org/info/rfc8259[IETF RFC 8259]
 
-|Concise Binary Object Representation (CBOR)[[RFC8949]]
+|[[RFC8949]]Concise Binary Object Representation (CBOR)
 |https://www.rfc-editor.org/info/rfc8949[IETF RFC 8949]
 
-|CBOR Object Signing and Encryption (COSE): Structures and Process[[RFC9052]]
+|[[RFC9052]]CBOR Object Signing and Encryption (COSE): Structures and Process
 |https://www.rfc-editor.org/info/rfc9052[IETF RFC 9052]
 
-|Bundle Protocol Version 7[[RFC9171]]
+|[[RFC9171]]Bundle Protocol Version 7
 |https://www.rfc-editor.org/info/rfc9171[IETF RFC 9171]
 
-|Bundle Protocol Security (BPSec)[[RFC9172]]
+|[[RFC9172]]Bundle Protocol Security (BPSec)
 |https://www.rfc-editor.org/info/rfc9172[IETF RFC 9172]
 
-|Default Security Contexts for Bundle Protocol Security (BPSec)[[RFC9173]]
+|[[RFC9173]]Default Security Contexts for Bundle Protocol Security (BPSec)
 |https://www.rfc-editor.org/info/rfc9173[IETF RFC 9173]
 
-|Bundle Protocol Security (BPSec) COSE Context[[draft-ietf-dtn-bpsec-cose]]
+|[[draft-ietf-dtn-bpsec-cose]]Bundle Protocol Security (BPSec) COSE Context
 |https://datatracker.ietf.org/doc/draft-ietf-dtn-bpsec-cose/[draft-ietf-dtn-bpsec-cose]
 
 |===
