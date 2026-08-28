@@ -242,8 +242,8 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 |[[tito]]Tito: A tool for managing rpm based git projects
 |https://github.com/rpm-software-management/tito[GitHub project Tito]
 
-|[[wireshark]]Wireshark Project
-|https://www.wireshark.org/
+|[[wireshark]]Wireshark User’s Guide
+|https://www.wireshark.org/docs/wsug_html_chunked/[Wireshark Docs]
 
 |[[RFC7517]]JSON Web Key (JWK)
 |https://www.rfc-editor.org/info/rfc7517[IETF RFC 7517]
@@ -385,7 +385,7 @@ The set of packages for each BSL release (or local package build) contains the f
 The runtime files needed for the library itself.
 This contains versioned shared objects.
 +
-Major files are installed under `/usr/lib64/`.
+Major files are installed under `/usr/lib64/` with sample policy schema under `/usr/share/bsl/sample_pp/`.
 `bsl-devel`::
 Development files needed to build and link against the BSL.
 This contains C headers and shared object version links.
@@ -440,6 +440,12 @@ The BSL installs its Mock BPA as the executable `bsl-mock-bpa` here.
 `/usr/libexec/`::
 The OS-standard path for context-dependent executable files.
 The BSL installs its unit tests under the `bsl` sub-directory.
+`/usr/share/`::
+The OS-standard path for architecture-independent data files.
+The BSL installs its data files under the `bsl` sub-directory.
+`/usr/share/doc/`::
+The OS-standard path for library and package documentation files.
+The BSL installs its documentation files under the `bsl` sub-directory.
 
 [#sec-arch-networking]
 === Networking
