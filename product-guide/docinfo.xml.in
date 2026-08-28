@@ -69,9 +69,12 @@ Updates for BSL v2.0.0.
       </simpara>
       <simpara>
 Affected sections or pages:
-Sec 6 added section for new COSE SC.
-Sec 7 clarified name "sample PP".
-TBD
+Sec 1.3 added terminology for COSE support.
+Sec 2.1 added COSE SC and additional simplified linking diagram.
+Sec 2.4 added pkg-config, CMake control, and data file layout.
+Sec 3.4.1 added `BSL_LOG_PLAINTEXT_ENABLE` build option.
+Sec 3.5 added full explanation of linking choices.
+All secs clarified name "sample PP" throughout.
       </simpara>
     </revdescription>
   </revision>

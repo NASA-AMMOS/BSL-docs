@@ -85,6 +85,7 @@ OpenSSL
 parms
 PDU
 plaintext
+PLAINTEXT
 POSIX
 PPs
 preprocessor
