@@ -1,3 +1,4 @@
+
 AAD
 ABI
 acceptor
@@ -7,13 +8,17 @@ AES
 AMMOS
 APIs
 APL
+appin
 APPIN
+appout
 APPOUT
 ASB
 ASBs
 backend
 Backend
+bcb
 BCB
+booleans
 BPA
 BPAs
 bpsec
@@ -28,6 +33,7 @@ centric
 ciphertext
 CLA
 CLAs
+clin
 CLIN
 CODEC
 cose
@@ -37,10 +43,12 @@ cryptographic
 CSRC
 de
 De
+dest
 dtn
 DTN
 EID
 EIDs
+endian
 EVP
 executables
 frontend
@@ -59,6 +67,7 @@ ISA
 Jansson
 JHU
 JPL
+json
 JSON
 JWK
 JWKs
@@ -69,9 +78,11 @@ LLC
 MCS
 MGSS
 MIMTaR
+mis
 mutex
 NIST
 OpenSSL
+parms
 PDU
 plaintext
 POSIX
@@ -81,10 +92,12 @@ Preprocessor
 QCBOR
 runtime
 Runtime
+sc
 SCs
 SDD
 SEO
 SHA
+src
 SRD
 struct
 structs
