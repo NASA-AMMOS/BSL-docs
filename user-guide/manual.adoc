@@ -499,18 +499,20 @@ The internal representation of Options, Parameters, and Results within the BSL t
 Int64::
 Used to convey signed and unsigned integer values.
 This is limited to 63-bits of magnitude, but currently there are no code points or flags that require all 64 bits of unsigned integer.
+For example, COSE algorithm code point options or AAD Scope or IPPT Scope parameters of default security contexts.
 
 Byte String::
 Used to convey byte string values from configuration or from ASB content.
-For example, authentication tags of default security contexts or COSE messages of the COSE context.
+For example, byte strings are used by the COSE context options to identify keys, as authentication tag results of default security contexts, and as COSE message results of the COSE context.
 
 Text String::
 Used to convey text string values from configuration.
+Text strings are used by default security context options to identify keys by name.
 There are currently no security contexts which use text strings as a parameter or result.
 
 Raw::
-Used to convey other context-specific byte-string-encoded values.
-For example, the AAD Scope option and parameter for the COSE context as a CBOR-encoded map.
+Used to convey other context-specific raw-data-bytes values, where any encoded structure of the value is opaque to the BSL.
+For example, the AAD Scope option and parameter for the COSE context use a CBOR-encoded map as raw data.
 
 [#sec-api-secondary]
 === Secondary Interactions
