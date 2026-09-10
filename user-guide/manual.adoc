@@ -1007,8 +1007,8 @@ A new property of each `policyrule` to control its response to failure of an ope
 A full policy event set implementation does not exist yet within BSL.
 For now, a temporary `policy_action_on_fail` attribute should be set to "delete_bundle", "drop_block", or "nothing".
 
-New config property `policy_action_no_rules`::
-A new property on the top config object to control how the policy handles cases where a bundle does not match any rules.
+New top property `policy_action_no_rules`::
+A new property on the top configuration object to control how the policy handles cases where a bundle does not match any rules.
 The default behavior is backward compatible, a more strict option can delete bundles which do not match any rule.
 
 Concise form of context options::
