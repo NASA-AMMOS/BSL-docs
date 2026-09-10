@@ -797,7 +797,15 @@ The schema is summarized here with a full explanation for the semantics of each 
 The full configuration is a JSON object with the following properties:
 
 `policyrule_set`::
-An array of individual policy rule definitions, each being an object with a single property `policyrule` having the following structure.
+An array of individual policy rule definitions, each being an object with a single property `policyrule` itself having the  structure documented below.
+`policy_action_no_rules`::
+Controls how the policy reacts when a bundle does not match any policy rules at an interaction point.
+This is an object with property names being one of the interaction point names ("appin", "appout", "clin", or "clout") and each value is one of the text strings:
+"nothing":::
+Security at the interaction point is discretionary and if no rules match there will be no side-effects.
+This is the default option and is backward compatible.
+"delete_bundle":::
+If no rules match the entire bundle will be deleted, along with any follow-on effects that the BPA will apply (such as status reporting).
 
 Each policy rule has the following properties:
 
@@ -866,9 +874,10 @@ Determines how the policy provider reacts when a created security operation fail
 The value is one of the following text strings:
 "nothing":::
 The operation is discretionary and if it fails there will be no side-effects.
+This is the default option when not present.
 +
 CAUTION: For source role the failure of an operation is due to local mis-alignment between policy and key store (_i.e._, using the wrong key name).
-It is recommended to not use this action for source role.
+It is recommended to not use "nothing" for source role failure.
 "drop_block":::
 If the operation fails the target block will be dropped, along with any follow-on effects that the BPA will apply (based on the target block flags).
 "delete_bundle":::
@@ -988,13 +997,17 @@ This option is only applicable to the source role, the salt value is conveyed wi
 
 This policy syntax is derived from the original ION BPSec policy syntax <<ION-BPSec-Policy-Manual>> with some notable differences/modifications mentioned as follows:
 
-New property `loc`::
+New filter property `loc`::
 An new property of `filter` that specifies the interaction point (one of "appin", "appout", "clin", "clout") where the policy rule should be applied.
  
-New property `policy_action_on_fail`::
+New rule property `policy_action_on_fail`::
 A new property of each `policyrule` to control its response to failure of an operation execution.
 A full policy event set implementation does not exist yet within BSL.
 For now, a temporary `policy_action_on_fail` attribute should be set to "delete_bundle", "drop_block", or "nothing".
+
+New config property `policy_action_no_rules`::
+A new property on the top config object to control how the policy handles cases where a bundle does not match any rules.
+The default behavior is backward compatible, a more strict option can delete bundles which do not match any rule.
 
 Concise form of context options::
 The object-property form of context options make the policy configuration more compact, easier to read, and more amenable to JSON Schema specification.
