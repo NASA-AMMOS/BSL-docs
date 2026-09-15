@@ -589,7 +589,7 @@ The BSL-specific options (defined at the top of the root `CMakeLists.txt`) are:
 `BUILD_LIB`:: Build the library itself (default ON). This will require all normal dependencies of the BSL.
 `BUILD_DOCS_API`:: Enable API documentation building (default OFF). This will require the doxygen tool to be installed.
 `BUILD_DOCS_MAN`:: Enable manpage building (default OFF). This will require the asciidoctor tool to be installed.
-`BUILD_MOCK_BPA`:: Enable building the Mock BPA library and executable (default ON).
+`BUILD_MOCK_BPA`:: Enable building the Mock BPA executable (default ON).
 `BUILD_UNITTEST`:: Enable building unit tests (default ON).
 `TEST_MEMCHECK`:: Enable test runtime memory checking (default ON). This will require the valgrind tool to be installed.
 `BUILD_COVERAGE`:: Enable runtime coverage logging and reporting (default OFF). This will require the gcovr tool to be installed.
