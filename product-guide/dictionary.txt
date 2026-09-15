@@ -68,6 +68,7 @@ NIST
 OpenSSL
 PDU
 PDUs
+PLAINTEXT
 plantuml
 Podman
 POSIX
