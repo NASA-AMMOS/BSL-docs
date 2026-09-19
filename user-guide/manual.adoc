@@ -1006,7 +1006,7 @@ New filter property `loc`::
 An new property of `filter` that specifies the interaction point (one of "appin", "appout", "clin", "clout") where the policy rule should be applied.
 
 New rule property `correlation`::
-A new property of each `policyrule` to indicating correlation to other policy rules. Multiple rules of the same correlation indicate to BSL that should be coalesced into a single security block, if possible. The default is to not coalesce any operations
+A new property of each `policyrule` to indicating correlation to other policy rules. Multiple rules of the same correlation indicate to BSL that resulting security operations should be coalesced into a single security block, if possible. The default is to not coalesce any operations
 
 New rule property `policy_action_on_fail`::
 A new property of each `policyrule` to control its response to failure of an operation execution.
