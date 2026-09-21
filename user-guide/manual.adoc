@@ -814,8 +814,10 @@ Each policy rule has the following properties:
 `desc`::
 A human-friendly text description of each rule which is not used by the policy provider for any data processing.
 `correlation`::
-An optional unique integer identifier use to correlated multiple policy rules, indicating they could be coalesced into a single security block if possible.
-The value is an integer number or integer-as-text (decimal or hexadecimal). If left unset, this rule will not be correlated to other rules.
+An optional integer identifier use to correlate multiple policy rules with the source role, indicating they should be coalesced into a single security block if possible.
+The value is an integer number or integer-as-text (decimal or hexadecimal).
+If left unset, this rule will not be correlated to other rules.
+If set for non-source roles the value will be ignored with a warning log event.
 `filter`::
 A part of the rule which defines when the rule applies to a bundle being processed by the BPA.
 +
