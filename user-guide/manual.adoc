@@ -813,6 +813,11 @@ Each policy rule has the following properties:
 
 `desc`::
 A human-friendly text description of each rule which is not used by the policy provider for any data processing.
+`correlation`::
+An optional integer identifier use to correlate multiple policy rules with the source role, indicating they should be coalesced into a single security block if possible.
+The value is an integer number or integer-as-text (decimal or hexadecimal).
+If left unset, this rule will not be correlated to other rules.
+If set for non-source roles the value will be ignored with a warning log event.
 `filter`::
 A part of the rule which defines when the rule applies to a bundle being processed by the BPA.
 +
@@ -1001,7 +1006,10 @@ This policy syntax is derived from the original ION BPSec policy syntax <<ION-BP
 
 New filter property `loc`::
 An new property of `filter` that specifies the interaction point (one of "appin", "appout", "clin", "clout") where the policy rule should be applied.
- 
+
+New rule property `correlation`::
+A new property of each `policyrule` to indicating correlation to other policy rules. Multiple rules of the same correlation indicate to BSL that resulting security operations should be coalesced into a single security block, if possible. The default is to not coalesce any operations
+
 New rule property `policy_action_on_fail`::
 A new property of each `policyrule` to control its response to failure of an operation execution.
 A full policy event set implementation does not exist yet within BSL.
