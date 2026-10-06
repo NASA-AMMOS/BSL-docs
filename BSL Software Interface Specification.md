@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2026 The Johns Hopkins University Applied Physics
+Copyright (c) 2023-2026 The Johns Hopkins University Applied Physics
 Laboratory LLC.
 
 This file is part of the Bundle Protocol Security Library (BSL).
@@ -21,7 +21,7 @@ subcontract 1700763.
 -->
 This document functions as the AMMOS MiMTAR required interface specification.
 
-# Bundle Protocol Security Library (BSL) Software Interface Specification (SIS)
+# Bundle Protocol Security (BPSec) Library (BSL) Software Interface Specification (SIS)
 
 ***NASA AMMOS DOC-005525***
 

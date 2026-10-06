@@ -1,12 +1,14 @@
 <subtitle>
-  DOC-005921,
-  Prepared by The Johns Hopkins University Applied Physics Laboratory
+DOC-005523
 </subtitle>
 <author>
-  <orgname>
-    JHU/APL
-  </orgname>
+  <personname>
+    <othername>
+Prepared by The Johns Hopkins University Applied Physics Laboratory
+    </othername>
+  </personname>
 </author>
+<releaseinfo></releaseinfo>
 <copyright>
   <year>2023-2026</year>
   <holder>The Johns Hopkins University Applied Physics Laboratory LLC</holder>

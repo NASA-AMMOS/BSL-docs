@@ -1,12 +1,14 @@
 <subtitle>
-  DOC-005922,
-  Prepared by The Johns Hopkins University Applied Physics Laboratory
+DOC-005524
 </subtitle>
 <author>
-  <orgname>
-    JHU/APL
-  </orgname>
+  <personname>
+    <othername>
+Prepared by The Johns Hopkins University Applied Physics Laboratory
+    </othername>
+  </personname>
 </author>
+<releaseinfo></releaseinfo>
 <copyright>
   <year>2023-2026</year>
   <holder>The Johns Hopkins University Applied Physics Laboratory LLC</holder>
@@ -36,49 +38,13 @@ subcontract 1700763.
 <revhistory>
   <revision>
     <revnumber>Initial</revnumber>
-    <date>11 November 2025</date>
-    <revdescription>
-      <simpara>
-Initial release for BSL v1.0.0.
-      </simpara>
-      <simpara>
-Affected sections or pages: All
-      </simpara>
-    </revdescription>
-  </revision>
-  <revision>
-    <revnumber>Revision A</revnumber>
-    <date>15 May 2026</date>
-    <revdescription>
-      <simpara>
-Updates for BSL v1.1.0.
-      </simpara>
-      <simpara>
-Affected sections or pages:
-Sec 2.4.1 removed EID callback limitation.
-Sec 3.2 added for secondary interactions.
-Sec 3.3 and 3.4 clarified BSL backend registrations.
-Sec 3.4.1 added for crypto discussion.
-Sec 5 relocated Default SC.
-Sec 6 relocated Example PP.
-Sec 7 relocated Mock BPA.
-      </simpara>
-    </revdescription>
-  </revision>
-  <revision>
-    <revnumber>Revision B</revnumber>
     <date>1 October 2026</date>
     <revdescription>
       <simpara>
 Updates for BSL v2.0.0.
       </simpara>
       <simpara>
-Affected sections or pages:
-Sec 1.3 added terminology for COSE support and reference to CSRC.
-Sec 3.5.1 and 4.1 added to explain BPA key store access.
-Sec 6 added for new COSE Context.
-Sec 7.1 now gives a full explanation of JSON syntax.
-Updated all sections to use the name "sample PP" throughout.
+Affected sections or pages: All
       </simpara>
     </revdescription>
   </revision>
