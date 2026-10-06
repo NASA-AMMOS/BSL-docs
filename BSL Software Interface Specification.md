@@ -28,7 +28,7 @@ This document functions as the AMMOS MiMTAR required interface specification.
 ***Prepared By The Johns Hopkins University Applied Physics Laboratory (JHU/APL)***
 
 ### Change Log
-| Revision | Submission Date | Affection Sections or Pages | Change Summary            |
+| Revision | Submission Date | Affected Sections or Pages | Change Summary            |
 |----------|-----------------|-----------------------------|---------------------------|
 | Initial  | 1 October 2026  | All                         | Release for BSL v2.0      |
 
