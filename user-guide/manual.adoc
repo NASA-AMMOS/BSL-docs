@@ -1119,7 +1119,7 @@ Each release tag and formal release package of the BSL will contain a schema fil
 
 .Snapshot of JSON Schema for Sample Policy Provider Configuration
 [source,json]
-include::https://github.com/NASA-AMMOS/BSL/raw/refs/heads/main/src/bsl/sample_pp/config-schema.json[]
+include::../deps/bsl/src/bsl/sample_pp/config-schema.json[]
 
 [#app-samplepp-examples]
 === Example Policy Configurations
@@ -1130,7 +1130,7 @@ Because the rule omits any "src" or "dest" properties, it will add a BIB targeti
 [#src-samplepp-config-sc1-source]
 .Policy Configuration for BIB-HMAC-SHA2 Source Role
 [source,json]
-include::https://github.com/NASA-AMMOS/BSL/raw/refs/heads/main/mock-bpa-test/data/default-scs/policy-exA.1-source.json[]
+include::../deps/bsl/mock-bpa-test/data/default-scs/policy-exA.1-source.json[]
 
 A pairing of configurations can be used to reproduce the example in Appendix A.1 of the COSE Context, where the acceptor configuration omits constraining options to actually allow _any_ BIB referencing a known, algorithm-appropriate key to be accepted.
 A more constrained acceptor configuration would include all of the same "sc_parms" options as the source to ensure the actual operation matches the desired options.
@@ -1138,9 +1138,9 @@ A more constrained acceptor configuration would include all of the same "sc_parm
 [#src-samplepp-config-sc3-source]
 .Policy Configuration for COSE Source Role
 [source,json]
-include::https://github.com/NASA-AMMOS/BSL/raw/refs/heads/main/mock-bpa-test/data/cose-sc/policy-exA.1-source.json[]
+include::../deps/bsl/mock-bpa-test/data/cose-sc/policy-exA.1-source.json[]
 
 [#src-samplepp-config-sc3-accept-any]
 .Policy Configuration for COSE Acceptor Role
 [source,json]
-include::https://github.com/NASA-AMMOS/BSL/raw/refs/heads/main/mock-bpa-test/data/cose-sc/policy-any-bib-accept.json[]
+include::../deps/bsl/mock-bpa-test/data/cose-sc/policy-any-bib-accept.json[]

@@ -38,8 +38,8 @@ endif()
 
 set(OUT_DOCINFO "docinfo.xml")
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/${OUT_DOCINFO}.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/${OUT_DOCINFO}"
+    docinfo.xml.in
+    docinfo.xml
     @ONLY
 )
 set(OUT_DBOOK "${CMAKE_CURRENT_BINARY_DIR}/manual.docbook.xml")
