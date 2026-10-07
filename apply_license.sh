@@ -55,7 +55,7 @@ do
     licenseheaders ${LICENSEOPTS} --dir ${SELFDIR}/${DIRNAME}
 done
 # Specific top-level files
-for FILEPATH in $(find "${SELFDIR}" -maxdepth 1 -type f)
+find "${SELFDIR}" -maxdepth 1 -type f -print0 | while IFS= read -r -d'' FILEPATH
 do
     licenseheaders ${LICENSEOPTS} --file ${FILEPATH}
 done

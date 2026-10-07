@@ -6,6 +6,9 @@
   <xsl:param name="page.margin.inner">0.75in</xsl:param>
   <xsl:param name="page.margin.outer">0.75in</xsl:param>
 
+  <xsl:param name="draft.mode">no</xsl:param>
+  <xsl:param name="draft.watermark">yes</xsl:param>
+
   <xsl:param name="doc.collab.show">0</xsl:param>
   <xsl:param name="latex.output.revhistory">1</xsl:param>
   <xsl:param name="preface.tocdepth">2</xsl:param>

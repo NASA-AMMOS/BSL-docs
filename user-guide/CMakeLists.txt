@@ -29,7 +29,6 @@ project(${DIRNAME} VERSION 0 LANGUAGES )
 set(ADOC_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/manual.adoc")
 file(GLOB ADOC_EXTRAS "static/*.gv" "static/*.puml")
 
-
 find_program(ASCIIDOC asciidoctor REQUIRED)
 find_program(ASPELL aspell)
 if(NOT ASPELL)
@@ -47,12 +46,12 @@ add_custom_command(
     OUTPUT ${OUT_DBOOK}
     DEPENDS ${ADOC_SOURCE} ${ADOC_EXTRAS} ${OUT_DOCINFO}
     COMMAND
-        ${ASCIIDOC} -v -r asciidoctor-diagram
+        ${ASCIIDOC} -r asciidoctor-diagram
         --base-dir ${CMAKE_CURRENT_SOURCE_DIR}
         --destination-dir ${CMAKE_CURRENT_BINARY_DIR}
         -o ${OUT_DBOOK}
         -a allow-uri-read
-    ${ADOC_SOURCE}
+        ${ADOC_SOURCE}
 )
 # Place source images into build directory
 set(INSTALL_IMGS ${CMAKE_CURRENT_SOURCE_DIR}/install_imgs.sh)
