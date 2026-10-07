@@ -62,15 +62,18 @@ configure_file(docinfo.xml.in docinfo.xml @ONLY)
 # manpage subelements
 set(MAN_DBOOK_PATHS)
 foreach(MAN_ADOC ${MANPAGE_SRCS})
-    set(MAN_DBOOK $<PATH:REPLACE_EXTENSION,${MAN_ADOC},.docbook.xml>)
+    set(MAN_DBOOK $<PATH:REPLACE_EXTENSION,$<PATH:GET_FILENAME,${MAN_ADOC}>,.docbook.xml>)
+    message("out to ${MAN_DBOOK}")
     add_custom_command(
         OUTPUT ${MAN_DBOOK}
-        DEPENDS ../deps/bsl/docs/man/man1 ${ADOC_EXTRAS}
+        DEPENDS ${MAN_ADOC} ${ADOC_EXTRAS}
         COMMAND
             ${ASCIIDOC}
             --failure-level=warning
             --base-dir ${CMAKE_CURRENT_SOURCE_DIR}
             --destination-dir ${CMAKE_CURRENT_BINARY_DIR}
+            -b docbook5
+            -d manpage
             -o ${MAN_DBOOK}
             ${MAN_ADOC}
     )
@@ -83,7 +86,7 @@ add_custom_command(
     COMMAND
         ${XMLSTARLET} tr
         "${CMAKE_CURRENT_SOURCE_DIR}/combine.xsl"
-#        -s builddir=${CMAKE_CURRENT_BINARY_DIR}
+        -s builddir=${CMAKE_CURRENT_BINARY_DIR}
         "${OUT_DBOOK}" >combined.docbook.xml
 )
 
@@ -110,7 +113,8 @@ add_custom_command(
     COMMAND
         ${JAVA_BIN} -jar ${xsltng_JAR}
         -catalog:xml-catalog.xml -xsl:${HTML_XSLT}
-        -o:${OUT_HTML} combined.docbook.xml
+        -o:${OUT_HTML}
+        combined.docbook.xml
 )
 # Place needed files into HTML tree
 add_custom_command(

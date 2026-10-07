@@ -77,6 +77,7 @@ A message encoding and processing defined in <<RFC9052>> which uses CBOR as its 
 COSE algorithms and header parameters are managed by IANA registries for extensibility.
 This is also known as IETF STD 96.
 COSE Key and Key Set::
+A CBOR data structure defined in <<RFC9052>> which represents a set of cryptographic keys and their parameters.
 The BSL does not use COSE Keys directly, but the dynamic backend provides an API for loading a COSE Key Set file into a key store and the Mock BPA makes use of this API during its startup.
 JavaScript Object Notation (JSON)::
 A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
@@ -1109,6 +1110,7 @@ Separate from the source for the BSL proper, the BSL Product Guide and User Guid
 While the GitHub repositories are the primary means by which users should submit detailed tickets, other inquiries can be made directly via email to the the support address mailto:dtnma-support@jhuapl.edu[,BSL Support].
 
 [appendix]
+[#app-samplepp]
 == Sample Policy Provider Files
 
 [#app-samplepp-schema]
@@ -1144,3 +1146,9 @@ include::../deps/bsl/mock-bpa-test/data/cose-sc/policy-exA.1-source.json[]
 .Policy Configuration for COSE Acceptor Role
 [source,json]
 include::../deps/bsl/mock-bpa-test/data/cose-sc/policy-any-bib-accept.json[]
+
+[appendix]
+[#app-manpages]
+== Mock BPA Manual Pages
+
+These POSIX-style manual page contents are extracted from the BSL source tree.
