@@ -1,4 +1,3 @@
-
 AAD
 ABI
 acceptor
@@ -19,6 +18,7 @@ Backend
 bcb
 BCB
 booleans
+bpa
 BPA
 BPAs
 bpsec
@@ -28,6 +28,7 @@ bsl
 BSL
 BTSD
 Caltech
+cbor
 CBOR
 centric
 ciphertext
@@ -63,6 +64,7 @@ IETF
 instantiation
 IP
 IPPT
+IPv
 ISA
 Jansson
 JHU
@@ -82,8 +84,10 @@ mis
 mutex
 NIST
 OpenSSL
+overlayer
 parms
 PDU
+PDUs
 plaintext
 PLAINTEXT
 POSIX
@@ -107,8 +111,11 @@ superset
 TBD
 toc
 UDP
+UDPCL
 UML
+underlayer
 untrusted
+URI
 UTF
 verifier
 Verifier
