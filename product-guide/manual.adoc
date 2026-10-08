@@ -24,6 +24,8 @@ subcontract 1700763.
 :backend: docbook5
 :docinfo: shared
 :toc:
+:sectnums:
+:source-linenums-option:
 
 
 == Introduction
@@ -67,13 +69,21 @@ A combination of instruction set architecture (ISA) and operating-system-specifi
 A built library has a specific ABI that can be different on different platforms even if its API does not change.
 Concise Binary Object Representation (CBOR)::
 A binary encoding defined in <<RFC8949>> which follows a superset of the JSON data model (see below) and enables both small encoded size as well as efficient encoding and decoding.
+This is also known as IETF STD 94.
 The BSL itself uses CBOR to encode the contents of BPSec ASBs.
+CBOR Object Signing and Encryption (COSE)::
+A message encoding and processing defined in <<RFC9052>> which uses CBOR as its extensible encoded structure for MAC, Signing, and Encryption operations.
+COSE algorithms and header parameters are managed by IANA registries for extensibility.
+This is also known as IETF STD 96.
+COSE Key and Key Set::
+A CBOR data structure defined in <<RFC9052>> which represents a set of cryptographic keys and their parameters.
+The BSL does not use COSE Keys directly, but the dynamic backend provides an API for loading a COSE Key Set file into a key store and the Mock BPA makes use of this API during its startup.
 JavaScript Object Notation (JSON)::
 A text encoding defined in <<RFC8259>> which allows a limited data model to be encoded in a human-readable form.
 The BSL does not use JSON directly, but the example ION-heritage Policy Provider uses JSON for encoding policy configuration.
-JSON Web Key (JWK)::
+JSON Web Key (JWK) and JWK Set::
 A JSON data structure defined in <<RFC7517>> which represents a set of cryptographic keys and their parameters.
-The BSL does not use JWK directly, but the Mock BPA uses JWK for its key store configuration.
+The BSL does not use JWKs directly, but the dynamic backend provides an API for loading a JWK Set file into a key store and the Mock BPA makes use of this API during its startup.
 
 [#list-terms-bpsec]
 The following are BP- and BPSec-related terms:
@@ -253,6 +263,9 @@ An option is an internal-to-BSL item which communicates intent for a single Secu
 
 |[[RFC8949]]Concise Binary Object Representation (CBOR)
 |https://www.rfc-editor.org/info/rfc8949[IETF RFC 8949]
+
+|[[RFC9052]]CBOR Object Signing and Encryption (COSE): Structures and Process
+|https://www.rfc-editor.org/info/rfc9052[IETF RFC 9052]
 
 |[[RFC9171]]Bundle Protocol Version 7
 |https://www.rfc-editor.org/info/rfc9171[IETF RFC 9171]
@@ -632,7 +645,8 @@ If a non-default install prefix is used, this install command may need to be run
 +
 [source,bash]
 ----
-./build.sh && ./build.sh install
+./build.sh
+./build.sh install
 ----
 . Optionally, execute Mock BPA built-item tests using the following sub-procedure.
 .. Install and enter a local Python virtualenv using:
@@ -650,7 +664,8 @@ python3 -m pytest mock-bpa-test --log-cli-level=info
 .. If BSL sources are updated and need re-testing, they must be built-and-installed using:
 +
 ----
-./build.sh && ./build.sh install
+./build.sh
+./build.sh install
 ----
 .. Leave the virtualenv using:
 +
