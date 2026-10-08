@@ -34,6 +34,9 @@ find_program(ASPELL aspell)
 if(NOT ASPELL)
     message(FATAL_ERROR "Program aspell not found")
 endif()
+find_program(JAVA_BIN java REQUIRED)
+find_program(XMLSTARLET xmlstarlet REQUIRED)
+find_program(DBLATEX dblatex REQUIRED)
 
 # root document
 set(OUT_DBOOK "manual.docbook.xml")
@@ -63,7 +66,6 @@ configure_file(docinfo.xml.in docinfo.xml @ONLY)
 set(MAN_DBOOK_PATHS)
 foreach(MAN_ADOC ${MANPAGE_SRCS})
     set(MAN_DBOOK $<PATH:REPLACE_EXTENSION,$<PATH:GET_FILENAME,${MAN_ADOC}>,.docbook.xml>)
-    message("out to ${MAN_DBOOK}")
     add_custom_command(
         OUTPUT ${MAN_DBOOK}
         DEPENDS ${MAN_ADOC} ${ADOC_EXTRAS}
@@ -79,19 +81,17 @@ foreach(MAN_ADOC ${MANPAGE_SRCS})
     )
     list(APPEND MAN_DBOOK_PATHS ${MAN_DBOOK})
 endforeach()
-
+# combined book
 add_custom_command(
     OUTPUT combined.docbook.xml
     DEPENDS combine.xsl ${OUT_DBOOK} docinfo.xml ${MAN_DBOOK_PATHS}
     COMMAND
         ${XMLSTARLET} tr
         "${CMAKE_CURRENT_SOURCE_DIR}/combine.xsl"
-        -s builddir=${CMAKE_CURRENT_BINARY_DIR}
+        -s "builddir=${CMAKE_CURRENT_BINARY_DIR}"
         "${OUT_DBOOK}" >combined.docbook.xml
 )
 
-find_program(JAVA_BIN java REQUIRED)
-find_program(XMLSTARLET xmlstarlet REQUIRED)
 set(HTML_XSLT "${CMAKE_CURRENT_SOURCE_DIR}/xhtml-opts.xsl")
 set(MANUAL_CSS "${CMAKE_CURRENT_SOURCE_DIR}/manual.css")
 set(DOCBOOK_CSS_FILES
@@ -197,7 +197,6 @@ if(XMLSTARLET AND ASPELL)
 endif(XMLSTARLET AND ASPELL)
 
 # PDF document output
-find_program(DBLATEX dblatex REQUIRED)
 if(DBLATEX)
     set(PDF_STYLE "${CMAKE_CURRENT_SOURCE_DIR}/manual.sty")
     set(PDF_XSLT "${CMAKE_CURRENT_SOURCE_DIR}/pdf-opts.xsl")
@@ -207,8 +206,10 @@ if(DBLATEX)
         DEPENDS combined.docbook.xml ${PDF_STYLE} ${PDF_XSLT} ${PROJECT_NAME}-img-bin
         COMMAND
             ${DBLATEX}
-            --texstyle=${PDF_STYLE} --xsl-user=${PDF_XSLT}
-            -o ${OUT_PDF} combined.docbook.xml
+            "--texstyle=${PDF_STYLE}"
+            "--xsl-user=${PDF_XSLT}"
+            -o ${OUT_PDF}
+            combined.docbook.xml
     )
     add_custom_target(
         ${PROJECT_NAME}-pdf ALL

@@ -26,7 +26,6 @@ project(${DIRNAME} VERSION 0 LANGUAGES )
 
 
 # File paths
-set(ADOC_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/manual.adoc")
 file(GLOB ADOC_EXTRAS "images/*.gv" "images/*.puml")
 
 
@@ -35,23 +34,22 @@ find_program(ASPELL aspell)
 if(NOT ASPELL)
     message(FATAL_ERROR "Program aspell not found")
 endif()
+find_program(JAVA_BIN java REQUIRED)
+find_program(XMLSTARLET xmlstarlet REQUIRED)
+find_program(DBLATEX dblatex REQUIRED)
 
-set(OUT_DOCINFO "docinfo.xml")
-configure_file(
-    docinfo.xml.in
-    docinfo.xml
-    @ONLY
-)
-set(OUT_DBOOK "${CMAKE_CURRENT_BINARY_DIR}/manual.docbook.xml")
+# root document
+set(OUT_DBOOK "manual.docbook.xml")
 add_custom_command(
     OUTPUT ${OUT_DBOOK}
-    DEPENDS ${ADOC_SOURCE} ${ADOC_EXTRAS} ${OUT_DOCINFO}
+    DEPENDS manual.adoc ${ADOC_EXTRAS}
     COMMAND
         ${ASCIIDOC} -r asciidoctor-diagram
+        --failure-level=warning
         --base-dir ${CMAKE_CURRENT_SOURCE_DIR}
         --destination-dir ${CMAKE_CURRENT_BINARY_DIR}
         -o ${OUT_DBOOK}
-        ${ADOC_SOURCE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/manual.adoc
 )
 # Place source images into build directory
 set(INSTALL_IMGS ${CMAKE_CURRENT_SOURCE_DIR}/install_imgs.sh)
@@ -62,9 +60,19 @@ add_custom_target(
         ${INSTALL_IMGS} ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_BINARY_DIR} ${OUT_DBOOK}
 )
+# info subelements
+configure_file(docinfo.xml.in docinfo.xml @ONLY)
+# combined book
+add_custom_command(
+    OUTPUT combined.docbook.xml
+    DEPENDS combine.xsl ${OUT_DBOOK} docinfo.xml ${MAN_DBOOK_PATHS}
+    COMMAND
+        ${XMLSTARLET} tr
+        "${CMAKE_CURRENT_SOURCE_DIR}/combine.xsl"
+        -s "builddir=${CMAKE_CURRENT_BINARY_DIR}"
+        "${OUT_DBOOK}" >combined.docbook.xml
+)
 
-find_program(JAVA_BIN java REQUIRED)
-find_program(XMLSTARLET xmlstarlet REQUIRED)
 set(HTML_XSLT "${CMAKE_CURRENT_SOURCE_DIR}/xhtml-opts.xsl")
 set(MANUAL_CSS "${CMAKE_CURRENT_SOURCE_DIR}/manual.css")
 set(DOCBOOK_CSS_FILES
@@ -82,11 +90,12 @@ configure_file(
 )
 add_custom_command(
     OUTPUT ${OUT_HTML}
-    DEPENDS ${OUT_DBOOK} "xml-catalog.xml" ${HTML_XSLT}
+    DEPENDS combined.docbook.xml "xml-catalog.xml" ${HTML_XSLT}
     COMMAND
         ${JAVA_BIN} -jar ${xsltng_JAR}
         -catalog:xml-catalog.xml -xsl:${HTML_XSLT}
-        -o:${OUT_HTML} ${OUT_DBOOK}
+        -o:${OUT_HTML}
+        combined.docbook.xml
 )
 # Place needed files into HTML tree
 add_custom_command(
@@ -169,18 +178,19 @@ if(XMLSTARLET AND ASPELL)
 endif(XMLSTARLET AND ASPELL)
 
 # PDF document output
-find_program(DBLATEX dblatex REQUIRED)
 if(DBLATEX)
     set(PDF_STYLE "${CMAKE_CURRENT_SOURCE_DIR}/manual.sty")
     set(PDF_XSLT "${CMAKE_CURRENT_SOURCE_DIR}/pdf-opts.xsl")
     set(OUT_PDF "manual.pdf")
     add_custom_command(
         OUTPUT ${OUT_PDF}
-        DEPENDS ${OUT_DBOOK} ${PDF_STYLE} ${PDF_XSLT} ${PROJECT_NAME}-img-bin
+        DEPENDS combined.docbook.xml ${PDF_STYLE} ${PDF_XSLT} ${PROJECT_NAME}-img-bin
         COMMAND
             ${DBLATEX}
-            --texstyle=${PDF_STYLE} --xsl-user=${PDF_XSLT}
-            -o ${OUT_PDF} ${OUT_DBOOK}
+            "--texstyle=${PDF_STYLE}"
+            "--xsl-user=${PDF_XSLT}"
+            -o ${OUT_PDF}
+            combined.docbook.xml
     )
     add_custom_target(
         ${PROJECT_NAME}-pdf ALL
