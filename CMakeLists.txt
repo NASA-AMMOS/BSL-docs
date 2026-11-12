@@ -19,7 +19,7 @@ Institute of Technology, sponsored by the United States Government under
 the prime contract 80NM0018D0004 between the Caltech and NASA under
 subcontract 1700763.
 ]]
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.24)
 # No compiler checks
 project(bsl-docs LANGUAGES )
 set(CMAKE_INSTALL_PREFIX "")

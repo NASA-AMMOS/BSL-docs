@@ -54,6 +54,7 @@ JHU
 JPL
 JSON
 JWK
+JWKs
 LLC
 manpage
 MCS

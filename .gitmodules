@@ -1,0 +1,4 @@
+[submodule "deps/bsl"]
+	path = deps/bsl
+	url = ../bsl.git
+	branch = main
