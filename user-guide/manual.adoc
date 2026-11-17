@@ -720,7 +720,7 @@ Valid values are defined by Section 4.3.2 of <<RFC9173>> and are used directly b
 The ID of an option used to convey the integer AAD Scope.
 Valid values are defined by Section 4.3.4 of <<RFC9173>> and are used directly by this option.
 `BSLX_BCB_OPT_APPEND_AUTHTAG`::
-The ID of an option used on source-role policy rules to convey the integer value 0, to add the encryption authentication tag as a security result, or 1, to append encryption autentication tags to the target BTSD.
+The ID of an option used on source-role policy rules to convey the integer value 0, to add the encryption authentication tag as a security result, or 1, to append encryption authentication tags to the target BTSD.
 
 [#sec-cosesc]
 == COSE Context
