@@ -949,6 +949,7 @@ Determine whether the encryption authentication tag should be appended to the ta
 The value is either a JSON boolean, a number (0 is false, others are true), or text ("0" is false, others are true).
 +
 For source role this will cause the authentication tag to be appended to the target BTSD instead of as a security result. For verifier and acceptor roles, this will do nothing.
+
 ==== COSE Context Options
 
 The Context ID 3 "COSE" has the following options (derived from the internal enumerations of <<sec-cosesc-preprocessor>>) in policy syntax:
