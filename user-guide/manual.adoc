@@ -447,7 +447,7 @@ Because the function of the BSL is perform security processing on individual bun
 The purpose of a Bundle Context is to both relate back to some form of BPA-specific _handle_ used to identify the bundle within the BPA, as well as keeping BSL-specific state derived from the BPA-supplied bundle data such as an efficient look-up table for block types or block numbers.
 
 [#fig-bpa-associations]
-.BPA and Bundle Context Associations 
+.BPA and Bundle Context Associations
 plantuml::static/bpa-associations.puml[format=svg,scale=60]
 
 Each BSL Context instance is associated with one or more Policy Provider instances and one or more Security Context instances, as depicted in <<fig-bsl-breakdown>>.
@@ -455,7 +455,7 @@ The Policy Providers are used to control _what_ the BSL needs to do for a specif
 The Security Contexts are used to validate and actually execute each security operation, as discussed in more detail in <<sec-api-sc>>.
 
 [#fig-bsl-breakdown]
-.BSL Structure Breakdown 
+.BSL Structure Breakdown
 plantuml::static/bsl-breakdown.puml[format=svg,scale=60]
 
 In addition to the externally-visible information about security operations and their _target_, _parameters_, and _results_ the BSL adds the notion of a security Action which is an ordered sequence of specific operations.
@@ -463,7 +463,7 @@ This is necessary because some policies require, for example, some operations to
 The data-use relationships of security operations between PP and SC are depicted in <<fig-secop-assoctaions>>.
 
 [#fig-secop-assoctaions]
-.Security Operation Associations 
+.Security Operation Associations
 plantuml::static/secop-associations.puml[format=svg,scale=60]
 
 Another internal information item is the security Option, which is used to communicate configuration of individual security operations between a Policy Provider and an associated Security Context, as depicted in <<fig-secop-in-out>>.
@@ -480,14 +480,14 @@ For example, an option can restrict that verification _must_ use a specific secu
 ----
 digraph figure {
     node [shape=rectangle];
-    
+
     sc [label="Security Context\n(execute)"]
     policy [label="Policy Provider"]
     asbin [label="ASB (input)"]
     asbout [label="ASB (output)"]
-    
+
     { rank=same; policy; sc; }
-    
+
     policy -> sc [label="Options"]
     asbin -> sc [label="Parameters\n and Results", style=dashed]
     sc -> asbout [label="Parameters\n and Results", style=dashed]
@@ -658,7 +658,7 @@ The bundle can now be forwarded within the BPA.
 .Sequence Diagram of Per-Bundle Workflow
 plantuml::static/bundle-workflow.puml[format=svg,width=110mm]
 
-The BSL Frontend API consists of two primary functions for per-bundle operation: 
+The BSL Frontend API consists of two primary functions for per-bundle operation:
 
 1. `BSL_API_QuerySecurity` covers steps 1 through 10 above.
 The function first utilizes the policy providers to query on a bundle.
@@ -708,7 +708,7 @@ Valid values are defined by Section 3.3.3 of <<RFC9173>> and are used directly b
 The following are preprocessor define directives related to options of the BCB-AES-GCM context.
 Their enumerated values are not part of the API.
 
-`BSLX_BCB_OPT_KEY_ID`:: 
+`BSLX_BCB_OPT_KEY_ID`::
 The ID of an option used to convey the mandatory key ID as a text string.
 Valid values must be present in the BPA key store to be usable in any BPSec role.
 `BSLX_BCB_OPT_USE_KEY_WRAP`::
@@ -719,7 +719,8 @@ Valid values are defined by Section 4.3.2 of <<RFC9173>> and are used directly b
 `BSLX_BCB_OPT_SCOPE`::
 The ID of an option used to convey the integer AAD Scope.
 Valid values are defined by Section 4.3.4 of <<RFC9173>> and are used directly by this option.
-
+`BSLX_BCB_OPT_APPEND_AUTHTAG`::
+The ID of an option used on source-role policy rules to convey the integer value 0, to add the encryption authentication tag as a security result, or 1, to append encryption autentication tags to the target BTSD.
 
 [#sec-cosesc]
 == COSE Context
@@ -943,7 +944,11 @@ The specific AAD flags to use, interpreted as defined in <<RFC9173>>.
 The value is an integer number or integer-as-text (decimal or hexadecimal).
 +
 For source role this will cause an operation to be added using these flags, for verifier and acceptor roles this will act as an optional constraint on valid flags.
-
+`append_authtag`::
+Determine whether the encryption authentication tag should be appended to the target BTSD (if true) or added as a security result (if false; default).
+The value is either a JSON boolean, a number (0 is false, others are true), or text ("0" is false, others are true).
++
+For source role this will cause the authentication tag to be appended to the target BTSD instead of as a security result. For verifier and acceptor roles, this will do nothing.
 ==== COSE Context Options
 
 The Context ID 3 "COSE" has the following options (derived from the internal enumerations of <<sec-cosesc-preprocessor>>) in policy syntax:
